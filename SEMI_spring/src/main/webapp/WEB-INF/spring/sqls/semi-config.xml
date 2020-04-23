@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+
+	<typeAliases>
+		<!-- 테이블당 1개 dto 9개 + 2개(게시판용 dto + 2) 총 10개 -->
+		<typeAlias type="com.semi.update.join.dto.JoinDto" alias="joinDto" />
+		<!-- 게시판용 dto개 >> 테이블은 1개를 사용하고 기능별로 dto를 나누어 사용함 -->
+		<typeAlias type="com.semi.update.member.board.dto.AnswerBoardDto" alias="answerBoardDto" />
+		<typeAlias type="com.semi.update.member.board.dto.BoardDto" alias="boardDto" />
+		<typeAlias type="com.semi.update.member.board.dto.ReviewDto" alias="reviewDto" />
+		
+		<typeAlias type="com.semi.update.member.match.dto.MatchDto" alias="matchDto" />
+		<typeAlias type="com.semi.update.member.mentee.dayMenu.dto.DayMenuDto" alias="dayMenuDto" />
+		<typeAlias type="com.semi.update.member.mentee.exercise.plan.dto.PlanDto" alias="planDto" />
+		<typeAlias type="com.semi.update.member.mentee.exercise.total.dto.TotalDto" alias="totalDto" />
+		<typeAlias type="com.semi.update.member.mentee.food.dto.FoodDto" alias="foodDto" />
+		<typeAlias type="com.semi.update.member.profile.dto.ProfileDto" alias="profileDto" />
+		<typeAlias type="com.semi.update.member.trade.dto.TradeDto" alias="tradeDto" />
+		
+		<!-- join한 테이블 dto 2개-->
+		<typeAlias type="com.semi.update.All.join.LoginProfile.dto.LoginProfileDto" alias="loginProfileDto"/>
+		<typeAlias type="com.semi.update.All.join.menuFood.dto.MenuFoodDto" alias="MenuFoodDto"/>
+	</typeAliases>
+
+
+<!-- applicationContext.xml에서 데이터베이스 커넥션 풀을 이용해 자동으로 설정(주입) 예정 -->
+
+<!-- 	<environments default="development"> -->
+<!-- 		<environment id="development"> -->
+<!-- 			<transactionManager type="JDBC" /> -->
+<!-- 			<dataSource type="POOLED"> -->
+<!-- 				<property name="driver" value="${driver}" /> -->
+<!-- 				<property name="url" value="${url}" /> -->
+<!-- 				<property name="username" value="${username}" /> -->
+<!-- 				<property name="password" value="${password}" /> -->
+<!-- 			</dataSource> -->
+<!-- 		</environment> -->
+<!-- 	</environments> -->
+
+
+	<mappers>
+		<!-- 총 9개 매퍼.xml 추가 applicationContext.xml에서 "resources/" 까지 경로 잡고 나머지 추가  -->
+		<mapper resource="mybatis/board-mapper.xml" />
+		<mapper resource="mybatis/dayMenu-mapper.xml" />
+		<mapper resource="mybatis/food-mapper.xml" />
+		<mapper resource="mybatis/join-mapper.xml" />
+		<mapper resource="mybatis/match-mapper.xml" />
+		<mapper resource="mybatis/plan-mapper.xml" />
+		<mapper resource="mybatis/profile-mapper.xml" />
+		<mapper resource="mybatis/total-mapper.xml" />
+		<mapper resource="mybatis/trade-mapper.xml" />
+	</mappers>
+
+</configuration>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.Join">
+
+	<resultMap type="joinDto" id="joinResultMap">
+		<result property="joinNo" column="JOIN_NO" />
+		<result property="id" column="ID" />
+		<result property="joinPw" column="JOIN_PW" />
+		<result property="joinEmail" column="JOIN_EMAIL"/>
+		<result property="joinRole" column="JOIN_ROLE"/>
+		<result property="joinDate" column="JOIN_Date"/>
+		<result property="joinJoined" column="JOIN_JOINED"/>
+		<result property="joinRegisterYn" column="JOIN_REGISTER_YN"/>
+	</resultMap>
+	
+	<resultMap type="loginProfileDto" id="loginProfileResultMap">
+		<result property="joinNo" column="JOIN_NO" />
+		<result property="id" column="ID" />
+		<result property="joinPw" column="JOIN_PW" />
+		<result property="joinEmail" column="JOIN_EMAIL"/>
+		<result property="joinRole" column="JOIN_ROLE"/>
+		<result property="joinDate" column="JOIN_Date"/>
+		<result property="joinJoined" column="JOIN_JOINED"/>
+		<result property="joinRegisterYn" column="JOIN_REGISTER_YN"/>
+		<result property="memberName" column="MEMBER_NAME" />
+		<result property="memberBirth" column="MEMBER_BIRTH" />
+		<result property="memberHeight" column="MEMBER_HEIGHT" />
+		<result property="memberWeight" column="MEMBER_WEIGHT" />
+		<result property="memberAddr" column="MEMBER_ADDR" />
+		<result property="memberPhone" column="MEMBER_PHONE" />
+		<result property="memberOneIntro" column="MEMBER_ONE_INTRO" />
+		<result property="memberCoin" column="MEMBER_COIN" />
+		<result property="memberCareer" column="MEMBER_CAREER" />
+		<result property="memberContent" column="MEMBER_CONTENT" />
+		<result property="memberScore" column="MEMBER_SCORE" />
+		<result property="memberGender" column="MEMBER_GENDER" />
+		<result property="memberActivity" column="MEMBER_ACTIVITY" />
+		<result property="memberBasal" column="MEMBER_BASAL" />
+		<result property="memberBmi" column="MEMBER_BMI" />
+	</resultMap>
+	
+	
+
+  <!-- 로그인  -->
+  <select id="Login" parameterType="map" resultMap="joinResultMap">
+  	SELECT JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN
+	FROM MEMBER_JOIN
+	WHERE ID = #{id}  AND JOIN_PW = #{joinPw}
+  </select>
+  
+  <!-- id 중복 -->
+  <select id="idCheck" parameterType="String" resultType="String">
+  	SELECT ID 
+  	FROM MEMBER_JOIN
+	WHERE ID = #{id}
+  </select>
+  
+  <!-- 이메일 중복 -->
+  <select id="emailCheck" parameterType="String" resultType="String">
+  	SELECT JOIN_EMAIL 
+  	FROM MEMBER_JOIN
+	WHERE JOIN_EMAIL = #{joinEmail}
+  </select>
+  
+  
+  <!-- 회원가입 -->
+  <insert id="insertMember" parameterType="joinDto">
+  	INSERT INTO MEMBER_JOIN
+	VALUES(MEMBER_JOIN_SEQ.NEXTVAL, #{id}, #{joinPw}, #{joinEmail}, #{joinRole}, SYSDATE, 'Y', 'N')
+  </insert>
+  
+  <!-- 프로필 작성시 JOIN_REGISTER_YN 변경 -->
+  <update id="updateJoinRegister" parameterType="map">
+  	UPDATE MEMBER_JOIN
+	SET JOIN_REGISTER_YN = #{joinRegisterYn}
+	WHERE ID = #{id}
+  </update>
+  
+  
+  <!-- 멘토 멘티 전체 리스트 -->
+  <select id="selectList_join" resultMap="joinResultMap">
+  	SELECT JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN 
+	FROM MEMBER_JOIN
+	WHERE JOIN_ROLE = '멘토' OR JOIN_ROLE = '멘티'
+  </select>
+  
+  
+  <!-- 전체에서 아이디 검색 -->
+  <select id="selectList_join_id" resultMap="joinResultMap">
+  	SELECT JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN 
+	FROM MEMBER_JOIN
+	WHERE ID = #{id}
+  </select>
+  
+  
+  
+  <!-- 미승인 멘토  -->
+  <select id="selsList_Mentor_reN" resultMap="joinResultMap">
+  	SELECT JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN 
+	FROM MEMBER_JOIN
+	WHERE JOIN_REGISTER_YN = 'N'  
+	AND JOIN_ROLE = '멘토'
+  </select>
+  
+  <!-- 미승인 멘티 -->
+  <select id="selsList_Mentee_reN" resultMap="joinResultMap">
+  	SELECT JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN 
+	FROM MEMBER_JOIN
+	WHERE JOIN_REGISTER_YN = 'N'  
+	AND JOIN_ROLE = '멘티'
+  </select>
+  
+  
+  
+  <!-- 미승인 멘토 아이디 검색 -->
+  <select id="selsList_Mentor_reN_id" resultMap="joinResultMap">
+  	SELECT JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN 
+	FROM MEMBER_JOIN
+	WHERE JOIN_REGISTER_YN = 'N'  
+	AND JOIN_ROLE = '멘토'
+	AND ID = #{id}
+  </select>
+  
+  <!-- 미작성 멘티 아이디 검색 -->
+  <select id="selsList_Mentee_reN_id" resultMap="joinResultMap">
+  	SELECT JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN 
+	FROM MEMBER_JOIN
+	WHERE JOIN_REGISTER_YN = 'N'  
+	AND JOIN_ROLE = '멘티'
+	AND ID = #{id}
+  </select>
+  
+  
+  
+  
+  
+   <!-- 비밀번호 변경용 id, pw 빼기 -->
+  <select id="passwordChange" parameterType="String" resultMap="joinResultMap">
+	  SELECT 
+	  ID ,JOIN_PW
+	  FROM MEMBER_JOIN
+	  WHERE ID =#{id}
+  </select>
+  
+  <!-- 비밀번호 변경 -->
+  <update id="updatePassword" parameterType="map">
+	  UPDATE MEMBER_JOIN
+	  SET JOIN_PW = #{pw}
+	  WHERE ID = #{id}
+  </update>
+  
+  <!-- 회원탈퇴 -->
+  <update id="updateLeave" parameterType="String">
+	  UPDATE MEMBER_JOIN
+	  SET JOIN_JOINED = 'N'
+	  WHERE ID = #{id}
+  </update>
+  
+  <!-- 아이디찾기 -->
+  <select id="idSearch" parameterType="String" resultMap="joinResultMap">
+	  SELECT ID
+	  FROM MEMBER_JOIN
+	  WHERE JOIN_EMAIL = #{email}
+  </select>
+  
+  <!-- 패스워드 찾기 정보확인 -->
+  <select id="PwCheck" parameterType="map" resultType="String">
+	  SELECT JOIN_EMAIL
+	  FROM MEMBER_JOIN
+	  WHERE ID = #{id} AND JOIN_EMAIL=#{email}
+  </select>
+  
+  <!-- 패스워드 찾기 정보 불러오기 -->
+  <select id="PwInfo" parameterType="String" resultMap="joinResultMap">
+	  SELECT ID, JOIN_PW, JOIN_EMAIL
+	  FROM MEMBER_JOIN
+	  WHERE ID = #{id}
+  </select>
+  
+  
+  
+  
+  
+  
+  <!-- 로그인시 joinDto + profileDto 조인한  LoginProfileDto를 가져온다. 멘토용-->
+  <select id="getLoginProfileDto_mentor" resultMap="loginProfileResultMap">
+  	SELECT
+	JOIN_NO, JOIN_ROLE, ID, JOIN_PW, JOIN_EMAIL, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN,
+	MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT,
+	MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, 
+	MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE --멘토
+	FROM MEMBER_JOIN JOIN MEMBER_PROFILE USING(ID)
+	WHERE ID = #{id}
+  </select>
+  
+  
+  <!-- 로그인시 joinDto + profileDto 조인한  LoginProfileDto를 가져온다. 멘티용-->
+  <select id="getLoginProfileDto_mentee" resultMap="loginProfileResultMap">
+  	SELECT
+	JOIN_NO, JOIN_ROLE, ID, JOIN_PW, JOIN_EMAIL, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN,
+	MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT,
+	MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, 
+	MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI, MEMBER_CONTENT  --멘티
+	FROM MEMBER_JOIN JOIN MEMBER_PROFILE USING(ID)
+	WHERE ID = #{id}
+  </select>
+  
+
+  <!-- 전체 멘토 리스트 출력 (멘토찾기) -->
+  <select id="loginProfile_mentorList" resultMap="loginProfileResultMap">
+   SELECT
+   JOIN_NO, JOIN_ROLE, ID, JOIN_PW, JOIN_EMAIL, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN,
+   MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT,
+   MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, 
+   MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE 
+   FROM MEMBER_JOIN JOIN MEMBER_PROFILE USING(ID)
+   WHERE JOIN_ROLE = '멘토'
+  </select>
+  
+    <!-- 검색된 멘토 리스트 출력 (멘토찾기) -->
+  <select id="loginProfile_mentorSearch" resultMap="loginProfileResultMap">
+     SELECT
+   JOIN_NO, JOIN_ROLE, ID, JOIN_PW, JOIN_EMAIL, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN,
+   MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT,
+   MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, 
+   MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE 
+   FROM MEMBER_JOIN JOIN MEMBER_PROFILE USING(ID)
+   WHERE MEMBER_NAME = #{memberName} AND JOIN_ROLE = '멘토'
+  </select>
+ 
+</mapper>

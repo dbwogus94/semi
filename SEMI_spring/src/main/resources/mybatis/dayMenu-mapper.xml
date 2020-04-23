@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.DayMenu">   
+
+   <resultMap type="dayMenuDto" id="menumap">
+      <result property="menuNo" column="MENU_NO"/>
+      <result property="id" column="ID"/>
+      <result property="menuDate" column="MENU_DATE"/>
+      <result property="foodName" column="FOOD_NAME"/>
+      <result property="menuMorning" column="MENU_MORNING"/>
+      <result property="menuLunch" column="MENU_LUNCH"/>
+      <result property="menuEven" column="MENU_EVEN"/>
+      <result property="menuSnack" column="MENU_SNACK"/>
+   </resultMap>
+   
+   <resultMap type="foodDto" id="foodmap">
+      <result property="foodNo" column="FOOD_NO"/>
+      <result property="foodName" column="FOOD_NAME"/>
+      <result property="foodGram" column="FOOD_GRAM"/>
+      <result property="foodCar" column="FOOD_CAR"/>
+      <result property="foodPro" column="FOOD_PRO"/>
+      <result property="foodFat" column="FOOD_FAT"/>
+      <result property="foodCalorie" column="FOOD_CALORIE"/>
+   </resultMap>
+   
+   <resultMap type="menuFoodDto" id="menufoodmap">
+      <result property="menuNo" column="MENU_NO"/>
+      <result property="id" column="ID"/>
+      <result property="menuDate" column="MENU_DATE"/>
+      <result property="menuMorning" column="MENU_MORNING"/>
+      <result property="menuLunch" column="MENU_LUNCH"/>
+      <result property="menuEven" column="MENU_EVEN"/>
+      <result property="menuSnack" column="MENU_SNACK"/>
+      <result property="foodNo" column="FOOD_NO"/>
+      <result property="foodName" column="FOOD_NAME"/>
+      <result property="foodGram" column="FOOD_GRAM"/>
+      <result property="foodCar" column="FOOD_CAR"/>
+      <result property="foodPro" column="FOOD_PRO"/>
+      <result property="foodFat" column="FOOD_FAT"/>
+      <result property="foodCalorie" column="FOOD_CALORIE"/>
+   </resultMap>
+
+
+   <select id="getCalViewList" parameterType="hashmap" resultMap="menumap">
+      SELECT MENU_NO, ID, MENU_DATE, FOOD_NAME, MENU_MORNING, MENU_LUNCH, MENU_EVEN, MENU_SNACK
+      FROM MENTEE_DAY_MENU
+      WHERE ID IN #{id} 
+      AND SUBSTR(MENU_DATE, 1, 6) IN (
+			SELECT SUBSTR(MENU_DATE, 1, 6)
+			FROM MENTEE_DAY_MENU
+	        WHERE SUBSTR(MENU_DATE, 1, 6) = #{yyyyMM}
+		)
+   </select>
+
+   <select id="selectList" parameterType="String" resultMap="menufoodmap">
+      SELECT FOOD_NAME, MENU_MORNING, MENU_LUNCH, MENU_EVEN, MENU_SNACK
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE MENU_DATE IN #{menuDate}
+   </select>
+   
+   <!-- 아점저간식에 따른 기록 보여줌-->
+   <select id="selectMorning" parameterType="String" resultMap="menufoodmap">
+      SELECT FOOD_NAME
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE MENU_DATE IN #{menuDate} AND MENU_MORNING IN 'Y'
+   </select>
+   
+   <select id="selectLunch" parameterType="String" resultMap="menufoodmap">
+      SELECT FOOD_NAME
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE MENU_DATE IN #{menuDate} AND MENU_LUNCH IN 'Y'
+   </select>
+
+   <select id="selectEven" parameterType="String" resultMap="menufoodmap">
+      SELECT FOOD_NAME
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE MENU_DATE IN #{menuDate} AND MENU_EVEN IN 'Y'
+   </select>
+   
+   <select id="selectSnack" parameterType="String" resultMap="menufoodmap">
+      SELECT FOOD_NAME
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE MENU_DATE IN #{menuDate} AND MENU_SNACK IN 'Y'
+   </select>
+   
+   <!-- 차트 : 섭취 칼로리 차트 -->
+   <select id="getCalorieChartView" parameterType="String" resultType="map">
+      SELECT MENU_DATE, SUM(FOOD_CALORIE   * (FOOD_GRAM * MENU_GRAM))
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE FOOD_NAME IN (
+         SELECT FOOD_NAME
+         FROM MENTEE_DAY_MENU
+      )
+      AND ID = #{id}
+      GROUP BY MENU_DATE
+      ORDER BY MENU_DATE ASC
+   </select>
+   
+    <!-- 차트 : 섭취 칼로리 차트 1, 3, 6rodnjf -->
+   <select id="getCalorieChartViewM" parameterType="map" resultType="map">
+      SELECT MENU_DATE, SUM(FOOD_CALORIE * (FOOD_GRAM * MENU_GRAM))
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE FOOD_NO IN (
+         SELECT FOOD_NO
+         FROM MENTEE_DAY_MENU
+      ) AND MENU_DATE BETWEEN ADD_MONTHS(SYSDATE, - #{month}) AND SYSDATE
+      AND ID = #{id}
+      GROUP BY MENU_DATE
+      ORDER BY MENU_DATE ASC
+   </select>
+   
+   <!-- 차트 : 오늘 섭취 총 칼로리 -->
+   <select id="getTodayCal" parameterType="map" resultType="map">
+      SELECT SUM(FOOD_CALORIE * (FOOD_GRAM * MENU_GRAM))
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE FOOD_NAME IN (
+         SELECT FOOD_NAME
+         FROM MENTEE_DAY_MENU
+      	)
+      AND ID = #{id}
+      AND MENU_DATE IN #{menuDate}
+   </select>
+   
+   <!-- 차트 : 오늘 섭취 영양소 도넛 차트 -->
+   <select id="getNutrientChartView" parameterType="map" resultType="map">
+      SELECT SUM(FOOD_CAR * MENU_GRAM), SUM(FOOD_PRO * MENU_GRAM), SUM(FOOD_FAT * MENU_GRAM)
+      FROM MENTEE_DAY_MENU JOIN FOOD USING (FOOD_NAME)
+      WHERE FOOD_NAME IN (
+         SELECT FOOD_NAME
+         FROM MENTEE_DAY_MENU JOIN FOOD USING(FOOD_NAME)
+         WHERE MENU_DATE IN #{menuDate}
+      )
+      AND ID = #{id}
+   </select>
+   
+   <!-- 메뉴insert -->
+   <insert id="insertDayMenu" parameterType="dayMenuDto">
+         INSERT INTO MENTEE_DAY_MENU
+         VALUES(
+            MENTEE_DAY_MENU_SEQ.NEXTVAL,
+            #{id},
+            #{menuDate},
+            #{foodName},
+            #{menuGram},
+            #{menuMorning},
+            #{menuLunch},
+            #{menuEven},
+            #{menuSnack}
+         )
+   </insert>
+   
+   <!-- 메뉴삭제 -->
+	<delete id="deleteMenu" parameterType="String">
+		DELETE 
+		FROM MENTEE_DAY_MENU 
+		WHERE MENU_DATE IN ${date}
+	</delete>
+   
+    <delete id="deleteOneMenu" parameterType="dayMenuDto">
+      DELETE 
+      FROM MENTEE_DAY_MENU 
+      WHERE ID = #{id} AND
+            MENU_DATE = #{menuDate} AND
+            FOOD_NAME = #{foodName} AND
+            MENU_MORNING = #{menuMorning} AND
+            MENU_LUNCH = #{menuLunch} AND
+            MENU_EVEN = #{menuEven} AND
+            MENU_SNACK = #{menuSnack}
+   </delete>
+
+</mapper>

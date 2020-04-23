@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.WebRTC-Experiment.com/getScreenId.js"></script>
+<script type="text/javascript">
+getScreenId((error, sourceId, screenConstraints) => {
+	  if (error === "not-installed") return alert("The extension is not installed");
+	  if (error === "permission-denied") return alert("Permission is denied.");
+	  if (error === "not-chrome") return alert("Please use chrome.");
+
+	  navigator.mediaDevices
+	    .getUserMedia(screenConstraints)
+	    .then(stream => {
+	      const video = document.querySelector("video");
+	      video.src = URL.createObjectURL(stream);
+	      video.autoplay = true;
+	      video.controls = true;
+	      video.play();
+	    })
+	    .catch(err => {
+	      console.log(err);
+	    });
+	});
+
+</script>
+
+<title>화면 공유</title>
+</head>
+<body>
+	
+	
+</body>
+</html>

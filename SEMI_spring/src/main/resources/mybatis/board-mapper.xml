@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.Board">
+
+	<resultMap type = "boardDto" id = "ResultMap">
+		<result property = "board_No" column = "BOARD_NO"/>
+		<result property = "board_Category" column = "BOARD_CATEGORY"/>
+		<result property = "board_Category_No" column = "BOARD_CATEGORY_NO"/>
+		<result property = "board_Group" column = "BOARD_GROUP"/>
+		<result property = "board_Group_No" column = "BOARD_GROUP_NO"/>
+		<result property = "board_Tab" column = "BOARD_TAB"/>
+		<result property = "id" column = "ID"/>
+		<result property = "board_Member_Name" column = "BOARD_MEMBER_NAME"/>
+		<result property = "board_Exercise_Name" column = "BOARD_EXERCISE_NAME"/>
+		<result property = "board_Title" column = "BOARD_TITLE"/>
+		<result property = "board_Content" column = "BOARD_CONTENT"/>
+		<result property = "board_Regdate" column = "BOARD_REGDATE"/>
+		<result property = "board_Review_Score" column = "BOARD_REVIEW_SCORE"/>
+		<result property = "board_Exercise_Category" column = "BOARD_EXERCISE_CATEGORY"/>
+		<result property = "board_Exercise_Url" column = "BOARD_EXERCISE_URL"/>
+	</resultMap>
+	
+	<!-- 해당 아이디가 멘티인지 멘토인지 확인 -->
+	<select id = "check_Id" parameterType = "String" resultType = "String">
+		SELECT JOIN_ROLE FROM MEMBER_JOIN
+		WHERE ID = #{id}
+	</select>
+	
+	<!-- 게시판 메인 전체 글 -->
+	<select id = "selectList_board" parameterType = "int" resultType = "boardDto">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_GROUP, BOARD_GROUP_NO, BOARD_TAB, ID, BOARD_MEMBER_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE
+		FROM BOARD 
+		WHERE BOARD_CATEGORY='게시판' AND BOARD_GROUP_NO = #{board_Group_No}
+		ORDER BY BOARD_CATEGORY_NO DESC
+	</select>
+	
+	<!-- 운동 정보 불러오기 -->
+	<select id = "selectList_exercise" resultType = "boardDto">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_EXERCISE_NAME, BOARD_CONTENT, BOARD_REGDATE, BOARD_EXERCISE_CATEGORY
+		FROM BOARD
+		WHERE BOARD_CATEGORY='운동정보'
+		ORDER BY BOARD_CATEGORY_NO DESC
+	</select>
+	
+	<!-- 운동 정보 카테고리 불러오기 -->
+	<select id = "selectList_exercise_category" resultType = "boardDto">
+		SELECT BOARD_EXERCISE_CATEGORY FROM BOARD
+		WHERE BOARD_CATEGORY = '운동정보'
+		GROUP BY BOARD_EXERCISE_CATEGORY
+	</select>
+	
+	<!-- 별점 리뷰 불러오기 -->
+	<select id = "selectList_review" resultType = "boardDto">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, ID, BOARD_MEMBER_NAME, BOARD_CONTENT, BOARD_REGDATE, BOARD_REVIEW_SCORE
+		FROM BOARD
+		WHERE BOARD_CATEGORY='리뷰'
+		ORDER BY BOARD_CATEGORY_NO DESC
+	</select>
+	
+	<!-- 아이디에 해당하는 이름 불러오기 -->
+	<select id = "selectId_board" parameterType = "String" resultType = "String">
+		SELECT MEMBER_NAME
+		FROM MEMBER_PROFILE
+		WHERE ID = #{id}
+	</select>
+	
+	<!-- 게시글에 해당하는 댓글 가져오기 -->
+	<select id = "selectdetail_board" parameterType = "int" resultType = "AnswerBoardDto">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_GROUP, BOARD_GROUP_NO, BOARD_TAB, ID, BOARD_MEMBER_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE
+		FROM BOARD
+		WHERE BOARD_CATEGORY='게시판' AND BOARD_GROUP=#{board_Group} AND BOARD_GROUP_NO > 0
+		ORDER BY BOARD_GROUP_NO, BOARD_TAB
+	</select>
+	
+	<!-- 게시글 하나 찾기 -->
+	<select id = "selectOne_category_board" parameterType = "int" resultMap = "ResultMap">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_GROUP, BOARD_GROUP_NO, BOARD_TAB, ID, BOARD_MEMBER_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE
+		FROM BOARD
+		WHERE BOARD_CATEGORY='게시판' AND BOARD_CATEGORY_NO=#{board_Category_No}
+		ORDER BY BOARD_CATEGORY_NO DESC
+	</select>
+	
+	<!-- 해당 카테고리의 운동이름 가져오기 -->
+	<select id = "selectList_exercise_name" parameterType = "String" resultType = "boardDto">
+		SELECT BOARD_EXERCISE_NAME
+		FROM BOARD
+		WHERE BOARD_CATEGORY='운동정보' AND BOARD_EXERCISE_CATEGORY=#{board_Exercise_Category}
+	</select>
+	
+	<!-- 운동정보 하나 찾기 -->
+	<select id = "selectOne_exercise" parameterType = "String" resultType = "boardDto">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_EXERCISE_NAME, BOARD_CONTENT, BOARD_REGDATE, BOARD_EXERCISE_CATEGORY, BOARD_EXERCISE_URL
+		FROM BOARD
+		WHERE BOARD_CATEGORY='운동정보' AND BOARD_EXERCISE_NAME=#{board_Exercise_Name}
+		ORDER BY BOARD_CATEGORY_NO DESC
+	</select>
+	
+	<!-- 별점 리뷰 하나 찾기 -->
+	<select id = "selectOne_review" parameterType = "int" resultMap = "ResultMap">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, ID, BOARD_MEMBER_NAME, BOARD_CONTENT, BOARD_REGDATE, BOARD_REVIEW_SCORE
+		FROM BOARD
+		WHERE BOARD_CATEGORY='리뷰' AND BOARD_CATEGORY_NO=#{board_Category_No}
+		ORDER BY BOARD_CATEGORY_NO DESC
+	</select>
+	
+	<!-- 아이디에 해당하는 게시글 찾기 -->
+	<select id = "selectOneId_board" parameterType = "String" resultType = "boardDto">
+		SELECT BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_GROUP, BOARD_GROUP_NO, BOARD_TAB, ID, BOARD_MEMBER_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE
+		FROM BOARD
+		WHERE BOARD_CATEGORY='게시판' AND ID = #{id} AND BOARD_GROUP_NO = 0
+		ORDER BY BOARD_CATEGORY_NO DESC
+	</select>
+	
+	<!-- 게시판 작성 -->
+	<insert id = "insert_board" parameterType = "boardDto">
+		INSERT INTO BOARD
+		VALUES(BOARD_NO_SEQ.NEXTVAL,'게시판',BOARD_CATEGORYNO_BOARD_SEQ.NEXTVAL,
+		BOARD_GROUP_SEQ.NEXTVAL,0,0,#{id},#{board_Member_Name},'',#{board_Title},#{board_Content},SYSDATE,'','','')
+	</insert>
+	
+	<!-- 별점 리뷰 글쓰기 -->
+	<insert id = "insert_review" parameterType = "boardDto">
+		INSERT INTO BOARD
+		VALUES(BOARD_NO_SEQ.NEXTVAL,'리뷰',BOARD_CATEGORYNO_REVIEW_SEQ.NEXTVAL,
+		'','','',#{id},#{board_Member_Name},'','',#{board_Content},SYSDATE,#{board_Review_Score},'','')
+	</insert>
+	
+	<!-- 게시판 수정 -->
+	<update id = "update_board" parameterType = "boardDto">
+		UPDATE BOARD
+		SET BOARD_TITLE = #{board_Title}, BOARD_CONTENT = #{board_Content}
+		WHERE BOARD_CATEGORY = '게시판' AND BOARD_CATEGORY_NO = #{board_Category_No}
+	</update>
+	
+	<!-- 게시판 댓글 수정 -->
+	<update id = "update_board_review" parameterType = "boardDto">
+		UPDATE BOARD
+		SET BOARD_CONTENT = #{board_Content}
+		WHERE BOARD_CATEGORY = '게시판' AND BOARD_CATEGORY_NO = #{board_Category_No}
+	</update>
+	
+	<!-- 별점 리류 수정 -->
+	<update id = "update_review" parameterType = "boardDto">
+		UPDATE BOARD
+		SET BOARD_CONTENT = #{CONTENT}, BOARD_REVIEW_SCORE = #{SCORE}
+		WHERE BOARD_CATEGORY = '리뷰' AND BOARD_CATEGORY_NO = #{board_Category_No}
+	</update>
+	
+	<!-- 첫번째 댓글 입력 -->
+	<insert id = "insert_first_answer_board" parameterType = "AnswerBoardDto">
+		INSERT INTO BOARD(BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_GROUP, BOARD_GROUP_NO, BOARD_TAB, ID, BOARD_MEMBER_NAME, BOARD_CONTENT, BOARD_REGDATE)
+		VALUES(BOARD_NO_SEQ.NEXTVAL, '게시판', BOARD_CATEGORYNO_BOARD_SEQ.NEXTVAL,
+		#{board_Group},1,0,#{id}, #{board_Member_Name}, #{board_Content}, SYSDATE)
+	</insert>
+	
+	<!-- 첫번째 댓글 입력전 업데이트 -->
+	<update id = "update_first_answer_board" parameterType = "AnswerBoardDto">
+		UPDATE BOARD
+		SET BOARD_GROUP_NO = BOARD_GROUP_NO + 1
+		WHERE BOARD_GROUP IN (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_CATEGORY_NO = #{board_Category_No})
+		AND BOARD_GROUP_NO > 0
+	</update>
+	
+	<!-- 댓글에 댓글 입력 -->
+	<insert id = "insert_answer_board" parameterType = "AnswerBoardDto">
+		INSERT INTO BOARD(BOARD_NO, BOARD_CATEGORY, BOARD_CATEGORY_NO, BOARD_GROUP, BOARD_GROUP_NO, BOARD_TAB, ID, BOARD_MEMBER_NAME, BOARD_CONTENT, BOARD_REGDATE)
+		VALUES(BOARD_NO_SEQ.NEXTVAL, '게시판', BOARD_CATEGORYNO_BOARD_SEQ.NEXTVAL, #{board_Group}, #{board_Group_No} + 1,
+		1, #{id}, #{board_Member_Name}, #{board_Content}, SYSDATE)
+	</insert>
+	
+	<!-- 댓글에 입력전 업데이트 -->
+	<update id = "update_answer_board" parameterType = "AnswerBoardDto">
+		UPDATE BOARD
+		SET BOARD_GROUP_NO = BOARD_GROUP_NO + 1
+		WHERE BOARD_GROUP = #{board_Group}
+		AND BOARD_GROUP_NO > #{board_Group_No}
+	</update>
+	
+	<!-- 해당 게시판과 속한 댓글 삭제 -->
+	<delete id = "delete_board" parameterType = "int">
+		DELETE FROM BOARD WHERE BOARD_GROUP = #{board_Group}
+	</delete>
+	
+	<!-- 해당 댓글 삭제 -->
+	<delete id = "delete_review_board" parameterType = "int">
+		DELETE FROM BOARD WHERE BOARD_CATEGORY_NO = #{Board_Category_No}
+	</delete>
+	
+	<!-- 댓글을 눌러서 댓글의 댓글을 확인하는데 다음 댓글의 그룹넘버를 확인 -->
+	<select id = "select_End_Count" parameterType = "map" resultType = "int">
+		SELECT BOARD_GROUP_NO FROM
+		(SELECT V.*, ROWNUM AS "RNUM" FROM
+		(SELECT * FROM
+		(SELECT * FROM BOARD
+		WHERE BOARD_GROUP_NO > #{board_Group_No} AND BOARD_GROUP = #{board_Group})
+		WHERE BOARD_TAB = 0 ORDER BY BOARD_GROUP_NO)V) WHERE RNUM = 1
+	</select>
+	
+	<!-- 마지막 댓글의 그룹번호 확인 -->
+	<select id = "select_Search_End_No" resultType = "int">
+		SELECT BOARD_GROUP_NO FROM
+		(SELECT V.*, ROWNUM FROM
+		(SELECT * FROM BOARD
+		WHERE BOARD_GROUP_NO > 0 AND BOARD_TAB = 0 ORDER BY BOARD_GROUP_NO DESC)V)
+		WHERE ROWNUM = 1
+	</select>
+	
+	<!-- 마지막 댓글에 해당하는 댓글 -->
+	<select id = "selectList_Search_End_board" parameterType = "int" resultType = "reviewDto">
+		SELECT * FROM BOARD WHERE BOARD_GROUP_NO > #{board_Group_No} ORDER BY BOARD_GROUP_NO, BOARD_TAB
+	</select>
+	
+	<!-- 댓글을 클릭하여 확인되는 댓글에 댓글의 DATA 불러오기 -->
+	<select id = "select_reviewAndreview_board" parameterType = "map" resultType = "reviewDto">
+		SELECT * FROM
+		(SELECT * FROM BOARD WHERE BOARD_GROUP = #{group})
+		WHERE BOARD_GROUP_NO BETWEEN #{groupno} AND #{nextgroupno}
+		ORDER BY BOARD_GROUP_NO, BOARD_TAB
+	</select>
+	
+	<!-- 자신의 게시판 글 멀티 삭제 -->
+	<delete id = "multiDelete_board" parameterType = "map">
+	DELETE FROM BOARD WHERE BOARD_GROUP IN 
+    <foreach collection="board_Groups" item="board_Group" open="(" separator="," close=")">
+        #{board_Group}
+    </foreach>
+    </delete>
+
+	<!-- 페이징으로 불러올 게시글 찾기 -->
+	<select id = "selectPagingList_board" parameterType="map" resultType = "boardDto">
+		SELECT * FROM
+		(SELECT V.*, ROWNUM AS RNUM FROM
+		(SELECT * FROM BOARD WHERE BOARD_CATEGORY='게시판' AND BOARD_GROUP_NO = 0 ORDER BY BOARD_CATEGORY_NO DESC)V)V
+		WHERE RNUM BETWEEN #{PageStart} AND #{PageEnd}
+	</select>
+	
+	<!-- 아이디에 해당하는 게시글 찾기 -->
+    <select id = "selectIdList_board" parameterType = "map" resultType = "boardDto">
+    	SELECT * FROM (SELECT V.*, ROWNUM AS RNUM FROM (SELECT * FROM (SELECT * FROM BOARD
+		WHERE ID = #{id}
+		ORDER BY BOARD_CATEGORY_NO DESC)
+		WHERE BOARD_CATEGORY='게시판' AND BOARD_GROUP_NO = 0)V)
+		WHERE RNUM BETWEEN #{cPage} AND #{numPerPage}
+    </select>
+    
+    <!-- 이름에 해당하는 게시글 찾기 -->
+    <select id = "selectNameList_board" parameterType = "map" resultType = "boardDto">
+    	SELECT * FROM (SELECT V.*, ROWNUM AS RNUM FROM (SELECT * FROM (SELECT * FROM BOARD
+		WHERE BOARD_MEMBER_NAME = #{board_Member_Name}
+		ORDER BY BOARD_CATEGORY_NO DESC)
+		WHERE BOARD_CATEGORY='게시판' AND BOARD_GROUP_NO = 0)V)
+		WHERE RNUM BETWEEN #{cPage} AND #{numPerPage}
+    </select>
+    
+    <!-- 제목에 해당하는 게시글 찾기 -->
+    <select id = "selectTitleList_board" parameterType = "map" resultType = "boardDto">
+    	SELECT * FROM (SELECT V.*, ROWNUM AS RNUM FROM (SELECT * FROM (SELECT * FROM BOARD
+		WHERE BOARD_TITLE LIKE #{board_Title1}
+		OR BOARD_TITLE LIKE #{board_Title2}
+		OR BOARD_TITLE LIKE #{board_Title3}
+		OR BOARD_TITLE LIKE #{board_Title4}
+		ORDER BY BOARD_CATEGORY_NO DESC)
+		WHERE BOARD_CATEGORY='게시판' AND BOARD_GROUP_NO = 0)V)
+		WHERE RNUM BETWEEN #{cPage} AND #{numPerPage}
+    </select>
+    
+    <!-- 아이디와 제목에 해당하는 게시글 찾기 -->
+	<select id = "selectIdAndTitleList_board" parameterType = "map" resultType = "boardDto">
+		SELECT * FROM
+		(SELECT V.*, ROWNUM AS RNUM FROM
+		(SELECT * FROM
+		(SELECT * FROM
+		(SELECT * FROM BOARD WHERE ID = #{board_Id})
+		WHERE BOARD_TITLE LIKE #{board_Title1}
+		OR BOARD_TITLE LIKE #{board_Title2}
+		OR BOARD_TITLE LIKE #{board_Title3}
+		OR BOARD_TITLE LIKE #{board_Title4}
+		ORDER BY BOARD_CATEGORY_NO DESC)
+		WHERE BOARD_CATEGORY='게시판' AND BOARD_GROUP_NO = 0)V)
+		WHERE RNUM BETWEEN #{cPage} AND #{numPerPage}
+	</select>
+	
+	<!-- 게시글 전체 갯수 찾기 -->
+    <select id = "selectAllCount_board" parameterType = "int" resultType = "int">
+    	SELECT COUNT(*) FROM BOARD WHERE BOARD_CATEGORY = '게시판' AND BOARD_GROUP_NO = 0
+    </select>
+    
+    <!-- 게시글 아이디 검색 갯수 찾기 -->
+    <select id = "selectIdCount_board" parameterType = "String" resultType = "int">
+    	SELECT COUNT(*) FROM
+    	(SELECT * FROM BOARD WHERE ID = #{id})
+    	WHERE BOARD_CATEGORY = '게시판' AND BOARD_GROUP_NO = 0
+    </select>
+    
+    <!-- 게시글 이름 검색 갯수 찾기 -->
+    <select id = "selectNameCount_board" parameterType = "String" resultType = "int">
+    	SELECT COUNT(*) FROM
+    	(SELECT * FROM BOARD WHERE BOARD_MEMBER_NAME = #{board_Member_Name}) 
+    	WHERE BOARD_CATEGORY = '게시판' AND BOARD_GROUP_NO = 0
+    </select>
+    
+    <!-- 게시글 제목 검색 갯수 찾기 -->
+    <select id = "selectTitleCount_board" parameterType = "map" resultType = "int">
+    	SELECT COUNT(*) FROM
+    	(SELECT * FROM BOARD WHERE
+    	BOARD_TITLE LIKE #{board_Title1}
+		OR BOARD_TITLE LIKE #{board_Title2}
+		OR BOARD_TITLE LIKE #{board_Title3}
+		OR BOARD_TITLE LIKE #{board_Title4}) 
+    	WHERE BOARD_CATEGORY = '게시판' AND BOARD_GROUP_NO = 0
+    </select>
+    
+    <!-- 게시글 아이디에 해당하는 제목 검색 갯수 찾기 -->
+    <select id = "selectIdAndTitleCount_board" parameterType = "map" resultType = "int">
+    	SELECT COUNT(*) FROM
+    	(SELECT * FROM 
+    	(SELECT * FROM BOARD WHERE ID = #{board_Id})
+    	WHERE BOARD_TITLE LIKE #{board_Title1}
+		OR BOARD_TITLE LIKE #{board_Title2}
+		OR BOARD_TITLE LIKE #{board_Title3}
+		OR BOARD_TITLE LIKE #{board_Title4}) 
+    	WHERE BOARD_CATEGORY = '게시판' AND BOARD_GROUP_NO = 0
+    </select>
+    
+
+</mapper>

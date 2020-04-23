@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.Total">
+	
+	<resultMap type="totalDto" id="totalmap">
+		<result property="totalNo" column="TOTAL_NO"/>
+		<result property="totalDate" column="TOTAL_DATE"/>
+		<result property="id" column="ID"/>
+		<result property="totalDayofweek" column="TOTAL_DAYOFWEEK"/>
+		<result property="totalTime" column="TOTAL_TIME"/>
+		<result property="totalCalorie" column="TOTAL_CALORIE"/>
+		<result property="totalWeight" column="TOTAL_WEIGHT"/>
+	</resultMap>
+
+ <!-- 메인 캘린더에 보여질 버튼 -->
+   <select id="getCalViewList" parameterType="hashmap" resultMap="totalmap">
+      SELECT TOTAL_DATE, ID, TOTAL_DAYOFWEEK, TOTAL_TIME, TOTAL_CALORIE, TOTAL_WEIGHT
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE ID IN #{id} 
+      AND SUBSTR(TOTAL_DATE, 1, 6) IN (
+         SELECT SUBSTR(TOTAL_DATE, 1, 6)
+         FROM MENTEE_EXERCISE_TOTAL
+         WHERE SUBSTR(TOTAL_DATE, 1, 6) = #{yyyyMM}
+      )
+      AND NOT TOTAL_WEIGHT IS NULL
+   </select>
+   
+   <insert id="insertTotal" parameterType="TotalDto">
+      INSERT INTO MENTEE_EXERCISE_TOTAL VALUES (
+         MENTEE_EXERCISE_TOTAL_SEQ.NEXTVAL,
+         #{totalDate},
+         #{id},
+         #{totalDayofweek},
+         #{totalTime},
+         #{totalCalorie},
+         #{totalWeight}
+      )
+   </insert>
+   
+   <update id="updateTotal" parameterType="TotalDto">
+      UPDATE MENTEE_EXERCISE_TOTAL
+      SET TOTAL_WEIGHT = #{totalWeight}
+      WHERE ID = #{id} AND TOTAL_DATE = #{totalDate}
+   </update>
+   
+   <select id="getWeightChartView" resultMap="totalmap">
+      SELECT TOTAL_DATE, TOTAL_WEIGHT
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE NOT TOTAL_WEIGHT is NULL 
+      AND TOTAL_DATE > SYSDATE - 7
+      AND ID = #{id}
+      ORDER BY TOTAL_DATE ASC
+   </select>
+   
+   <select id="getWeightChartViewM" parameterType="map" resultType="map">
+      SELECT TOTAL_DATE, TOTAL_WEIGHT
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE NOT TOTAL_WEIGHT is NULL 
+      AND TOTAL_DATE BETWEEN ADD_MONTHS(SYSDATE, - #{month}) AND SYSDATE
+      AND ID = #{id}
+      ORDER BY TOTAL_DATE ASC
+   </select>
+   
+   <select id="getExerciseChartView" resultMap="totalmap">
+      SELECT TOTAL_DATE, TOTAL_CALORIE
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE NOT TOTAL_CALORIE is NULL 
+      AND NOT TOTAL_CALORIE = 0
+      AND TO_DATE(TOTAL_DATE, 'yyyyMMdd') > SYSDATE - 7
+      AND ID = #{id}
+      ORDER BY TOTAL_DATE ASC
+   </select>
+   
+   <select id="getExerciseChartViewM" parameterType="map" resultType="map">
+      SELECT TOTAL_DATE, TOTAL_CALORIE
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE NOT TOTAL_CALORIE is NULL 
+      AND NOT TOTAL_CALORIE = 0
+      AND TOTAL_DATE BETWEEN ADD_MONTHS(SYSDATE, - #{month}) AND SYSDATE
+      AND ID = #{id}
+      ORDER BY TOTAL_DATE ASC
+   </select>
+   
+   <!-- 오늘 운동 기록 -->
+   <select id="getTodayTotal" parameterType="map" resultMap="totalmap">
+      SELECT TOTAL_TIME, TOTAL_CALORIE
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE NOT TOTAL_TIME IS NULL 
+      AND NOT TOTAL_CALORIE IS NULL 
+      AND TOTAL_DATE IN #{totalDate}
+      AND ID = #{id}
+   </select>
+   
+   <!-- 오늘 체중 : 같은 날짜에 체중 두 번 입력되면 가장 최근의 데이터만 SELECT -->
+   <select id="getTodayWeight" parameterType="map" resultType="map">
+      SELECT TOTAL_WEIGHT
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE ROWID IN (
+         SELECT MAX(ROWID) 
+         FROM MENTEE_EXERCISE_TOTAL
+         WHERE NOT TOTAL_WEIGHT IS NULL 
+         AND TOTAL_DATE = #{totalDate}
+      )
+       AND ID = #{id}
+   </select>
+   
+   <delete id="deleteWeight" parameterType="TotalDto" >
+      DELETE
+      FROM MENTEE_EXERCISE_TOTAL
+      WHERE ID = #{id} AND TOTAL_DATE = #{totalDate} 
+      AND TOTAL_WEIGHT IS NOT NULL
+   </delete>
+   
+   <!-- 운동수행기록 삭제 시 소모 칼로리, 시간 삭제 -->
+   <delete id="deleteTimeCal" parameterType="TotalDto">
+		DELETE 
+		FROM MENTEE_EXERCISE_TOTAL
+		WHERE ID = #{id}
+		AND TOTAL_DATE = #{totalDate}
+		AND TOTAL_TIME IS NOT NULL
+		AND TOTAL_CALORIE IS NOT NULL
+   </delete>
+   
+   <insert id="insertTimeCal" parameterType="TotalDto">
+   		 INSERT INTO MENTEE_EXERCISE_TOTAL VALUES (
+         MENTEE_EXERCISE_TOTAL_SEQ.NEXTVAL,
+         #{totalDate},
+         #{id},
+         NULL,
+         #{totalTime},
+         #{totalCalorie},
+         NULL
+      )
+   </insert>
+   
+   <select id="selectTimeCal" parameterType="TotalDto" resultMap="totalmap">
+		SELECT TOTAL_TIME, TOTAL_CALORIE
+		FROM MENTEE_EXERCISE_TOTAL
+		WHERE ID = #{id}
+		AND TOTAL_DATE = #{totalDate}
+		AND TOTAL_TIME IS NOT NULL
+		AND TOTAL_CALORIE IS NOT NULL
+   </select>
+</mapper>
+
+
+

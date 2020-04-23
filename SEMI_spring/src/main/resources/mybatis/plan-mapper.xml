@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.Plan">
+   
+   <resultMap type="planDto" id="planmap">
+      <result property="planNo" column="PLAN_NO"/>
+      <result property="planDate" column="PLAN_DATE"/>
+      <result property="id" column="ID"/>
+      <result property="planCategory" column="PLAN_CATEGORY"/>
+      <result property="exerciseName" column="EXERCISE_NAME"/>
+      <result property="planCount" column="PLAN_COUNT"/>
+      <result property="planTime" column="PLAN_TIME"/>
+      <result property="planDayofweek" column="PLAN_DAYOFWEEK"/>
+      <result property="planKinds" column="PLAN_KINDS"/>
+   </resultMap>
+   
+   <!-- 캘린더 버튼 생성 -->
+   <select id="getCalViewList" parameterType="hashmap" resultMap="planmap">
+      SELECT PLAN_NO, PLAN_DATE, ID, PLAN_CATEGORY, EXERCISE_NAME, PLAN_COUNT, PLAN_TIME, PLAN_DAYOFWEEK, PLAN_KINDS
+      FROM MENTEE_EXERCISE_PLAN
+      WHERE ID IN #{id} 
+      AND SUBSTR(PLAN_DATE, 1, 6) IN (
+         SELECT SUBSTR(PLAN_DATE, 1, 6)
+         FROM MENTEE_EXERCISE_PLAN
+         WHERE SUBSTR(PLAN_DATE, 1, 6) = #{yyyyMM}
+      )
+      AND PLAN_KINDS = 'C'
+   </select>   
+   
+   <!-- 운동기록 눌렀을 때 나오는 요일에 따른 운동플랜 -->
+   <select id="selectTodayPlan" parameterType="planDto" resultMap="planmap">
+      SELECT PLAN_NO, PLAN_DATE, ID, PLAN_CATEGORY, EXERCISE_NAME, PLAN_COUNT, PLAN_TIME, PLAN_DAYOFWEEK, PLAN_KINDS
+         FROM MENTEE_EXERCISE_PLAN
+         WHERE ID = #{id} 
+         AND PLAN_DAYOFWEEK IN #{planDayofweek}
+         AND PLAN_KINDS = 'P' 
+   </select>
+
+   <!-- 완료 체크 시 저장 (저장된 정보 없을 때 insert) -->
+     <insert id="insertPlanC" parameterType="planDto">
+        MERGE INTO MENTEE_EXERCISE_PLAN P
+      USING DUAL
+      ON   (P.PLAN_DATE = #{planDate}
+         AND P.ID = #{id}
+         AND P.PLAN_CATEGORY = #{planCategory}
+         AND P.EXERCISE_NAME = #{exerciseName}
+         AND P.PLAN_COUNT = #{planCount}
+         AND P.PLAN_TIME = #{planTime}
+         AND P.PLAN_DAYOFWEEK = #{planDayofweek}
+         AND P.PLAN_KINDS = 'C'
+         )
+      WHEN NOT MATCHED THEN
+      INSERT (P.PLAN_NO, P.PLAN_DATE, P.ID, P.PLAN_CATEGORY, P.EXERCISE_NAME, P.PLAN_COUNT, P.PLAN_TIME, P.PLAN_DAYOFWEEK, P.PLAN_KINDS) 
+      VALUES (
+            MENTEE_EXERCISE_PLAN_SEQ.NEXTVAL,
+           #{planDate},
+           #{id},
+           #{planCategory},
+           #{exerciseName},
+            #{planCount},
+           #{planTime},
+           #{planDayofweek},
+           'C'
+         )
+      </insert>
+     
+        <!-- 수행한 운동 기록 -->
+      <select id="selectPlanC" parameterType="planDto" resultMap="planmap">
+         SELECT PLAN_NO, PLAN_DATE, ID, PLAN_CATEGORY, EXERCISE_NAME, PLAN_COUNT, PLAN_TIME, PLAN_DAYOFWEEK, PLAN_KINDS
+            FROM MENTEE_EXERCISE_PLAN
+            WHERE ID = #{id} 
+            AND PLAN_DATE IN #{planDate}
+            AND PLAN_KINDS = 'C' 
+      </select>
+      
+      <!--운동 수행 기록 삭제-->
+      <delete id="deletePlanC" parameterType="planDto">
+         DELETE FROM MENTEE_EXERCISE_PLAN
+         WHERE ID = #{id}
+         AND PLAN_DATE IN #{planDate}
+            AND PLAN_KINDS = 'C'
+      </delete>
+      
+   <insert id="insertPlan" parameterType="planDto">
+      INSERT INTO MENTEE_EXERCISE_PLAN
+      VALUES(
+         MENTEE_EXERCISE_PLAN_SEQ.NEXTVAL,
+         #{planDate},
+         #{id},  
+         #{planCategory},
+         #{exerciseName},
+         #{planCount},
+         #{planTime},
+         #{planDayofweek},
+         #{planKinds}
+      )
+   </insert>
+   
+   <delete id="deletePlan" parameterType="planDto">
+      DELETE 
+      FROM MENTEE_EXERCISE_PLAN
+      WHERE ID =  #{id} AND
+            PLAN_CATEGORY = #{planCategory} AND
+            EXERCISE_NAME = #{exerciseName} AND
+            PLAN_COUNT =  #{planCount} AND
+            PLAN_TIME = #{planTime} AND
+            PLAN_DAYOFWEEK = #{planDayofweek} AND
+            PLAN_KINDS = #{planKinds}      
+   </delete>
+
+</mapper>

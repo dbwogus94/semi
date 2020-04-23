@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.Trade">
+
+   <resultMap type="TradeDto" id="trademap">
+      <result property="tradeNo" column="TRADE_NO"/>
+      <result property="tradeType" column="TRADE_TYPE"/>
+      <result property="id" column="ID"/>
+      <result property="tradeName" column="TRADE_NAME"/>
+      <result property="tradeBankname" column="TRADE_BANKNAME"/>
+      <result property="tradeBanknum" column="TRADE_BANKNUM"/>
+      <result property="tradeDate" column="TRADE_DATE"/>
+      <result property="tradePrice" column="TRADE_PRICE"/>
+      <result property="tradeSuccessCode" column="TRADE_SUCCESS_CODE"/>
+   </resultMap>
+   
+   <!-- 멘티 결제 완료  -->
+   <insert id="insertTradePay" parameterType="hashmap">
+      INSERT INTO MEMBER_TRADE
+      VALUES (
+         MEMBER_TRADE_SEQ.NEXTVAL,
+         #{type},
+         #{id},
+         NULL,
+         NULL,
+         NULL,
+         SYSDATE,
+         2000,
+         #{impUid}
+      )
+   </insert>
+   
+   <!-- 해당 멘토의 수익 리스트 -->
+   <select id = "selectList_oneMentor" resultMap = "trademap">
+    SELECT * FROM MEMBER_TRADE
+	WHERE TRADE_TYPE = '입금'
+	AND TRADE_SUCCESS_CODE 
+	IN (SELECT TRADE_SUCCESS_CODE FROM MEMBER_TRADE WHERE ID = #{id})
+   </select>
+   
+   <!-- 관리자에서 해당 멘티의 결제내역 리스트 -->
+   <select id = "selectList_oneMenteeAM" resultMap = "trademap">
+   		SELECT * FROM (SELECT * FROM MEMBER_TRADE WHERE (SELECT TRADE_SUCCESS_CODE FROM MEMBER_TRADE WHERE ID = #{id})
+		IN (SELECT TRADE_SUCCESS_CODE FROM MEMBER_TRADE WHERE TRADE_TYPE = '출금')) WHERE TRADE_TYPE = '출금'
+   </select>
+   
+   <!-- 멘토 수익관련 페이징 -->
+   <select id = "selectPagingList_oneMentor" parameterType = "map" resultMap = "trademap">
+   		SELECT * FROM 
+   		(SELECT V.*, ROWNUM AS RNUM FROM
+   		(SELECT * FROM
+   		(SELECT * FROM MEMBER_TRADE WHERE ID = #{id} ORDER BY TRADE_NO DESC))V)
+   		WHERE RNUM BETWEEN #{cPage} AND #{numPerPage}
+   </select>
+</mapper>

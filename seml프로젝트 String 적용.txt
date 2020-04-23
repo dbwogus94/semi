@@ -1,0 +1,136 @@
+SEMI >> spring 프레임 워크 적용하기 
+
+# 원래 프로젝트는 jsp를 순수 자바코드(<%%>)를 사용하였지만 el / jstl을 연습하기 위해 혼합함.
+
+1. Spring Legacy project 생성
+
+# 자바, spring, Servlet, jsp, maven 버전 올리기
+2. pom.xml
+	java 1.6 -> 1.8
+	springframework-version 3.1.1.RELEASE >> 5.2.3.RELEASE
+	Servlet-api  2.5(servlet-api) -> 4.0.1(javax.servle-api)
+	jsp-api   -> 2.3.3(javax.servle.jsp-api)
+	maven-compiler-plugin (source/target) -> 1.8
+
+3. web.xml: 4.0(프로잭트를 새로 dynamic web project로 생성하여 생성 할 때  web module 4.0으로 하여 그 프로젝트의 web.xml의 <web-app>태그 복사, 복사 붙여넣기)
+	
+	<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+		xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" 
+			id="WebApp_ID" version="4.0">
+			
+4. 프로젝트에서 오른쪽 클릭 >> [propertise] >> [preject Facets] >> 자바 버전 1.6 / web.xml(Dynamic Web Module) 버전 4.0	으로 변경 저장	
+
+5. maven update	
+
+
+
+# pom.xml - Dependency 추가(라이브러리 추가)
+6. <dependency>추가 	// 처음은 사용하던것 그대로 이식하였다.
+	
+	1) 메일전송관련 라이브러리
+		javax.activation(1.2.0)
+		javax.mail(1.5.5)
+		javax.mail-api(1.5.5)
+
+	2) 아파치사 자바 확장 라이브러리
+		commons-beanutils(1.9.4)
+		commons-collections(3.2.2)
+		commons-lang(2.6)
+		commons-logging(1.2)
+
+	3) 파일 업로드 관련 라이브러리
+		cos(05Nov2002)
+
+	4) json 관련 라이브러리
+		ezmorph(1.0.6)
+		json-lib(2.4)
+		json-simple(1.1.1)
+		
+	5) 오라클 DB관련 라이브러리
+		mybatis(3.5.4)
+		mybatis-spring(2.0.3)
+		org.springframework.spring-orm(스프링 버전과 동일)	// MyBatis가 해당 기능을 해주는것으로 Dto를 테이블 칼럼과 일치 시키면 자동 매핑되게 해주는 기능을 수행한다.
+		commons-dbcp.commons-dbcp(1.4)		// 데이터베이스 커넥션 풀
+		ojdbc6(11.2.0.3)
+		+ repositories 추가 : oracle사에서 정식으로 dependency를 주고 있지 않기 때문에 외부 저장소를 직접 지정해서 가져와야 한다.
+			<repositories>
+    			    <repository>
+    			        <id>datanucleus</id>
+    		  	        <url>http://www.datanucleus.org/downloads/maven2/</url>
+    			    </repository>
+   			 </repositories>	
+		
+
+# web.xml 설정 
+	
+7. web.xml : 
+	1) 전역설정 IoC 컨테이너 경로, 이름 변경 => applicationContext.xml(파일 경로 변경. 파일 이름 변경),
+	2) servlet-mapping( ' / ' => ' *.do '로 변경), 
+	3) encoding filter(인코딩 필터 적용)
+	4) logFilter (로그 필터 적용 >>> 아직 해당 클래스 만들지 않았음)	 
+
+
+# sql 파일 추가
+8. /WEB-INF/spring/sqls/ 경로에 .spl 파일 추가 
+
+# mvc관련 패키지 추가
+9. <context:component-scan base-package="com.semi.update" />
+	으로 관리되는 패키지에 dto, dao, biz, controller 패키지 추가
+ 	클래스 추가 이후 DI/IoC Annotation추가
+	=======================================
+	# 패키지 경로 구조  
+	com.semi.update.All.
+		.join		- 테이블 join dto
+		.Exercise.java	- 운동계산용 클래스(Exercise.java)
+		.Util.java		- 유틸 클래스(Util.java)
+		.mali		- mail SMTP클래스
+	com.semi.update.join
+		.join(로그인, 회원가입)
+	com.semi.update.member
+		.board
+		.match
+		.mentee.dayMenu
+		.mentee.exercise.plan
+		.mentee.exercise.total
+		.mentee.food
+		.profile
+		.trade
+	=======================================
+# mybatis에 사용될 xml파일 추가 
+10. src/main/resources/mybatis/*#{메퍼이름}-mapper.xml		// 각각 테이블당 메퍼 따로 추가 >>> 9개 추가
+		1) 각각의 메퍼 네임스페이스 변경 
+			<mapper namespace="com.semi.update.#{메퍼이름}">  		
+
+11. src/main/resources/mybatis/db.properties		
+
+12. src/main/webapp/WEB-INF/spring/sqls/semi-config.xml	// 1개 통합사용
+		1) 각각 dto 추가 
+		2) 메퍼추가 				// 20/03/03 진행중
+		 
+13. applicationContext.xml에 mybatis 자동화 : 
+		1) PropertyPlaceholderConfigurer를 이용해 
+			외부프로퍼티(db.properties)를 참조할 수 있게 적용
+			
+		2) 참조한 db.properties를 읽어 
+			BasicDataSource(데이터 베이스 커넥션 풀객체) Bean추가
+			
+		3) mybatis의 SqlSession을 인스턴스화 하기위한 객체
+			SqlSessionFactoryBean Bean추가
+			(위의 BasicDataSourc와 config.xml파일을 속성으로 사용한다)
+			
+		4) SqlSessionTemplate Bean추가 
+			Session객체의 사용편의성을 위해 사용한다(자동 오픈 클로즈 지원)
+		
+14. 프로그램 흐름에 맞추어 뷰와 + mvc(dao, biz, controller)생성 적용
+	20/03/04 
+	: 메인에 필요한 veiw(css+js+img)와 join 패키지 controller 진행중
+	
+	20/03/05
+	: 1) 정적자원 처리완료
+	  2) 로그인, 회원가입 연결 및 수정중 
+	  3) 예외처리 클래스 생성중(dao 예외 발생시 하나의 페이지로 연결 등등 에러 페이지 전환) 	
+
+
+
+
++ 향후 aop+트렌젝션, 로그필터, 인터셉터 예정

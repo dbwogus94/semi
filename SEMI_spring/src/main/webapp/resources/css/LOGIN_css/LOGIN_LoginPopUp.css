@@ -1,0 +1,225 @@
+@charset "utf-8";
+
+
+/*common*/
+* {margin:0; padding:0;}
+body{font-size: 14px; color: #000;}
+a{text-decoration: none; color: #000; outline:0;}
+ol,ul{list-style: none;}
+img,input{vertical-align: middle;}
+img{max-width: 98%; border:0; margin-left: 1%;}
+/*layout*/
+header{width:100%;height: 50px; background: #000;}
+
+header>h1{float:left; font-size: 30px; font-weight: bold; color:#000;
+   text-align: left; margin:0;}
+#logo>img{float:left; width:100px; height:50px; padding-left:5px;}
+#untoti{color: #fff;}
+
+.container {
+  display: inline-block;
+  cursor: pointer;
+  float: right;
+  padding:7px;
+}
+
+.bar1, .bar2, .bar3 {
+  width: 35px;
+  height: 5px;
+  background-color: #fff;
+  margin: 6px 0;
+  transition: 0.4s;
+  border-radius: 2px;
+}
+
+.change .bar1 {
+  -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+  transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.change .bar2 {opacity: 0;}
+
+.change .bar3 {
+  -webkit-transform: rotate(45deg) translate(-8px, -8px);
+  transform: rotate(45deg) translate(-8px, -8px);
+}
+
+
+/*******************************************mobile*/
+@media screen and (max-width:767px) {
+	
+	#join_container {
+	text-align: center;
+	width: 100%;
+}
+
+#main_container {
+	text-align: center;
+	width: 80%;
+	height: auto;
+	margin:10%;
+}
+
+
+
+	footer{
+	width: 100%;
+	height: 50px;
+	background-color: #000;
+	color: #f2f2f2;
+	text-align: center;
+	padding-top: 10px;
+	position: relative;
+	top: 20px;
+}
+}
+
+/*******************************************tablet*/
+@media screen and (min-width:768px) and (max-width:1049px) {
+	#join_container {
+	text-align: center;
+	width: 100%;
+}
+
+#main_container {
+	text-align: center;
+	width: 50%;
+	height: auto;
+	margin-left: 25%;
+	margin-top: 5%;
+	margin-bottom: 5%;
+}
+
+
+
+footer{
+	width: 100%;
+	height: 80px;
+	background-color: #000;
+	color: #f2f2f2;
+	text-align: center;
+	padding-top: 10px;
+}
+	
+}
+
+/*******************************************pc****/
+@media screen and (min-width:1050px){
+	#main_container {
+	text-align: center;
+	width: 30%;
+	height: auto;
+	margin-left: 35%;
+	margin-top: 5%;
+	margin-bottom: 5%;
+}
+	
+
+#join_container {
+	text-align: center;
+	width: 100%;
+	height: 670px;
+	
+}
+
+footer{
+	width: 100%;
+	height: 100px;
+	background-color: #000;
+	color: #f2f2f2;
+	text-align: center;
+	padding-top: 10px;
+}
+#chk{
+	margin-bottom: 20px;
+}
+
+	
+}
+
+
+input[type="text"] {
+	border:none;
+	background: none;
+	width: 80%;
+	height: 40px;
+	border-bottom:2px solid #000;
+}
+
+input[type="password"] {
+	border:none;
+	background: none;
+	width: 80%;
+	height: 40px;
+	border-bottom:2px solid #000;
+}
+
+.input_text {
+	size: 40;
+	border: 0 solid black;
+	width: 250px;
+	font-size: 16px;
+	margin-top: 10px;
+}
+
+.span_text {
+	font-size: 9pt;
+	text-align: center;
+	margin-top: -20px;
+}
+
+button {
+	border: none;
+	background:none;
+	color: #000;
+	border-bottom:2px solid #000;
+	text-align: center;
+	display: inline-block;
+	font-size: 15px;
+	cursor: pointer;
+	width: 320px;
+	height: 40px;
+	margin-bottom: 30px;
+	font-weight: bold;
+}
+
+.input_button{
+	background:none;
+	color: #000;
+	border:2px solid #000;
+	text-align: center;
+	display: inline-block;
+	font-size: 15px;
+	cursor: pointer;
+	width: 80%;
+	height: 40px;
+	font-weight: bold;
+	margin-bottom: 30px;
+}
+
+#kakao{
+	border:none;
+	background: #f7e317;
+}
+
+
+#google{
+	border:none;
+	background-color: #4285f4;
+	text-align: center;
+}
+
+button img{
+	width:8%;
+	height: auto;
+	position: relative;
+	left:0px;
+	
+}
+
+
+/* 유효성 검사 결과 */
+.check_res {
+	color: red;
+	font-size: 12px;
+}

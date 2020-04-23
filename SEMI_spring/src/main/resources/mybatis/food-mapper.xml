@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.Food">
+	
+	<resultMap type="foodDto" id="foodResultMap">
+		<result property="foodNo" column="FOOD_NO"/>
+		<result property="foodName" column="FOOD_NAME"/>
+		<result property="foodGram" column="FOOD_GRAM"/>
+		<result property="foodCar" column="FOOD_CAR"/>
+		<result property="foodPro" column="FOOD_PRO"/>
+		<result property="foodFat" column="FOOD_FAT"/>
+		<result property="foodCalorie" column="FOOD_CALORIE"/>
+	</resultMap>
+	
+	<select id="selectList_food" resultMap="foodResultMap">
+		SELECT FOOD_NO, FOOD_NAME, FOOD_GRAM, FOOD_CAR,
+				FOOD_PRO, FOOD_FAT, FOOD_CALORIE
+		FROM FOOD
+	</select>
+	
+	<select id="selectList_foodName" resultType="String">
+		SELECT FOOD_NAME
+		FROM FOOD
+	</select>
+	
+	<select id="selectOne_food" resultMap="foodResultMap">
+		SELECT FOOD_NO, FOOD_NAME, FOOD_GRAM, FOOD_CAR,
+				FOOD_PRO, FOOD_FAT, FOOD_CALORIE
+		FROM FOOD
+		WHERE FOOD_NAME = #{foodName}
+	</select>
+</mapper>
