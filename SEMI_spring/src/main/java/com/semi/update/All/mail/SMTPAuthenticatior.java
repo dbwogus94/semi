@@ -11,7 +11,4 @@ public class SMTPAuthenticatior extends Authenticator {
 
 
 
-
-
-
 }

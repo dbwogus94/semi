@@ -132,5 +132,35 @@ SEMI >> spring 프레임 워크 적용하기
 
 
 
+// 2020-04-23
 
-+ 향후 aop+트렌젝션, 로그필터, 인터셉터 예정
+15. filter
+	1) common.LogFilter.java 클래스 생성
+		>>> url, queryString, contextType 
+	2) web.xml에 생성한 클래스 로그필터에 적용
+
+
+16. logger(log4j)
+	1) <!-- Application Loggers -->  출력 레벨 DEBUG로 변경
+	2) <logger name="org.ibatis"> , <logger name="java.sql">  출력 레벨 info로 추가
+	3) <root>태그 출력 레벨 info로 변경 
+	  
+17. LogAop
+	1) common.aop.LogAop.Java 클래스 생성
+	2)  AspectJ에서 지원하는 @Around적용
+	3) servlet-context.xml에 AspectJ가 자동으로 Porxy객체를 생성하게 해주는 <aop:aspectj-autoproxy /> 태그 추가 
+
+
+
+
+
+18. insert, update, delete 트렌젝션 
+
+
+19. 인터셉터
+
+
+20. 에러 핸들러
+
+
+

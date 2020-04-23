@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.semi</groupId>
-	<artifactId>update</artifactId>
-	<name>SEMI_spring</name>
+	<groupId>com.job</groupId>
+	<artifactId>coverletter</artifactId>
+	<name>final_coverletter</name>
 	<packaging>war</packaging>
 	<version>1.0.0-BUILD-SNAPSHOT</version>
 	<properties>
@@ -24,7 +25,7 @@
 				<exclusion>
 					<groupId>commons-logging</groupId>
 					<artifactId>commons-logging</artifactId>
-				 </exclusion>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -32,14 +33,31 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-				
-		<!-- AspectJ -->
+
+		<!-- AspectJ : 기본 Aop사용 설정 -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
-		</dependency>	
-		
+		</dependency>
+
+
+		<!-- AspectJ Weaver :"AspectJ Weaver"는 aspect의 정보를 바탕으로 aspect를 구성한 코드를 
+			생성하는데 필요한 유틸리티 프로그램 -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+
+		<!-- AspectJ tools : 런타임 프로그램 -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjtools</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -89,17 +107,17 @@
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
 		</dependency>
-				
+
 		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId> 	<!-- 명칭 확인 -->
 			<version>4.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>javax.servlet.jsp-api</artifactId>
+			<artifactId>javax.servlet.jsp-api</artifactId> 	<!-- 명칭 확인 -->
 			<version>2.3.3</version>
 			<scope>provided</scope>
 		</dependency>
@@ -108,193 +126,309 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-	
+
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.7</version>
 			<scope>test</scope>
-		</dependency>        
-	
-	
+		</dependency>
+
+
 		<!-- 추가 -->
-		
-	<!-- 메일 전송관련 라이브러리 -->
+
+		<!-- 메일 전송관련 라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/com.sun.activation/javax.activation -->
 		<dependency>
-		    <groupId>com.sun.activation</groupId>
-		    <artifactId>javax.activation</artifactId>
-		    <version>1.2.0</version>
+			<groupId>com.sun.activation</groupId>
+			<artifactId>javax.activation</artifactId>
+			<version>1.2.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
 		<dependency>
-		    <groupId>com.sun.mail</groupId>
-		    <artifactId>javax.mail</artifactId>
-		    <version>1.5.5</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.5.5</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
 		<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>javax.mail-api</artifactId>
-		    <version>1.5.5</version>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.5</version>
 		</dependency>
-		
-		
-	<!-- commons 아바치 사의 자바 확장 라이브러리 -->
+
+
+		<!-- commons 아바치 사의 자바 확장 라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
 		<dependency>
-		    <groupId>commons-beanutils</groupId>
-		    <artifactId>commons-beanutils</artifactId>
-		    <version>1.9.4</version>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.4</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/commons-collections/commons-collections -->
 		<dependency>
-		    <groupId>commons-collections</groupId>
-		    <artifactId>commons-collections</artifactId>
-		    <version>3.2.2</version>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.2</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
 		<dependency>
-		    <groupId>commons-lang</groupId>
-		    <artifactId>commons-lang</artifactId>
-		    <version>2.6</version>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
 		<dependency>
-		    <groupId>commons-logging</groupId>
-		    <artifactId>commons-logging</artifactId>
-		    <version>1.2</version>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
 		</dependency>
-		
-		
-		<!-- 파일 업로드 다운로드 라이브러리 -->
+
+		<!-- 파일 업로드 다운로드 라이브러리  >> 다른것으로 바꿈 -->
 		<!-- https://mvnrepository.com/artifact/servlets.com/cos -->
-		<dependency>
-		    <groupId>servlets.com</groupId>
-		    <artifactId>cos</artifactId>
-		    <version>05Nov2002</version>
-		</dependency>
-		
+<!-- 		<dependency> -->
+<!-- 			<groupId>servlets.com</groupId> -->
+<!-- 			<artifactId>cos</artifactId> -->
+<!-- 			<version>05Nov2002</version> -->
+<!-- 		</dependency> -->
 		
 		<!-- json 관련 라이브러리 -->
 		<!-- https://mvnrepository.com/artifact/net.sf.ezmorph/ezmorph -->
 		<dependency>
-		    <groupId>net.sf.ezmorph</groupId>
-		    <artifactId>ezmorph</artifactId>
-		    <version>1.0.6</version>
+			<groupId>net.sf.ezmorph</groupId>
+			<artifactId>ezmorph</artifactId>
+			<version>1.0.6</version>
 		</dependency>
-		
-		
+
+
 		<!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib -->
 		<dependency>
-		    <groupId>net.sf.json-lib</groupId>
-		    <artifactId>json-lib</artifactId>
-		    <version>2.4</version>
-		    <classifier>jdk15</classifier>		<!-- json-lib는 해당 classifier태그를 넣어주어야 한다. -->
-		    									<!-- 동일한 POM으로 작성된 내용이 다른 아티팩트 구분을 위해 사용 -->
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>		<!-- json-lib는 해당 classifier태그를 넣어주어야 한다. -->
+			<!-- 동일한 POM으로 작성된 내용이 다른 아티팩트 구분을 위해 사용 -->
 		</dependency>
-		
-		
+
+
 		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+		<!-- JSON -->
 		<dependency>
-		    <groupId>com.googlecode.json-simple</groupId>
-		    <artifactId>json-simple</artifactId>
-		    <version>1.1.1</version>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib-ext-spring</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+
+			<!-- 4버전부터 사용불가 -->	
+ 			<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl --> 
+<!-- 		<dependency> -->
+<!-- 		    <groupId>org.codehaus.jackson</groupId> -->
+<!-- 		    <artifactId>jackson-core-asl</artifactId> -->
+<!-- 		    <version>1.9.13</version> -->
+<!-- 		</dependency> -->
+		
+		
+			<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl --> 
+<!-- 		<dependency> -->
+<!-- 		    <groupId>org.codehaus.jackson</groupId> -->
+<!-- 		    <artifactId>jackson-mapper-asl</artifactId> -->
+<!-- 		    <version>1.9.13</version> -->
+<!-- 		</dependency> -->
+	
+	<!-- 4.x.x 버전부터 해당 jackson 사용 -->
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.10.3</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.10.3</version>
 		</dependency>
 		
 		
-		<!-- DB관련 라이브러리 : mybatis, ojdbc6 -->
+	   <!-- 유효성검사 어노테이션 : "https://otrodevym.tistory.com/entry/Spring-%EC%9C%A0%ED%9A%A8%EC%84%B1-%EA%B2%80%EC%82%AC" 참고  -->		
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.1.Final</version>
+		</dependency>
+
+ 		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api --> 
+		<dependency>
+		    <groupId>javax.validation</groupId>
+		    <artifactId>validation-api</artifactId>
+		    <version>2.0.1.Final</version>
+		</dependency>		
 		
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator-annotation-processor</artifactId>
+		    <version>5.2.1.Final</version>
+		</dependency>
+		
+
+		<!-- file upload lib -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+
+		<!-- Spring Integration module(message) : send to simple data in Spring 
+			Framework Program -->
+		<!-- [ref] https://www.slideshare.net/WangeunLee/spring-integration-47185594 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+
+
+
+		<!-- DB관련 라이브러리 : mybatis, spring-orm, dbcp, spring-jdbc ,ojdbc6, mariaDB -->
+		<!-- 오라클만 사용시 : mybatis, spring-orm, dbcp, ojdbc6 -->
+		<!-- maria만사용시 : mybatis, spring-orm, dbcp, spring-jdbc, mariaDB -->
+
+
 		<!-- org.mybatis.mybatis -->
-	    <dependency>
-		    <groupId>org.mybatis</groupId>
-		    <artifactId>mybatis</artifactId>
-	    	<version>3.5.4</version>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.5.4</version>
 		</dependency>
-		
+
 		<!-- org.mybatis.mybatis-spring -->
 		<dependency>
-		    <groupId>org.mybatis</groupId>
-		    <artifactId>mybatis-spring</artifactId>
-		    <version>2.0.3</version>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>2.0.3</version>
 		</dependency>
-		
-		
+
+
 		<!-- MyBatis가 해당 기능을 해주는것으로 Dto를 테이블 칼럼과 일치 시키면 자동 매핑되게 해주는 기능을 수행한다. -->
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-orm</artifactId>
-		    <version>${org.springframework-version}</version>  
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${org.springframework-version}</version>
 		</dependency>
-		
-		
-		<!-- commons-dbcp.commons-dbcp : 데이터베이스 커넥션풀-->
+
+
+		<!-- commons-dbcp.commons-dbcp : 데이터베이스 커넥션풀 -->
 		<!-- dbcp : database connection pool -->
 		<dependency>
-		    <groupId>commons-dbcp</groupId>
-		    <artifactId>commons-dbcp</artifactId>
-		    <version>1.4</version>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
 		</dependency>
-		
+
+
+		<!-- Spring JDBC -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>4.3.9.RELEASE</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
+		<!-- Maria DB -->
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<version>2.5.4</version>
+		</dependency>
+
+
 		<!-- oracle.ojdbc6 -->
 		<dependency>
-		    <groupId>oracle</groupId>
-		    <artifactId>ojdbc6</artifactId>
-		    <version>11.2.0.3</version>
+			<groupId>oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
 		</dependency>
 	
+		<!-- Elasticsearch 템플릿  고수준방식-->
+		<dependency>
+	    <groupId>org.elasticsearch.client</groupId>
+		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
+		    <version>7.6.1</version>
+		</dependency>
+
+
 	</dependencies>
-	
+
 	<!-- repositories : oracle.ojdbc6를 사용하기 위해 넣는것 해당 위치의 저장소에서 소스를 가져온다. -->
-    <repositories>
-    	<repository>
-    		<id>datanucleus</id>
-    		<url>http://www.datanucleus.org/downloads/maven2/</url>
-    	</repository>
-    </repositories>
-  
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <additionalProjectnatures>
-                        <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
-                    </additionalProjectnatures>
-                    <additionalBuildcommands>
-                        <buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
-                    </additionalBuildcommands>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>true</downloadJavadocs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <compilerArgument>-Xlint:all</compilerArgument>
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <configuration>
-                    <mainClass>org.test.int1.Main</mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
+	<repositories>
+		<repository>
+			<id>datanucleus</id>
+			<url>http://www.datanucleus.org/downloads/maven2/</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<additionalProjectnatures>
+						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+					</additionalProjectnatures>
+					<additionalBuildcommands>
+						<buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+					</additionalBuildcommands>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<compilerArgument>-Xlint:all</compilerArgument>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<mainClass>org.test.int1.Main</mainClass>
+				</configuration>
+			</plugin>
+		 </plugins>
     </build>
+   
 </project>
