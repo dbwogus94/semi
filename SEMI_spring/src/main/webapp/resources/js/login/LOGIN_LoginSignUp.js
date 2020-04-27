@@ -43,7 +43,7 @@
 				
 				} else {  		// DB에서 아이디 중복검사 
 					$.ajax({
-						url:"../join/idCheck.do", 
+						url:"idCheck.do", 
 						type:"post",
 						async: true,
 						data:{
@@ -108,7 +108,7 @@
 	
 	// 이메일 인증 팝업
 	function emailChkConfirm() {
-		window.open("../join/emailCheckPopUp.do","","width=500px,height=500px");
+		window.open("emailCheckPopUp.do","","width=500px,height=500px");
 		chk2 = true;
 	}
 	
@@ -153,11 +153,11 @@
 	
 	//카카오 회워가입 페이지
 	function kakaoSignUp() {
-		location.href="../join/kakaoSingUp.do";		
+		location.href="kakaoSingUp.do";		
 	}
 	// 구글 회원가입 페이지
 	function googleSignUp() {
-		location.href="../join/googleSingUp.do";
+		location.href="googleSingUp.do";
 	}
 	
 	 function myFunction(x) {

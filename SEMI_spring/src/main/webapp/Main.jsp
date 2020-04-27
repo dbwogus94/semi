@@ -35,7 +35,7 @@
 <h2>혼자하기<span id="effect1"> 힘든</span> <span id="next">운동</span></h2>
 <h2><span id="effect1">멘토</span><span id="next">와 함께하세요!</span></h2>
 
-<button onclick="location.href='loginPopUp.do'"><span>로그인</span></button><button onclick="location.href='loginSignUp.do'"><span>회원가입</span></button>
+<button onclick="location.href='join/loginPopUp.do'"><span>로그인</span></button><button onclick="location.href='join/loginSignUp.do'"><span>회원가입</span></button>
 
 </div>
 </section>

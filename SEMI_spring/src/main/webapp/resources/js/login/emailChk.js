@@ -1,21 +1,14 @@
 /*부모 veiw에게 값 전달*/
+
 function EmailChk() {
 	console.log(opener.window.document.getElementsByName("joinEmail")[0]);
 	opener.window.document.getElementsByName("joinEmail")[0].value = document
 			.getElementById("EmailID").value;
 	window.close();
 }
-function EmailChk2(RandomNumber) {
-	if (RandomNumber == document.getElementById("EmailCode").value) {
-		alert("인증되었습니다.");
-		$("#chk").show();
-		$("#chk2").hide();
-		$("#EmailCode").hide();
-	} else if (RandomNumber != document.getElementById("EmailCode").value) {
-		alert("인증번호를 확인하시오.");
-	}
-}
-function validate() {
+
+// 이메일 유효성검사
+function emailValidate() {
 	var re2 = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 	var email = document.getElementById("emailCheck");
 	if (email.value == "") {
@@ -28,27 +21,80 @@ function validate() {
 		return false;
 	} else {
 		$.ajax({
-			url:"../join/emailCheck.do",
-			type:"post",
-			async: true,
-			data:{
-				email:email.value
+			url : "emailCheck.do",
+			type : "post",
+			async : true,
+			data : {
+				email : email.value
 			},
-			dataType:"text",
-			success: function(res){
-				if(res === "fail"){
+			dataType : "text",
+			success : function(res) {
+				if (res === "fail") {
 					alert("이메일이 중복되었습니다.");
 					return false;
-				} else if(res == "ok"){
+				} else if (res == "ok") {
 					alert("사용가능한 이메일 입니다.");
 					$("#feildeID").show();
 					document.getElementById("EmailID").value = document
 							.getElementById("emailCheck").value;
 				}
 			},
-			error: function(){
+			error : function() {
 				alert("통신 실패");
 			}
 		})
 	}
 }
+
+	// 인증번호 전송
+	function Emailsend() {
+		var joinemail = document.getElementById("emailCheck")
+		joinemail = {
+			joinemail : joinemail.value
+		}
+		$.ajax({
+			url : "mailSend.do",
+			type : "post",
+			async : true,
+			data : joinemail,
+			dataType : "text",
+			success : function(res) {
+				if (res == "succ") {
+					alert("인증번호 전송 완료")
+				} else {
+					alert("인증번호 전송 실패 다시 시도 해주세요")
+				}
+			},
+			error : function() {
+				alert("통신 실패");
+			}
+		});
+	}
+
+	// 인증번호 확인
+	function validateCode() {
+		var code = document.getElementById("EmailCode")
+		code = {
+			code : code.value
+		}
+		$.ajax({
+			url : "validate.do",
+			type : "post",
+			data : code,
+			dataType : "text",
+			success : function(res) {
+				if (res == "succ") {
+					alert("인증되었습니다.");
+					$("#chk").show();
+					$("#chk2").hide();
+					$("#EmailCode").hide();
+				} else {
+					alert("인증번호가 틀렸습니다.");
+				}
+			},
+			error : function() {
+				alert("통신실패")
+			}
+		})
+	}
+

@@ -40,7 +40,22 @@
 	<aop:aspectj-autoproxy />
 	<!-- 자동으로 AspectJ 라이브러리를 통해 Porxy객체를 생성한다 -->
 	
+	<!-- #19 interceptor -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/*"/> <!-- 어떤 경로로 들어왔을때 실행할지 메핑 -->
+			<beans:bean class="com.semi.update.common.interceptor.LoginInterceptor"/>
+			<!-- 어떤 interceptor 클래스를 사용할지 -->
+		</interceptor>
+	</interceptors>
 	
 	
+	<!-- 클래스로 만든 메일 인증 부분  -->
+   <beans:bean id="SMTPDto" class="com.semi.update.All.mail.SMTPDto">
+      <beans:property name="host" value="smtp.naver.com" />
+      <beans:property name="password" value="igs10261026"/>
+      <beans:property name="tail" value='@naver.com'/>
+      <beans:property name="user" value='igs99275'/>
+   </beans:bean>
 	
 </beans:beans>

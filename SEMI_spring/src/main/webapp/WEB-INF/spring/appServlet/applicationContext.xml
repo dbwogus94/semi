@@ -63,7 +63,18 @@
 		<constructor-arg ref="sqlSessionFactory"/>
 	</bean>
 	
-	<!-- 전역 예외처리 패키지 -->
-	<context:component-scan base-package="com.semi.update.All.exception" />
+	<!-- #18 -->
+	<!-- 트랜잭션 처리와 관련된 매니저 객체 설정 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- 트랜잭션 처리 방식 -->
+	<!-- 프로그래밍적 방식은 여러 메소드나 클래스에 대해서 다중으로 선언하며, 
+	데이터를 관리하는 측면에서 어떤 트랜잭션 속성이 적용되었는지 찾기 힘들기 때문에 일반적으로 선언적 방식을 선오한다.-->
+	
+	<!-- 선언적(XML) 방식 -->
+	
+  
 		
 </beans>

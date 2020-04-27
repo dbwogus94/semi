@@ -132,8 +132,7 @@ SEMI >> spring 프레임 워크 적용하기
 
 
 
-// 2020-04-23
-
+// 2020-04-23 진행
 15. filter
 	1) common.LogFilter.java 클래스 생성
 		>>> url, queryString, contextType 
@@ -150,12 +149,9 @@ SEMI >> spring 프레임 워크 적용하기
 	2)  AspectJ에서 지원하는 @Around적용
 	3) servlet-context.xml에 AspectJ가 자동으로 Porxy객체를 생성하게 해주는 <aop:aspectj-autoproxy /> 태그 추가 
 
-
-
-
-
+// 2020-04-26 진행 
 18. insert, update, delete 트렌젝션 
-
+미완)
 
 19. 인터셉터
 

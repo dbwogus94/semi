@@ -12,18 +12,18 @@
 <meta name="viewport"
 	content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
 
-<link rel="stylesheet" href="../resources/css/LOGIN_css/LOGIN_LoginPopUp.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/login/LOGIN_LoginPopUp.css">
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 <script src="https://apis.google.com/js/platform.js" async defer></script>
-<script type="text/javascript" src="<c:url value="../resources/js/jquery-3.4.1.js"/>"></script>
-<script type="text/javascript" src="../resources/js/login/LOGIN_LoginPopUp.js"></script>
+<script type="text/javascript" src="<c:url value="${pageContext.request.contextPath}/resources/js/jquery-3.4.1.js"/>"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/login/LOGIN_LoginPopUp.js"></script>
 
 <title>Login</title>
 </head>
 <body>
 	<header>
 		<div id="logo">
-			<img src="../resources/images/main/logo_white.png" onclick="location.href='join.do?command=main'"/>
+			<img src="${pageContext.request.contextPath}/resources/images/logo_white.png" onclick="location.href='main.do'"/>
 		</div>
 		<h1 id="untoti">운토티</h1>
 		<div class="container" onclick="myFunction(this)">
@@ -41,32 +41,35 @@
 			<button onclick="" name="" data-width="320" data-height="40"
 				class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"
 				id="google">
-				<img alt="" src="../resources/images/login/google.png">&nbsp;&nbsp;&nbsp;&nbsp;google
+				<img alt="" src="${pageContext.request.contextPath}/resources/images/google.png">&nbsp;&nbsp;&nbsp;&nbsp;google
 				로그인
 			</button>
 			<button onclick="kakaoLogin();" id="kakao">
-				<img alt="" src="../resources/images/login/kakao2.png">&nbsp;&nbsp;&nbsp;&nbsp;카카오
+				<img alt="" src="${pageContext.request.contextPath}/resources/images/kakao2.png">&nbsp;&nbsp;&nbsp;&nbsp;카카오
 				로그인
 			</button>
 
 			<br />
 			<form action="join.do" method="post">
-				<input type="hidden" name="command" value="loginCheck" /> <span
-					class="join_span"> <input type="text" class="input_text"
-					name="id" placeholder="아이디" id="id" required="required"
-					maxlength="20" />
-				</span> <br /> <span class="join_span"> <input type="password"
-					class="input_text" name="joinPw" placeholder="PassWord"
+				<span class="join_span"> 
+					<input type="text" class="input_text" name="id" placeholder="아이디" id="id" 
+						required="required" maxlength="20" />
+				</span> 
+				<br /> 
+				<span class="join_span"> 
+				<input type="password" class="input_text" name="joinPw" placeholder="PassWord"
 					required="required" onclick="emailChkConfirm();" /> <!-- 필수 정보 입니다. -->
-				</span> <br /> <br /> <br /> <br /> <input type="submit"
-					class="input_button" value="Login"> <br /> <br />
+				</span> 
+				<br /> <br /> <br /> <br /> 
+				<input type="submit" class="input_button" value="Login"> 
+				<br /> <br />
 
 				<div class="span_text" id="chk">
 					아이디가 없으신가요? 
-					<a href="join.do?command=loginSingUp">회원가입 </a><br>
+					<a href="loginSignUp.do">회원가입 </a><br>
 					까먹었어요ㅜㅜ?
-					<a href="join.do?command=loginPopUp" onclick="IdSearch();">아이디찾기</a>
-					<a href="join.do?command=loginPopUp" onclick="PwSearch();">비밀번호찾기</a>
+					<a href="" onclick="IdSearch();">아이디찾기</a>
+					<a href="" onclick="PwSearch();">비밀번호찾기</a>
 				</div>
 			</form>
 		</div>

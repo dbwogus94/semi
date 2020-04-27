@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.semi.update.All.exception.GlobalExceptionHandler;
 import com.semi.update.All.join.LoginProfile.dto.LoginProfileDto;
 import com.semi.update.join.dto.JoinDto;
 
@@ -367,7 +366,6 @@ public class JoinDaoImpl implements JoinDao {
 		} catch (Exception e) {
 			logger.info("[Error] join searchMentorList");
 			e.printStackTrace();
-			//throw new GlobalExceptionHandler("[Dao Error] selectList_MentorList");
 		} 
 		
 		return list;

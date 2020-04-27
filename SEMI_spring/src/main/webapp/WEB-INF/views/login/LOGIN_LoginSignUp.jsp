@@ -8,15 +8,15 @@
   <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width"/>
   
   <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
-<link rel="stylesheet" href="../resources/css/LOGIN_css/LOGIN_LoginSignUp.css">
-<script type="text/javascript" src="../resources/js/jquery-3.4.1.js"></script>
-<script type="text/javascript" src="../resources/js/login/LOGIN_LoginSignUp.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/login/LOGIN_LoginSignUp.css">
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/login/LOGIN_LoginSignUp.js"></script>
 <title>SignUP</title>
 </head>
 <body>
 
 <header>
-	<div id="logo"><img src="../resources/images/main/logo_white.png" onclick="location.href='../main.do'"/></div>
+	<div id="logo"><img src="${pageContext.request.contextPath}/resources/images/logo_white.png" onclick="location.href='main.do'"/></div>
 	<h1 id="untoti">운토티</h1>
 	<div class="container" onclick="myFunction(this)">
   		<div class="bar1"></div>
@@ -30,19 +30,18 @@
 			<h1>회원가입</h1>
 			
 			<button onclick="googleSignUp();" name="facebookRegister" id="google">
-				<img alt="" src="../resources/images/login/google.png">&nbsp;&nbsp;&nbsp;&nbsp;google계정으로 회원가입
+				<img alt="" src="${pageContext.request.contextPath}/resources/images/google.png">&nbsp;&nbsp;&nbsp;&nbsp;google계정으로 회원가입
 			</button>
 			
 			<button onclick="kakaoSignUp();" id="kakao">
-				<img alt="" src="../resources/images/login/kakao2.png">&nbsp;&nbsp;&nbsp;&nbsp;카카오 계정으로 회원가입
+				<img alt="" src="${pageContext.request.contextPath}/resources/images/kakao2.png">&nbsp;&nbsp;&nbsp;&nbsp;카카오 계정으로 회원가입
 			</button>
 			
 			
 			<br>
 
 			<br />
-			<form action="../join/loingSingUpRes.do" method="post" onsubmit="return confirmSubmit()">
-				<input type="hidden" name="command" value="loingSingUpRes"/>
+			<form action="loginSingUpRes.do" method="post" onsubmit="return confirmSubmit()">
 
 				<div id="check">
 					<input type="checkbox" name="joinRole" value="멘토" onclick="oneCheckbox(this)"/>멘토 
@@ -75,7 +74,6 @@
 				 
 				<br /> 
 				<br /> 
-				
 			
 					<input type="password" id="join_span" class="input_text" name="joinPw_chk"
 						placeholder="ConfirmPassword" required="required"/> <!-- 필수 정보 입니다. -->
@@ -97,7 +95,7 @@
 				<br />
 
 				<div class="span_text">
-					이미 운토티 회원이신가요? <a href="../join/loginPopUp.do">로그인하기</a>
+					이미 운토티 회원이신가요? <a href="loginPopUp.do">로그인하기</a>
 				</div>
 			</form>
 		</div>
