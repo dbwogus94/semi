@@ -111,22 +111,22 @@ public class SMTPDto {
 		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() { 
 		/* 
 		 # 코드 설명 
-		 	1) javax.mail.Session : 메일 API에서 사용되는 특성과 기본값을 함께 수집합니다, 단일 기본 세션은 데스크톱의 여러 응용 프로그램에서 공유 할 수 있습니다
+		 	1) javax.mail.Session : 메일 API에서 사용되는 특성과 기본값을 함께 수집합니다, *단일 기본 세션은 데스크톱의 여러 응용 프로그램에서 공유 할 수 있습니다
 		 	2) Session.getDefaultInstance(프로퍼티스, 새로운 인증관련 클래스) : 프로퍼티스를 이용하여 새로운 인증객체를 생성하며, 해당 메서드는 새로운 객체를 생성시에만 프로퍼티스를 사용하여 설정값을 사용한다. 
 		 	3) props : 설정정보가 들어있는 전역변수
 		 	4) new javax.mail.Authenticator() : 네트워크 연결에 대한 인증을 얻는 방법을 구현한 클래스의 메서드
 		*/
 			
-		// 인어클래스의 필드속성 : new javax.mail.Authenticator()의 필드속성(전역변수)
+		// 이너클래스의 필드속성 : new javax.mail.Authenticator()의 필드속성(전역변수)
 			String un = user; 	
 			String pw = password;
 
-		// 인어클래스의 메서드 : 인증에 사용할 아이디 비번 설정
+		// 이너클래스의 메서드 : 인증에 사용할 아이디 비번 설정
 			protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
 				// javax.mail.PasswordAuthentication :  Authenticator에서 사용하는 데이터 저장소입니다. 단순히 사용자 이름과 비밀번호를 저장하는 저장소입니다.
 				return new javax.mail.PasswordAuthentication(un, pw);
 			}
-		}); 	// 인어클래스 끝 : new javax.mail.Authenticator() 생성 끝
+		}); 	// 이너클래스 끝 : new javax.mail.Authenticator() 생성 끝
 		
 		session.setDebug(true); // for debug
 		

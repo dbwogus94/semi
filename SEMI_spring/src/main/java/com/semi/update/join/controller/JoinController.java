@@ -82,18 +82,18 @@ public class JoinController {
 
 		logger.info("메일 보내기 컨트롤러 : " + joinemail);
 
-		String temp = smtpDto.createAuthNo().toString().trim();// 랜덤번호 생성 후 담아줌
-		logger.info("smtp 랜덤 번호 : " + temp);
+		String code = smtpDto.createAuthNo().toString().trim();// 랜덤번호 생성 후 담아줌
+		logger.info("smtp 랜덤 번호 : " + code);
 
 		try {
-			smtpDto.sendAuthNo(joinemail, temp); // 만들어둔 dto의 메서드에 값을 주입 : 수신자에게 번호 전송
+			smtpDto.sendAuthNo(joinemail, code); // 만들어둔 dto의 메서드에 값을 주입 : 수신자에게 번호 전송
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "fail";
 		}
 
 		HttpSession AuthNo = requset.getSession(); // 세션 소환
-		AuthNo.setAttribute("AuthNo", temp); // session에 값을 담아서 클라가 적은 값과 비교하기 위해 전송하자
+		AuthNo.setAttribute("AuthNo", code); // session에 값을 담아서 클라가 적은 값과 비교하기 위해 전송하자
 
 		/*
 		 * //이메일만 보내기 try { smtpDto.sendMail(sduemail, "인증번호 전송 ", "인증번호 입니다"); } catch
@@ -125,7 +125,6 @@ public class JoinController {
 		return "fail";
 	}
 
-	
 	
 	// 회원가입 화면으로
 	@RequestMapping(value = "/loginSignUp.do", method = RequestMethod.GET)
@@ -231,12 +230,12 @@ public class JoinController {
 			} else if (joinDto.getJoinRole().equals("멘토")) {
 				logger.info("==========================[멘토 로그인]==========================");
 				// 프로필 작성 유무 체크
-				if (joinDto.getJoinRegisterYn().equals("N")) { // 프로필이 작성되어 있지 않다면 >> 프로필 작성으로
+				if (joinDto.getJoinRegisterYn().equals("N")) { // 프로필이 작성되어 있지 않다면 >> 멘토 첫 프로필 작성으로
 					session.setAttribute("login", joinDto);
 					try {
 						jsPrint("아이디 : " + joinDto.getId() + " 멘토님 첫 방문을 환영합니다."
 								+ "<br/> 첫 방문시 프로필을 작성하셔야 저희 사이트를 사용이 가능합니다."
-								+ " 작성 후 저장하시면 멘토신청이 되며, 절차 진행 후 적합하시면 멘토 활동이 가능합니다.", "", response);
+								+ " 작성 후 저장하시면 멘토신청이 되며, 절차 진행 후 적합하시면 멘토 활동이 가능합니다.", "../profile/mentor/profile.do", response);
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -258,6 +257,8 @@ public class JoinController {
 
 		return "";
 	}
+	
+	
 
 	// sns로그인 실행
 	@RequestMapping(value = "/snsLogin.do", method = RequestMethod.POST)
