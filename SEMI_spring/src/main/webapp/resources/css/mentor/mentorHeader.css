@@ -1,0 +1,123 @@
+/* 글꼴 아이콘 제공 */
+/* @import url(http://weloveiconfonts.com/api/?family=fontawesome); */
+/*common*/
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-size: 14px;
+	color: #000;
+}
+
+a {
+	text-decoration: none;
+	color: #000;
+	outline: 0;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+img, input {
+	vertical-align: middle;
+}
+
+img {
+	max-width: 100%;
+	border: 0;
+	float: left;
+}
+/*layout*/
+header {
+	width: 100%;
+	height: 50px;
+	background: #000;
+}
+
+header>h1 {
+	float: left;
+	font-size: 30px;
+	font-weight: bold;
+	color: white;
+	text-align: left;
+	margin-top: 0.7%;
+}
+
+#logo>img {
+	float: left;
+	width: 100px;
+	height: 50px;
+	padding-left: 5px;
+}
+
+#untoti {
+	color: #fff;
+}
+
+.header_container {
+	display: inline-block;
+	cursor: pointer;
+	float: right;
+	padding: 6px 1.5%;;
+}
+
+.bar1, .bar2, .bar3 {
+	width: 35px;
+	height: 5px;
+	background-color: #fff;
+	margin: 6px 0;
+	transition: 0.4s;
+	border-radius: 2px;
+}
+
+.change .bar1 {
+	-webkit-transform: rotate(-45deg) translate(-9px, 6px);
+	transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.change .bar2 {
+	opacity: 0;
+}
+
+.change .bar3 {
+	-webkit-transform: rotate(45deg) translate(-8px, -8px);
+	transform: rotate(45deg) translate(-8px, -8px);
+}
+
+#nav {
+	width: 100%;
+	height: 300px;
+	background: rgba(255, 255, 255, .9);
+	position: absolute;
+	top: 60px;
+	right: 0;
+	z-index: 999;
+	display: none;
+}
+
+#nav ul {
+	display: block;
+	width: 100%;
+}
+
+#nav ul li {
+	float: left;
+	width: 15%;
+	height: 44px;
+	margin: 2% 5%;
+	font-size: 20px;
+	text-align: center;
+	border-bottom: 2px solid #000;
+}
+
+#nav ul li:hover {
+	border-bottom: 2px solid #ff7e67;
+}
+
+#nav ul li a {
+	color: #000;
+}
+/*******************************************************/

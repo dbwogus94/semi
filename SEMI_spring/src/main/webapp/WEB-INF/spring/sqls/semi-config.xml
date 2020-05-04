@@ -21,6 +21,10 @@
 		<!-- join한 테이블 dto 2개-->
 		<typeAlias type="com.semi.update.All.join.LoginProfile.dto.LoginProfileDto" alias="loginProfileDto"/>
 		<typeAlias type="com.semi.update.All.join.menuFood.dto.MenuFoodDto" alias="MenuFoodDto"/>
+		
+		<!-- 멘토 멘티 Dto -->
+		<typeAlias type="com.semi.update.member.dto.MentorDto" alias="mentorDto"/>
+		<typeAlias type="com.semi.update.member.dto.MenteeDto" alias="menteeDto"/>
 	</typeAliases>
 
 

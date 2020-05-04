@@ -1,0 +1,146 @@
+
+body {
+	padding: 0px;
+	margin: 0px;
+	position: relative;
+	background: #f5f6f7;
+}
+
+.container {
+	border: 1px solid;
+	margin: 1%;
+	border-radius: 10px;
+	background-color: white;
+}
+
+/* 멘티 프로필 */
+#title{
+	text-align: center;
+	color: #333;
+	font-size:21px;
+	width: 15%;
+	border:none;
+	margin-bottom: 0px;
+}
+/*프로필 사진 영역*/
+#imgdiv{
+	margin-left:42.05%;
+}
+/*프로필 사진*/
+#mentorImg{
+	border-radius: 15px;
+	width: 150px;
+	height: 150px;
+}
+#imgInsertdiv{
+	text-align: center;	
+}
+
+/* 프로필 추가 버튼 */
+#imgInsertbut{
+    border: 1.5px solid;
+    background-color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    outline: 0;
+}
+#imgInsertbut:hover{
+    border: 1.5px solid;
+    background-color: #f5f6f7;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 5px;
+    outline: 0;
+}
+
+
+/* input text readonly css */
+#main_container .form-control[readonly]{
+	background-color: white;
+}
+
+#main_container .form-group{
+	padding-bottom: 0px;
+}
+
+/*에러 메세지*/
+.errorMsg{
+	color:red;
+	font: bold;
+	font-size:10px;
+	margin-left: 10px;
+	margin-top: -10px;
+}
+
+
+/* 중복확인 */
+#overlapBtn{
+	margin-left: -20%;
+	background-color: darkgrey;
+	border: 1px solid darkgrey; 
+	outline: 0; /*클릭시 외곽선*/
+}
+#overlapBtn:hover{
+	margin-left: -20%;
+	background-color: grey;
+	border: 1px solid grey; 
+	outline: 0; /*클릭시 외곽선*/
+}
+
+
+
+
+/* 특기 테그 버튼 영역 */
+#specialty .form-group{
+	text-align: center;
+}
+
+#specialty .btn-success{
+	width: 80%;
+	border-radius: 15px;
+	outline: 0; /*클릭시 외곽선*/
+}
+
+/*저장하기*/                    
+#save .form-group{
+	text-align: center;
+}
+
+#save .btn-success{
+	width: 90%;
+	background:darkgrey;
+	border: 1px solid darkgrey; 
+	outline: 0; /*클릭시 외곽선*/
+}
+#save .btn-success:hover{
+	width: 90%;
+	background:grey;
+	border: 1px solid grey; 
+	outline: 0; /*클릭시 외곽선*/
+}
+
+
+/* 태그 추가 영역 */
+#specialty .panel-body{
+	padding: 5px;
+	height: 40px; 
+	margin-top: -4px;
+}
+/* 생성된 태그 */
+.keyword_h5{
+	display: inline-block;
+	padding-right: 5px; 
+}
+.panel-body label {
+	font: bold 14px;
+	color: black;
+	background-color: white;
+	padding-right: 7px;
+	border: 1.5px solid black;
+	border-radius: 15px;
+}
+
+
+
+

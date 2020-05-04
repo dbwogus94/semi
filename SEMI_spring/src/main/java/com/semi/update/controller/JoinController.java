@@ -1,4 +1,4 @@
-package com.semi.update.join.controller;
+package com.semi.update.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.semi.update.All.mail.SMTPDto;
 import com.semi.update.join.biz.JoinBiz;
 import com.semi.update.join.dto.JoinDto;
+import com.semi.update.member.dto.MentorDto;
+import com.semi.update.member.profile.biz.ProfileBiz;
 
 @Controller
 @RequestMapping("/join")
@@ -31,6 +33,9 @@ public class JoinController {
 
 	@Autowired
 	private JoinBiz joinBiz;
+
+	@Autowired
+	private ProfileBiz profileBiz;
 	
 	@Autowired			// servlet-content.xml의 빈을 통하여 값을 주입 
 	private SMTPDto smtpDto;
@@ -210,9 +215,8 @@ public class JoinController {
 
 	// 로그인 실행
 	@RequestMapping(value = "/login.do", method = RequestMethod.POST)
-	public String loginRes(Model model, @RequestParam String id, @RequestParam String joinPw,
+	public String login(Model model, @RequestParam String id, @RequestParam String joinPw,
 			HttpServletResponse response, HttpSession session) {
-
 		logger.info("login");
 
 		JoinDto joinDto = joinBiz.Login(id, joinPw);
@@ -229,18 +233,19 @@ public class JoinController {
 
 			} else if (joinDto.getJoinRole().equals("멘토")) {
 				logger.info("==========================[멘토 로그인]==========================");
-				// 프로필 작성 유무 체크
+				// 최초 로그인 인경우 == 프로필을 작성하지 않은경우
 				if (joinDto.getJoinRegisterYn().equals("N")) { // 프로필이 작성되어 있지 않다면 >> 멘토 첫 프로필 작성으로
-					session.setAttribute("login", joinDto);
-					try {
-						jsPrint("아이디 : " + joinDto.getId() + " 멘토님 첫 방문을 환영합니다."
-								+ "<br/> 첫 방문시 프로필을 작성하셔야 저희 사이트를 사용이 가능합니다."
-								+ " 작성 후 저장하시면 멘토신청이 되며, 절차 진행 후 적합하시면 멘토 활동이 가능합니다.", "../profile/mentor/profile.do", response);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					session.setAttribute("login", joinDto);		// 프로필을 작성하지 않았기 때문에 임시 세션 저장
+					logger.info("[멘토 최초 로그인 session 임시설정] >>>>>>>>>>>>>>>>>>>>>>>>> " + joinDto);
+					logger.info("[첫 프로필로 페이지 이동] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+					return "redirect:/mentor/firstProfile.do";
+				// 최초 로그인이 아닌경우 == 프로필을 작성한경우
+				} else if(joinDto.getJoinRegisterYn().equals("Y")) {
+					MentorDto mentorDto = profileBiz.MentorSelectOne(id);
+					session.setAttribute("login", mentorDto);
+					logger.info("[멘토 로그인 session 설정 >>>>>>>>>>>>>>>>>>>>>>>>>>> " + mentorDto);
+					return "redirect:/mentor/main.do";
 				}
-
 			} else if (joinDto.getJoinRole().equals("멘티")) {
 				logger.info("==========================[멘티 로그인]==========================");
 
@@ -269,8 +274,7 @@ public class JoinController {
 	}
 
 	public void jsPrint(String msg, String url, HttpServletResponse response) throws IOException {
-		response.setContentType("text/html; charset=UTF-8"); // 해당 코드가 없으면 글자가 깨진다 >>> web.xml에 filter를 했음에도 깨지는 이유는를
-																// 모르겠음
+		response.setContentType("text/html; charset=UTF-8"); // 해당 코드가 없으면 글자가 깨진다 >>> web.xml에 filter를 했음에도 깨지는 이유는를 모르겠음
 		String s = "<script type='text/javascript'>" + " alert('" + msg + "'); " + "location.href ='" + url + "';"
 				+ "</script>";
 		PrintWriter out = response.getWriter();

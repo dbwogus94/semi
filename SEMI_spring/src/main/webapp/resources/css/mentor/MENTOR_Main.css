@@ -1,0 +1,477 @@
+@charset "utf-8";
+
+/*common*/
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-size: 14px;
+	color: #000;
+}
+
+a {
+	text-decoration: none;
+	color: #000;
+	outline: 0;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+img, input {
+	vertical-align: middle;
+}
+
+img {
+	max-width: 98%;
+	border: 0;
+	margin-left: 1%;
+}
+/*layout*/
+header {
+	width: 100%;
+	height: 50px;
+	background: #000;
+}
+
+header>h1 {
+	float: left;
+	font-size: 30px;
+	font-weight: bold;
+	color: #fff;
+	text-align: left;
+	margin: 0;
+}
+
+#logo>img {
+	float: left;
+	width: 100px;
+	height: 50px;
+	padding-left: 5px;
+}
+
+#untoti {
+	color: #fff;
+}
+
+.container {
+	display: inline-block;
+	cursor: pointer;
+	float: right;
+	padding: 7px;
+}
+
+.bar1, .bar2, .bar3 {
+	width: 35px;
+	height: 5px;
+	background-color: #fff;
+	margin: 6px 0;
+	transition: 0.4s;
+	border-radius: 2px;
+}
+
+.change .bar1 {
+	-webkit-transform: rotate(-45deg) translate(-9px, 6px);
+	transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.change .bar2 {
+	opacity: 0;
+}
+
+.change .bar3 {
+	-webkit-transform: rotate(45deg) translate(-8px, -8px);
+	transform: rotate(45deg) translate(-8px, -8px);
+}
+
+/*******************************************************/
+h3 {
+	padding: 0 20px;
+}
+
+h1 {
+	margin-bottom: 20px;
+}
+
+hr {
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	margin: 0 20px;
+}
+
+#li_pro ul {
+	margin-top: 20px;
+}
+/****************fieldset*/
+legend {
+	text-align: center;
+	font-weight: bold;
+}
+
+#total {
+	font-size: 30px;
+	font-weight: bold;
+}
+
+#2ndtotal {
+	color: #ff7e67;
+}
+
+ul li button {
+	border: 1px solid #000;
+	padding: 5px;
+}
+
+ul li button:hover {
+	border: 1px solid #ff7e67;
+	padding: 5px;
+}
+
+button:hover {
+	border-bottom: 2px solid #ff7e67;
+}
+/*******************************************mobile*/
+@media
+screen
+and
+(max-width:767px)
+{
+#nav {
+	width: 100%;
+	height: 800px;
+	background: rgba(255, 255, 255, .9);
+	position: absolute;
+	top: 60px;
+	right: 0;
+	z-index: 999;
+	display: none;
+}
+
+#nav ul {
+	display: block;
+	width: 100%;
+}
+
+#nav ul li {
+	float: left;
+	width: 60%;
+	height: 44px;
+	margin: 5% 20%;
+	font-size: 20px;
+	text-align: center;
+	border-bottom: 2px solid #000;
+}
+
+#nav ul li:hover {
+	border-bottom: 2px solid #ff7e67;
+}
+
+#nav ul li a {
+	color: #000;
+}
+
+.board {
+	width: 80%;
+	height: 1300px;
+	background: #f0f0f0;
+	margin: 5% 10%;
+	padding-top: 5%;
+}
+
+.board {
+	width: 80%;
+	height: 1200px;
+	background: #f0f0f0;
+	margin: 5% 10%;
+	padding-top: 5%;
+}
+
+#mentor_pro {
+	width: 80%;
+	height: auto;
+	margin-left: 10%;
+	margin-top: 3%;
+	background: #f0f0f0;
+}
+
+#img_pro {
+	width: 80%;
+	margin-left: 10%;
+	padding-top: 5%;
+	height: auto;
+}
+
+#mentor_pro img {
+	width: 90%;
+	height: auto;
+	display: block;
+	margin: 10px 5%;
+}
+
+.edit_profile {
+	width: 100%;
+	text-align: center;
+	display: block;
+	background: none;
+	border: none;
+	border-bottom: 2px solid #000;
+	margin-top: 30px;
+}
+
+#li_pro {
+	width: 80%;
+	padding: 10%;
+	text-align: center;
+}
+
+#li_pro ul li {
+	margin-bottom: 20px;
+}
+
+#mentor_detail {
+	width: 80%;
+	height: 750px;;
+	background: #f0f0f0;
+	margin: 3% 10%;
+}
+
+fieldset {
+	width: 95%;
+	margin: 2%;
+	position: relative;
+	float: left;
+}
+
+fieldset ul li {
+	text-align: center;
+	margin: 10% 0;
+}
+
+footer {
+	width: 100%;
+	height: 50px;
+	background-color: #000;
+	color: #f2f2f2;
+	text-align: center;
+	padding-top: 10px;
+	position: relative;
+	top: 20px;
+}
+
+}
+
+/*태블릿 크기 768~1023*/
+@media screen and (min-width:768px) and (max-width:1023px) {
+	#nav {
+		width: 100%;
+		height: 200px;
+		background: rgba(255, 255, 255, .9);
+		position: absolute;
+		top: 60px;
+		right: 0;
+		z-index: 999;
+		display: none;
+	}
+	#nav ul {
+		display: block;
+		width: 100%;
+	}
+	#nav ul li {
+		float: left;
+		width: 19%;
+		height: 44px;
+		margin: 3% 3%;
+		font-size: 18px;
+		text-align: center;
+		border-bottom: 2px solid #000;
+	}
+	#nav ul li:hover {
+		border-bottom: 2px solid #ff7e67;
+	}
+	#nav ul li a {
+		color: #000;
+	}
+	.board {
+		width: 80%;
+		height: 1200px;
+		background: #f0f0f0;
+		margin: 5% 10%;
+		padding: 5% 0;
+	}
+	/**/
+	#mentor_pro {
+		width: 80%;
+		height: 250px;
+		margin-left: 10%;
+		margin-top: 3%;
+		background: #f0f0f0;
+	}
+	#img_pro {
+		width: 200px;
+		height: 250px;
+		float: left;
+		padding: 10px 20px;
+	}
+	#mentor_pro img {
+		width: 200px;
+		height: 200px;
+		display: block;
+		margin-bottom: 10px;
+	}
+	.edit_profile {
+		display: block;
+		position: relative;
+		background: none;
+		border: none;
+		border-bottom: 2px solid #000;
+		margin-left: 53px;
+	}
+	#li_pro {
+		width: 60%;
+		padding: 2.5%;
+		margin-left: 250px;
+		position: relative;
+	}
+	#li_pro ul li {
+		margin-bottom: 20px;
+	}
+	#mentor_detail {
+		width: 80%;
+		height: 350px;;
+		background: #f0f0f0;
+		margin: 3% 10%;
+	}
+	fieldset {
+		width: 45%;
+		margin: 2%;
+		position: relative;
+		float: left;
+	}
+	fieldset ul li {
+		text-align: center;
+		margin: 10% 0;
+	}
+	footer {
+		width: 100%;
+		height: 80px;
+		background-color: #000;
+		color: #f2f2f2;
+		text-align: center;
+		padding-top: 10px;
+	}
+}
+
+/****pc***************************************************pc*/
+@media screen and (min-width:1050px) {
+		#nav {
+			width: 100%;
+			height: 300px;
+			background: rgba(255, 255, 255, .9);
+			position: absolute;
+			top: 60px;
+			right: 0;
+			z-index: 999;
+			display: none;
+		}
+		#nav ul {
+			display: block;
+			width: 100%;
+		}
+		#nav ul li {
+			float: left;
+			width: 15%;
+			height: 44px;
+			margin: 2% 5%;
+			font-size: 20px;
+			text-align: center;
+			border-bottom: 2px solid #000;
+		}
+		#nav ul li:hover {
+			border-bottom: 2px solid #ff7e67;
+		}
+		#nav ul li a {
+			color: #000;
+		}
+		.board {
+			width: 80%;
+			height: 1200px;
+			background: #f0f0f0;
+			margin: 5% 10%;
+			padding-bottom: 7%;
+		}
+		#join_container {
+			text-align: center;
+			width: 100%;
+		}
+		#main_container {
+			text-align: center;
+			width: 80%;
+			height: auto;
+			margin: 10%;
+		}
+
+		/**/
+		#mentor_pro {
+			width: 80%;
+			height: 250px;
+			margin-left: 10%;
+			margin-top: 3%;
+			background: #f0f0f0;
+		}
+		#img_pro {
+			width: 200px;
+			height: 250px;
+			float: left;
+			padding: 10px 20px;
+		}
+		#mentor_pro img {
+			width: 200px;
+			height: 200px;
+			display: block;
+			margin-bottom: 10px;
+		}
+		.edit_profile {
+			display: block;
+			position: relative;
+			background: none;
+			border: none;
+			border-bottom: 2px solid #000;
+			margin-left: 53px;
+		}
+		#li_pro {
+			width: 60%;
+			padding: 2.5%;
+			margin-left: 250px;
+			position: relative;
+		}
+		#li_pro ul li {
+			margin-bottom: 20px;
+		}
+		#mentor_detail {
+			width: 80%;
+			height: 400px;;
+			background: #f0f0f0;
+			margin: 3% 10%;
+		}
+		fieldset {
+			width: 45%;
+			margin: 2%;
+			position: relative;
+			float: left;
+		}
+		fieldset ul li {
+			text-align: center;
+			margin: 10% 0;
+		}
+		footer {
+			width: 100%;
+			height: 100px;
+			background-color: #000;
+			color: #f2f2f2;
+			text-align: center;
+			padding-top: 10px;
+		}
+	}

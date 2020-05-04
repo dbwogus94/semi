@@ -61,7 +61,7 @@ public class LoginProfileDto {
     public LoginProfileDto() {
 	}
     
-    //멘토용
+    //멘티용
     public LoginProfileDto(int joinNo, String id, String joinPw, String joinEmail, String joinRole, Date joinDate,
 			String joinJoined, String joinRegisterYn, String memberName, String memberBirth, double memberHeight,
 			double memberWeight, String memberAddr, String memberPhone, String memberOneIntro, String memberGender,
@@ -87,7 +87,7 @@ public class LoginProfileDto {
 		this.memberBmi = memberBmi;
 	}
     
-	// 멘티 용
+	// 멘토 용
     public LoginProfileDto(int joinNo, String id, String joinPw, String joinEmail, String joinRole, Date joinDate,
 			String joinJoined, String joinRegisterYn, String memberName, String memberBirth, double memberHeight,
 			double memberWeight, String memberAddr, String memberPhone, String memberOneIntro, String memberCoin,

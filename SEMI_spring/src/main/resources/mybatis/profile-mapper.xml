@@ -24,134 +24,57 @@
 		<result property="memberBmi" column="MEMBER_BMI" />
 	</resultMap>
 	
-
-	<!-- 전체 리스트 출력 -->
-	<select id="selectList_Profile" resultMap="resultMap">
-		SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE,MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI 
-		FROM MEMBER_PROFILE
+	<!-- 멘토 -->
+	<resultMap type="mentorDto" id="mentorResultMap">
+		<result property="joinNo" column="JOIN_NO" />
+		<result property="id" column="ID" />
+		<result property="joinPw" column="JOIN_PW" />
+		<result property="joinEmail" column="JOIN_EMAIL" />
+		<result property="joinRole" column="JOIN_ROLE" />
+		<result property="joinDate" column="JOIN_DATE" />
+		<result property="joinJoined" column="JOIN_JOINED" />
+		<result property="joinRegisterYn" column="JOIN_REGISTER_YN" />
+		<result property="memberNo" column="MEMBER_NO" />
+		<result property="memberName" column="MEMBER_NAME" />
+		<result property="memberBirth" column="MEMBER_BIRTH" />
+		<result property="memberHeight" column="MEMBER_HEIGHT" />
+		<result property="memberWeight" column="MEMBER_WEIGHT" />
+		<result property="memberAddr" column="MEMBER_ADDR" />
+		<result property="memberPhone" column="MEMBER_PHONE" />
+		<result property="memberOneIntro" column="MEMBER_ONE_INTRO" />
+		<result property="memberCoin" column="MEMBER_COIN" />
+		<result property="memberCareer" column="MEMBER_CAREER" />
+		<result property="memberContent" column="MEMBER_CONTENT" />
+		<result property="memberScore" column="MEMBER_SCORE" />
+	</resultMap>
+	
+	<!-- 멘티 -->
+<!-- 	<resultMap type="menteeDto" id="menteeResultMap"> -->
+<!-- 	</resultMap> -->
+	
+	<!-- 멘토 SelectOne -->
+	<select id="MentorSelectOne" parameterType="String" resultMap="mentorResultMap">
+		SELECT
+		JOIN_NO, ID, JOIN_PW, JOIN_EMAIL, JOIN_ROLE, JOIN_DATE, JOIN_JOINED, JOIN_REGISTER_YN,
+		MEMBER_NO, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT,
+		MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, 
+		MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE
+		FROM MEMBER_JOIN JOIN MEMBER_PROFILE USING(ID)
+		WHERE ID = #{id}
 	</select>
 	
-	<!-- 멘토 리스트 출력 -->
-	<select id="selectList_Mentor" resultMap="resultMap">
-		SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE
-		FROM MEMBER_PROFILE
-		WHERE MEMBER_ROLE = '멘토'
-	</select>
-	
-	<!-- 멘티 리스트 출력 -->
-	<select id="selectList_Mentee" resultMap="resultMap">
-		SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI
-		FROM MEMBER_PROFILE
-		WHERE MEMBER_ROLE = '멘티'
-	</select>
-	
-	<!-- 이름으로 전체 검색 -->
-	<select id="search_Member" resultMap="resultMap">
-		SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE,MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI
-		FROM MEMBER_PROFILE
-		WHERE MEMBER_NAME = #{memberName}
-	</select>
-	
-	<!-- 이름으로 멘토에서 검색 -->
-	<select id="search_Mentor" resultMap="resultMap">
-		SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE
-		FROM MEMBER_PROFILE
-		WHERE MEMBER_ROLE = '멘토' AND MEMBER_NAME = #{memberName}
-	</select>
-	
-	<!-- 이름으로 멘티에서 검색 -->
-	<select id="search_Memtee" resultMap="resultMap">
-		SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI
-		FROM MEMBER_PROFILE
-		WHERE MEMBER_ROLE = '멘티' AND MEMBER_NAME = #{memberName}
-	</select>
-	
-	
-	<!-- 로그인 계정 출력 -> 멘토 -->
-	<select id="selectOne_Mentor" resultMap="resultMap">
-	SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE
-	FROM MEMBER_PROFILE
-	WHERE ID = 'MENTOR'
-	</select>
-	
-
-	<!-- 로그인 계정 출력 -> 멘티 -->
-	<select id="selectOne_Mentee" resultMap="resultMap">
-		SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI
-		FROM MEMBER_PROFILE
-		WHERE ID = 'MENTEE'
-	</select>
-	
-	<!-- 멘토 추가 -->
-	<insert id="insertProfile_Mentor" parameterType="profileDto">
-		INSERT INTO MEMBER_PROFILE
-		VALUES(MEMBER_PROFILE_SEQ.NEXTVAL, #{id}, #{memberRole}, #{memberRegisterYn},  #{memberName}, #{memberBirth}, #{memberHeight}, #{memberWeight}, #{memberAddr}, #{memberPhone}, #{memberOneIntro}, #{memberCoin}, #{memberCareer}, #{memberContent}, #{memberScore}, '', 0, 0, 0)	
+	<!-- 멘토Dto로 insert -->
+	<insert id="MentorProfileInsert" parameterType="mentorDto">
+		INSERT INTO 
+		MEMBER_PROFILE(MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE) 
+		VALUES(MEMBER_PROFILE_SEQ.NEXTVAL, #{id}, '멘토', 'Y', #{memberName}, #{memberBirth}, #{memberHeight}, #{memberWeight}, #{memberAddr}, #{memberPhone}, #{memberOneIntro}, #{memberCareer}, '프로필사진', 0)
 	</insert>
 	
-	<!-- 멘티 추가 -->
-	<insert id="insertProfile_Mentee" parameterType="profileDto">
-		INSERT INTO MEMBER_PROFILE
-		VALUES(MEMBER_PROFILE_SEQ.NEXTVAL, #{id}, #{memberRole}, #{memberRegisterYn},  #{memberName}, #{memberBirth}, #{memberHeight}, #{memberWeight}, #{memberAddr}, #{memberPhone}, #{memberOneIntro}, 0, 'NULL', #{memberContent}, 0, #{memberGender}, #{memberActivity}, #{memberBasal}, #{memberBmi})						  
-	</insert>
-	
-	<!-- 박하 -->
-	<!-- 해당 아이디의 프로핗 -->
-   <select id="getProfile" parameterType="String" resultMap="resultMap">
-      SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE, MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI
-      FROM MEMBER_PROFILE
-      WHERE ID = #{id}
-   </select>
-   
-   <!-- 멘토찾기 페이지에 띄워줄 멘토 프로필 리스트 -->
-   <select id="getMentorList" resultMap="resultMap">
-     SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, 
-     MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE, MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI
-     FROM MEMBER_PROFILE
-     WHERE MEMBER_ROLE = '멘토'
-   </select>
-   
-   <update id="updateProfilePay" parameterType="String">
-      UPDATE MEMBER_PROFILE
-      SET MEMBER_COIN = MEMBER_COIN + 2000, MEMBER_SCORE = MEMBER_SCORE + 1
-      WHERE ID = #{id} 
-   </update>
-     
-     <!-- 멘토찾기 검색기능 -->
-     <select id="searchMentor" parameterType="String" resultMap="resultMap">
-       SELECT MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, 
-       MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_COIN, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE, MEMBER_GENDER, MEMBER_ACTIVITY, MEMBER_BASAL, MEMBER_BMI
-       FROM MEMBER_PROFILE
-       WHERE MEMBER_ROLE = '멘토'
-       AND MEMBER_NAME LIKE '%'||#{name}||'%'
-     </select>
-     
-      <!-- 핸드폰 중복체크 -->
-     <select id="phoneCheck" parameterType="String" resultType="String">  
-     SELECT MEMBER_PHONE
-     FROM MEMBER_PROFILE
-     WHERE MEMBER_PHONE = #{profilePhoneNumber}
-     </select>
-     
-     <!-- 프로필 수정(멘토) -->
-     <update id="updateProfileMentor" parameterType="profileDto">
-     UPDATE MEMBER_PROFILE
-     SET MEMBER_NAME = #{memberName}, MEMBER_BIRTH = #{memberBirth}, MEMBER_HEIGHT = #{memberHeight}, MEMBER_WEIGHT = #{memberWeight}, MEMBER_ADDR =  #{memberAddr}, MEMBER_PHONE = #{memberPhone}, MEMBER_ONE_INTRO = #{memberOneIntro}, MEMBER_CAREER  = #{memberCareer}
-     WHERE ID = #{id}
-     </update>
-     
-	<!-- 프로필 수정 (멘티) -->
-	<update id="updateProfileMentee" parameterType="profileDto">
-	UPDATE MEMBER_PROFILE
-	SET MEMBER_NAME = #{memberName}, MEMBER_BIRTH = #{memberBirth}, MEMBER_HEIGHT = #{memberHeight}, MEMBER_WEIGHT = #{memberWeight}, MEMBER_ADDR =  #{memberAddr}, MEMBER_PHONE = #{memberPhone}, MEMBER_ONE_INTRO = #{memberOneIntro},  MEMBER_GENDER= #{memberGender}, MEMBER_ACTIVITY= #{memberActivity}, MEMBER_BASAL = #{memberBasal}, MEMBER_BMI = #{memberBmi}
-	WHERE ID = #{id}
+	<!-- 멘토Dto로 Update -->
+	<update id="MentorProfileUpdate" parameterType="mentorDto">
+		UPDATE MEMBER_PROFILE 
+		SET MEMBER_NAME = #{memberName}, MEMBER_BIRTH = #{memberBirth}, MEMBER_HEIGHT = #{memberHeight}, MEMBER_WEIGHT = #{memberWeight}, MEMBER_ADDR = #{memberAddr}, MEMBER_PHONE = #{memberPhone}, MEMBER_ONE_INTRO = #{memberOneIntro}, MEMBER_CAREER = #{memberCareer}, MEMBER_CONTENT = '프로필사진'
+		WHERE ID = #{id}
 	</update>
-	
-	<!-- 멘토 이미지 src 추가 -->
-	<update id="updateSrc" parameterType="profileDto">
-	UPDATE MEMBER_PROFILE
-	SET MEMBER_CONTENT = #{memberContent}
-	WHERE ID = #{id}
-	</update>
-	
-	
+
 </mapper>

@@ -3,144 +3,48 @@ package com.semi.update.member.profile.biz;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.semi.update.join.bao.JoinDaoImpl;
+import com.semi.update.member.dto.MentorDto;
 import com.semi.update.member.profile.bao.ProfileDao;
 import com.semi.update.member.profile.dto.ProfileDto;
 
 @Service
 public class ProfileBizImpl implements ProfileBiz{
+	private Logger logger = LoggerFactory.getLogger(ProfileBizImpl.class);
 	
 	@Autowired
 	private ProfileDao profileDao;
+
 	
+// 멘토 ====================================================================
+
+	// 멘토dto에 selectOne
 	@Override
-	public ProfileDto getProfile(String id) {
-		// TODO Auto-generated method stub
-		return profileDao.getProfile(id);
+	public MentorDto MentorSelectOne(String joinEmail) {
+		logger.info("ProFile BIZ =================>> MentorSelectOne : " + joinEmail);
+		return profileDao.MentorSelectOne(joinEmail);
 	}
 
-	// 전체 프로필 출력
+	// profile테이블에 멘토Dto insert
 	@Override
-	public List<ProfileDto> selectList_Profile() {
-		// TODO Auto-generated method stub
-		return profileDao.selectList_Profile();
+	public int MentorProfileInsert(MentorDto mentorDto) {
+		logger.info("ProFile BIZ =================>> MentorProfileInsert : " + mentorDto);
+		return profileDao.MentorProfileInsert(mentorDto);
 	}
 
-	// 멘토들 프로필 전체 출력 
+	// profile테이블에 멘토Dto로 update
 	@Override
-	public List<ProfileDto> selectList_Mentor() {
-		// TODO Auto-generated method stub
-		return profileDao.selectList_Mentor();
-	}
-
-	// 멘티들  프로필 전체 출력
-	@Override
-	public List<ProfileDto> selectList_Mentee() {
-		// TODO Auto-generated method stub
-		return profileDao.selectList_Mentee();
-	}
-
-	// 해당 이름을 가진 회원 전체에서 출력
-	@Override
-	public List<ProfileDto> search_Member(String memberName) {
-		// TODO Auto-generated method stub
-		return profileDao.search_Member(memberName);
-	}
-
-	// 해당 이름을 가진 멘토들 출력 
-	@Override
-	public List<ProfileDto> search_Mentor(String memberName) {
-		// TODO Auto-generated method stub
-		return profileDao.search_Mentor(memberName);
-	}
-
-	// 해당 이름을 가진 멘티들 출력
-	@Override
-	public List<ProfileDto> search_Memtee(String memberName) {
-		// TODO Auto-generated method stub
-		return profileDao.search_Memtee(memberName);
-	}
-	// 해당 멘토 아이디를 가진 멘티들 검색
-	@Override
-	public List<ProfileDto> search_Mentor_Mentee(String id) {
-		// TODO Auto-generated method stub
-		return profileDao.search_Mentor_Mentee(id);
+	public int MentorProfileUpdate(MentorDto mentorDto) {
+		logger.info("ProFile BIZ =================>> MentorProfileUpdate : " + mentorDto);
+		return profileDao.MentorProfileUpdate(mentorDto);
 	}
 	
 	
-	
-	
-	
-	
-	@Override
-	public ProfileDto selectOne_Mentor(String id) {
-		// TODO Auto-generated method stub
-		return profileDao.selectOne_Mentor(id);
-	}
-
-	@Override
-	public ProfileDto selectOne_Mentee(String id) {
-		// TODO Auto-generated method stub
-		return profileDao.selectOne_Mentee(id);
-	}
-
-	@Override
-	public int insertProfile_Mentor(ProfileDto profileDto) {
-		// TODO Auto-generated method stub
-		return profileDao.insertProfile_Mentor(profileDto);
-	}
-
-	@Override
-	public int insertProfile_Mentee(ProfileDto profileDto) {
-		// TODO Auto-generated method stub
-		return profileDao.insertProfile_Mentee(profileDto);
-	}
-
-	@Override
-	public int updateProfile_Mentor(ProfileDto profileDto) {
-		// TODO Auto-generated method stub
-		return profileDao.updateProfile_Mentor(profileDto);
-	}
-
-	@Override
-	public int updateProfile_Mentee(ProfileDto profileDto) {
-		// TODO Auto-generated method stub
-		return profileDao.updateProfile_Mentee(profileDto);
-	}
-
-	@Override
-	public List<ProfileDto> getMentorList() {
-		// TODO Auto-generated method stub
-		return profileDao.getMentorList();
-	}
-
-	@Override
-	public int updateProfilePay(String id) {
-		// TODO Auto-generated method stub
-		return profileDao.updateProfilePay(id);
-	}
-
-	@Override
-	public List<ProfileDto> searchMentor(String name) {
-		// TODO Auto-generated method stub
-		return profileDao.searchMentor(name);
-	}
-	//핸드폰 번호 체크
-	@Override
-	public boolean phoneCheck(String profilePhoneNumber) {
-		// TODO Auto-generated method stub
-		return profileDao.phoneCheck(profilePhoneNumber);
-	}
-	
-	//멘토 이미지 경로 추가
-		@Override
-		public int UpdateSrc_Mentor(ProfileDto profileDto) {
-			// TODO Auto-generated method stub
-			return profileDao.UpdateSrc_Mentor(profileDto);
-		}
-
 
 }
 

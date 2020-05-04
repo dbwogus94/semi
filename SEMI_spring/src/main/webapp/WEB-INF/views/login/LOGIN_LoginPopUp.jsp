@@ -50,7 +50,7 @@
 			</button>
 
 			<br />
-			<form action="join.do" method="post">
+			<form action="login.do" method="post">
 				<span class="join_span"> 
 					<input type="text" class="input_text" name="id" placeholder="아이디" id="id" 
 						required="required" maxlength="20" />
