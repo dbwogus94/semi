@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.semi.update.join.dto.JoinDto;
 
@@ -64,13 +65,21 @@ public class MentorDto {
 	// 총 별점
 	private double memberScore;
 	
-	public MentorDto() {
-	}
+	
+	// 스프링에서 제공하는 MultipartFile
+	private MultipartFile memberFile; 
+	
 
+	public MentorDto() {
+		
+	}
+	
 	public MentorDto(int joinNo, String id, String joinPw, String joinEmail, String joinRole, Date joinDate,
-			String joinJoined, String joinRegisterYn, int memberNo, String memberName, String memberBirth,
+			String joinJoined, String joinRegisterYn, int memberNo,
+			@Pattern(regexp = "[가-힣]*$", message = "이름은 한글만 사용해주세요") String memberName, String memberBirth,
 			String memberHeight, String memberWeight, String memberAddr, String memberPhone, String memberOneIntro,
-			String memberCoin, String memberCareer, String memberContent, double memberScore) {
+			String memberCoin, String memberCareer, String memberContent, double memberScore,
+			MultipartFile memberFile) {
 		super();
 		this.joinNo = joinNo;
 		this.id = id;
@@ -92,8 +101,10 @@ public class MentorDto {
 		this.memberCareer = memberCareer;
 		this.memberContent = memberContent;
 		this.memberScore = memberScore;
+		this.memberFile = memberFile;
 	}
 
+	
 
 	public int getJoinNo() {
 		return joinNo;
@@ -163,26 +174,21 @@ public class MentorDto {
 		return memberNo;
 	}
 
-
 	public void setMemberNo(int memberNo) {
 		this.memberNo = memberNo;
 	}
-
 
 	public String getMemberName() {
 		return memberName;
 	}
 
-
 	public void setMemberName(String memberName) {
 		this.memberName = memberName;
 	}
 
-
 	public String getMemberBirth() {
 		return memberBirth;
 	}
-
 
 	public void setMemberBirth(String memberBirth) {
 		this.memberBirth = memberBirth;
@@ -220,26 +226,21 @@ public class MentorDto {
 		this.memberPhone = memberPhone;
 	}
 
-
 	public String getMemberOneIntro() {
 		return memberOneIntro;
 	}
-
 
 	public void setMemberOneIntro(String memberOneIntro) {
 		this.memberOneIntro = memberOneIntro;
 	}
 
-
 	public String getMemberCoin() {
 		return memberCoin;
 	}
 
-
 	public void setMemberCoin(String memberCoin) {
 		this.memberCoin = memberCoin;
 	}
-
 
 	public String getMemberCareer() {
 		return memberCareer;
@@ -264,7 +265,15 @@ public class MentorDto {
 	public void setMemberScore(double memberScore) {
 		this.memberScore = memberScore;
 	}
-	
+
+	public MultipartFile getMemberFile() {
+		return memberFile;
+	}
+
+	public void setMemberFile(MultipartFile memberFile) {
+		this.memberFile = memberFile;
+	}
+
 	// 로그인시 사용되는 joinDto를 사용하여 MentorDto에 값 전달
 	public void setDto(JoinDto joinDto) {
 		this.joinNo = joinDto.getJoinNo();
@@ -285,9 +294,10 @@ public class MentorDto {
 				+ ", memberBirth=" + memberBirth + ", memberHeight=" + memberHeight + ", memberWeight=" + memberWeight
 				+ ", memberAddr=" + memberAddr + ", memberPhone=" + memberPhone + ", memberOneIntro=" + memberOneIntro
 				+ ", memberCoin=" + memberCoin + ", memberCareer=" + memberCareer + ", memberContent=" + memberContent
-				+ ", memberScore=" + memberScore + "]";
+				+ ", memberScore=" + memberScore + ", memberFile=" + memberFile + "]";
 	}
 
+	
 	
 }
 

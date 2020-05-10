@@ -23,6 +23,8 @@
 <!-- 	<resources mapping="/resources/images/**" location="/resources/images/" />  -->
 <!--  	<resources mapping="/resources/js/**" location="/resources/js/" /> -->
 	<resources mapping="/resources/**" location="/resources/" /> 
+	<resources mapping="/img/**" location="/resources/img/" /><!-- 안됨 --> 
+	
 	<!-- 
 		해당 경로로 get 요청이 들어오면 DispatcherServlet은 관여하지 않는다 
 			>> 즉, 컨트롤러 매핑을 찾지 않고 해당 경로로 요청된 URL을 그대로 응답한다. (여기서는 : webapp/resources/.. )

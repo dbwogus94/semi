@@ -267,8 +267,10 @@ public class JoinController {
 
 	// sns로그인 실행
 	@RequestMapping(value = "/snsLogin.do", method = RequestMethod.POST)
-	public String snsLoginRes(Model model, @RequestParam String id, @RequestParam String joinPw, HttpSession session) {
+	public String snsLoginRes(Model model, @RequestParam String id, @RequestParam String joinPw, HttpSession sessionm, HttpServletRequest res) {
 		logger.info("snsLogin");
+
+		HttpSession s = res.getSession();
 
 		return "";
 	}

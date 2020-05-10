@@ -44,6 +44,7 @@ body {
     padding-right: 5px;
     border-radius: 5px;
     outline: 0;
+    margin-left: 10%;
 }
 #imgInsertbut:hover{
     border: 1.5px solid;

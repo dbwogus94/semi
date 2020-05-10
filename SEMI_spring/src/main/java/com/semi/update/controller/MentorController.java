@@ -1,7 +1,10 @@
 package com.semi.update.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -15,7 +18,10 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.semi.update.All.util.UploadFileUtils;
+import com.semi.update.All.util.Util;
 import com.semi.update.join.biz.JoinBiz;
 import com.semi.update.join.dto.JoinDto;
 import com.semi.update.member.dto.MentorDto;
@@ -31,6 +37,9 @@ public class MentorController {
 	
 	@Autowired
 	private JoinBiz joinBiz;
+	
+	@Resource(name="uploadPath")	// 업로드 파일 경로
+	private String uploadPath;
 
 	// 멘토 메인
 	@RequestMapping(value = "/main.do", method = RequestMethod.GET)
@@ -65,10 +74,10 @@ public class MentorController {
 		return "mentor/MENTOR_mentorProfile";
 	}
 
-	// 프로필저장 : mentorDto insert
+	// 프로필저장 : mentorDto insert, update
 	@RequestMapping(value = "/profileInsert.do", method = RequestMethod.POST)
 	public String mentorProfileInsert(Model model, HttpSession session, @ModelAttribute("mentorDto") @Valid MentorDto mentorDto,
-			BindingResult result) {
+			BindingResult result) throws IOException {
 		logger.info("mentor profile insert");
 		logger.info("===============MentorDto " + mentorDto);
 
@@ -91,6 +100,13 @@ public class MentorController {
 			if (dto == null) {
 				// 최초프로필 작성시  joinDto에서 정보를 추가로 가져온다 
 				JoinDto login = (JoinDto) session.getAttribute("login");
+			
+			// 파일저장 : 최초 insert시에는 무조건 파일저장 실행	
+				// 파일 데이터와 경로를 인지로 전달 >>> 파일 저장
+				String UUIDfileName = UploadFileUtils.SP_ProfileUpload(mentorDto.getMemberFile(), uploadPath);	// 파일 저장 실행 리턴값으로 파일명 반환 
+				// Dto에 경로 추가
+				mentorDto.setMemberContent("/update/resources/img/mentor/" + UUIDfileName);
+
 				// joinDto + 추가 프로필 정보 = mentorDto
 				mentorDto.setDto(login);
 				int isertRes = profileBiz.MentorProfileInsert(mentorDto);
@@ -115,6 +131,30 @@ public class MentorController {
 				}
 				// profile테이블에 있으면 update >>> 세션 변경
 			} else {
+				
+			// 파일저장 : 수정에서는 파일저장시  같은이름의 파일이 있다면 실행하지 말아야함
+				String oldFileName = mentorDto.getMemberContent().replace("/update/resources/img/mentor/P_", "");
+				String[] fileNames = Util.getFilesName(uploadPath);
+				
+				boolean chk = true;
+				for(String name : fileNames) {
+					System.out.println("파일 확인 >>>>>>>>>>>>>>>>>>>>>>>>>>>> " + name);
+					if(name.equals(oldFileName)) {
+						chk = false;
+					}
+				}
+				
+				if(chk) { // 같은 이름의 파일이 있다면 true + not = false
+					logger.info("프로필 이미지 업로드 실행 >>>>>>>>>>>>>>>>>>>> " +  mentorDto.getMemberFile().getOriginalFilename());
+					
+					// 파일 데이터 받기
+					MultipartFile file = mentorDto.getMemberFile();
+					// 파일 저장 실행 >> 리턴값으로 파일명 반환
+					String UUIDfileName = UploadFileUtils.SP_ProfileUpload(file, uploadPath);	 
+					// Dto에 업로드된 경로 추가
+					mentorDto.setMemberContent("/update/resources/img/mentor/" + UUIDfileName);
+				}
+
 				int updateRes = profileBiz.MentorProfileUpdate(mentorDto);
 				if (updateRes > 0) {
 					logger.info("멘토 profile update 성공");

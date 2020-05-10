@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="f" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,21 +21,29 @@
 
 	
 <body>
-<f:form action="profileInsert.do" method="post" modelAttribute="mentorDto" onsubmit="return confirmSubmit()">	
+<f:form action="profileInsert.do" method="post" modelAttribute="mentorDto" enctype="multipart/form-data" onsubmit="return confirmSubmit()">	
 	<fieldset class="container" id="main_container">
 		<legend id="title">멘토 프로필</legend>
 		<f:hidden path="id"/>
+		<f:hidden path="memberContent"/>
 		<div class="row">	
 			<div class="col-md-4"></div>
 			<div class="col-md-4" id="imgdiv">
-				<img alt="" src="${pageContext.request.contextPath}/resources/img/mentor/mentor01.png" id="mentorImg">
+				<c:choose>
+					<c:when test="${empty mentorDto.memberContent}">
+						<img alt="" src="${pageContext.request.contextPath}/resources/img/mentor/mentor01.png" id="mentorImg">
+					</c:when>
+					<c:otherwise>
+						<img alt="" src="${mentorDto.memberContent}" id="mentorImg">
+					</c:otherwise>
+				</c:choose>
 			</div>
 			<div class="col-md-4"></div>
 		</div>
 		<div class="row">	
 			<div class="col-md-4"></div>
 			<div class="col-md-4" id="imgInsertdiv">
-				<input type="button" id="imgInsertbut" value="프로필사진">
+				<f:input path="memberFile" id="imgInsertbut" multiple="multiple"  type="file" onclick="imgUpload()" accept="image/gif, image/jpeg, image/png" value="${mentorDto.memberContent}"/>
 			</div>
 			<div class="col-md-4"></div>
 		</div>
@@ -82,12 +91,12 @@
 			<div class="col-md-2"></div>
 			<div class="col-md-4">
 				<div class="form-group">
-					<f:input path="memberHeight" cssClass="form-control" placeholder="cm"/>
+					<f:input type="number" path="memberHeight" cssClass="form-control" placeholder="cm"/>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<div class="form-group">
-					<f:input path="memberWeight" cssClass="form-control" placeholder="kg"/>
+					<f:input type="number" path="memberWeight" cssClass="form-control" placeholder="kg"/>
 				</div>
 			</div>
 			<div class="col-md-2"></div>
@@ -249,7 +258,7 @@
 				<div class="col-md-8">
 					<div class="panel panel-default">
 						<div class="panel-body">
- 							<h5 class="keyword_h5"><f:label path="memberCareer" class="label label-default"></f:label></h5> 
+<%--  							<h5 class="keyword_h5"><f:label path="memberCareer" class="label label-default"></f:label></h5>  --%>
 						</div>
 					</div>
 				</div>

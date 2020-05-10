@@ -67,13 +67,13 @@
 	<insert id="MentorProfileInsert" parameterType="mentorDto">
 		INSERT INTO 
 		MEMBER_PROFILE(MEMBER_NO, ID, MEMBER_ROLE, MEMBER_REGISTER_YN, MEMBER_NAME, MEMBER_BIRTH, MEMBER_HEIGHT, MEMBER_WEIGHT, MEMBER_ADDR, MEMBER_PHONE, MEMBER_ONE_INTRO, MEMBER_CAREER, MEMBER_CONTENT, MEMBER_SCORE) 
-		VALUES(MEMBER_PROFILE_SEQ.NEXTVAL, #{id}, '멘토', 'Y', #{memberName}, #{memberBirth}, #{memberHeight}, #{memberWeight}, #{memberAddr}, #{memberPhone}, #{memberOneIntro}, #{memberCareer}, '프로필사진', 0)
+		VALUES(MEMBER_PROFILE_SEQ.NEXTVAL, #{id}, '멘토', 'Y', #{memberName}, #{memberBirth}, #{memberHeight}, #{memberWeight}, #{memberAddr}, #{memberPhone}, #{memberOneIntro}, #{memberCareer}, #{memberContent}, 0)
 	</insert>
 	
 	<!-- 멘토Dto로 Update -->
 	<update id="MentorProfileUpdate" parameterType="mentorDto">
 		UPDATE MEMBER_PROFILE 
-		SET MEMBER_NAME = #{memberName}, MEMBER_BIRTH = #{memberBirth}, MEMBER_HEIGHT = #{memberHeight}, MEMBER_WEIGHT = #{memberWeight}, MEMBER_ADDR = #{memberAddr}, MEMBER_PHONE = #{memberPhone}, MEMBER_ONE_INTRO = #{memberOneIntro}, MEMBER_CAREER = #{memberCareer}, MEMBER_CONTENT = '프로필사진'
+		SET MEMBER_NAME = #{memberName}, MEMBER_BIRTH = #{memberBirth}, MEMBER_HEIGHT = #{memberHeight}, MEMBER_WEIGHT = #{memberWeight}, MEMBER_ADDR = #{memberAddr}, MEMBER_PHONE = #{memberPhone}, MEMBER_ONE_INTRO = #{memberOneIntro}, MEMBER_CAREER = #{memberCareer}, MEMBER_CONTENT = #{memberContent}
 		WHERE ID = #{id}
 	</update>
 
