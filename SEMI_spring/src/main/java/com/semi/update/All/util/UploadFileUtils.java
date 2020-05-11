@@ -118,7 +118,7 @@ public class UploadFileUtils {
 		String newFileName = uid + "_" +file.getOriginalFilename();
 		
 		try {
-			inputStream = file.getInputStream();												// file.getInputStream() : 업로드한 파일 데이터를 읽어오는 InputStream을 구한다.(종료 필요)
+			inputStream = file.getInputStream();	// new FileInputStream("파일")											// file.getInputStream() : 업로드한 파일 데이터를 읽어오는 InputStream을 구한다.(종료 필요)
 			System.out.println("확인 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + inputStream);
 			// 폴더 생성
 			File storage = new File(path);
@@ -136,7 +136,8 @@ public class UploadFileUtils {
 			// file의 크기만큼 바이트 빈 배열 생성  >> 한번에 읽을 데이터 크기설정 하는것이다.(배열의 크기많큼 한번에 읽는다)
 			byte[] b = new byte[(int) file.getSize()];											// file.getSize() : 업로드한 파일의 크기를 구한다.
 			// 읽기 : 스트림에 들어간 데이터 읽기
-			int read =  0;									
+			int read =  0; 		// 1byte : 0 ~ 255
+								// int : 1byte * 4 >>> 0000 0000 0000 0000
 														
 			// 쓰기 : 새로 생성된 newfile에  데이터 쓰기 
 			while((read = inputStream.read(b)) != -1) { 
@@ -192,7 +193,7 @@ public class UploadFileUtils {
 				storage.mkdirs();	// 상위폴더가 없으면 상위 폴더까지 생성
 			}
 			// 저장할 파일 생성 >> 경로 + 고유번호 + 업로드한 파일의 이름
-			File newFile = new File(path + File.separator + newFileName);	// file.getOriginalFilename() : 업로드한 파일의 이름을 구한다.
+			File newFile = new File(path + File.separator + newFileName);						// file.getOriginalFilename() : 업로드한 파일의 이름을 구한다.
 			if(!newFile.exists()) {
 				newFile.createNewFile();	// 경로에 새로운 빈 파일 생성
 			}

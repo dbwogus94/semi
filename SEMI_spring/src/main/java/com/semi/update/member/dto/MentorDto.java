@@ -67,7 +67,8 @@ public class MentorDto {
 	
 	
 	// 스프링에서 제공하는 MultipartFile
-	private MultipartFile memberFile; 
+	private MultipartFile memberFile;
+	
 	
 
 	public MentorDto() {

@@ -110,7 +110,7 @@ function imgUpload() {
 		console.log(get_file)
 
 		if (get_file) { // 자바스크립트의 undefined는 false를 의미 즉 값이 있으면 true
-			/* #4 */
+			/* #4 - 2 */
 			reader.readAsDataURL(get_file[0]);
 			/*
 			  # readAsDataURL(파일)  	
@@ -124,27 +124,27 @@ function imgUpload() {
 		}
 	})
 	
-	/* #5 reader 파일을 읽기 시작하면 시작시 함수 구현 */
+	/* #4 - 1 reader 파일을 읽기 시작하면 시작시 함수 구현 */
 	reader.onload = (function() {
 		console.log(3 + " : 파일 읽기 시작")
 		// 새로운 img태그
 		let profileImg = document.createElement("img")
 		profileImg.setAttribute("id", "mentorImg")
 		
-		/* #6 파일을 다 읽었을때 loadend 이벤트가 발생 >>> 이후 return 발생한다. */
+		/* #5 파일을 다 읽었을때 loadend 이벤트가 발생 >>> 이후 return 발생한다. */
 		return function(event) {
 			console.log(5 + " : 파일 읽기 완료후 이벤트")
 			/* #7 base64 인코딩 된 스트링 데이터 == result */
-			profileImg.src = event.target.result
+			profileImg.src = event.target.result	// event.target = loadend 함수가 발생시킨 이벤트
 
 			preview.innerHTML = "";
 			preview.appendChild(profileImg);
 			
+			document.querySelector("#hidden_memberContent").value = ""
+			
 			console.log(6 + " : 완료")
 		}
 	})()
-
-	
 }
 
 /*

@@ -20,7 +20,7 @@
 	<hr>
 	<div id="mentor_pro">
 		<div id="img_pro">
-			<img alt="" src="images/mentor.png">
+			<img alt="" src="${mentorDto.memberContent}">
 			<button onclick="location.href='profile.do'" class="edit_profile">
 				 프로필수정
 			</button>

@@ -25,7 +25,7 @@
 	<fieldset class="container" id="main_container">
 		<legend id="title">멘토 프로필</legend>
 		<f:hidden path="id"/>
-		<f:hidden path="memberContent"/>
+		<f:hidden path="memberContent" id="hidden_memberContent"/>
 		<div class="row">	
 			<div class="col-md-4"></div>
 			<div class="col-md-4" id="imgdiv">

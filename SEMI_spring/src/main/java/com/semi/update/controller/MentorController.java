@@ -138,9 +138,10 @@ public class MentorController {
 				
 				boolean chk = true;
 				for(String name : fileNames) {
-					System.out.println("파일 확인 >>>>>>>>>>>>>>>>>>>>>>>>>>>> " + name);
 					if(name.equals(oldFileName)) {
+						logger.info(">>>>>>>>>>>>>>>>>>> [파일 중복]");
 						chk = false;
+						break;
 					}
 				}
 				
