@@ -1,0 +1,116 @@
+@ HTTP Multipart  설명
+- Multipart는 HTTP 프로토콜을 통하여 file를 서버로 전송하기 위해 사용되는 Content-type이다.
+
+# 용어 정리 
+HTTP 
+SIP
+SMPT
+
+
+
+# 들어가며
+	먼저 HTTP(request와 response 둘다 해당한다.)는 4개로 나눌수 있다.
+	1) Request line
+	2) HTTP Header
+	3) Empty line
+	4) Message body
+
+	>>> 4)Message body에 들어가는 데이터 타입을 2)HTTP Header에서 명시해줄 수 있도록 사용되는 
+	 Header의 필드(속성)가 Content-Type이다. 해당 필드의 값으로 사용할 수 있는 타입이 있는데 
+	 이를 MIME타입이라고 하며 여러 MIME 타입 중 하나가 Multipart이다.
+	
+
+# MIME(Multipurpose Internet Mail Extensions)이란? 		// 다목적의 인터넷 메일 확장
+1) 기본적으로 E-mail(전자우편)전송 프로토코인 SMTP는 7비트 ASCII 문자만을 지원합니다. 
+ 그러나 ASCII 문자는 영어밖에 표현할 수 없기에 영어 이외의 언어로 쓰인 E-mail은 제대로 전송 할 수 없었습니다.
+ 이를 위해 탄생한 것이 MIME입니다.
+
+2) MIME은 ASCII가 아닌 문자 인코딩을 이용해 영어가  아닌 다른언어로 된 E-mail을 보낼 수 있는 방식을 정의 합니다.
+ 또한 그림, 음악, 영화 같은 8비트짜리 이진 파일을 전자우편으로 보낼 수 있도로 합니다.
+ 즉, e-mail을 위한 인터넷 표준 포맷인 것입니다.
+
+3) MIME 타입은 본래 E-Mail을 위해 정의된 것이지만, HTTP, SIP와 같은 인터넷 프로토콜에서 함께 사용하고 있습니다.
+
+4) MIME은 "메세지 종류"를 나타내는 [Content-type]나, 
+  "메세지 인코딩" 방식을 나타내는 [content-transfer-encoding]등의 필드들은 추가적인 E-mail 헤더를 정의합니다.
+
+5) 메세지를 MIME 형식으로 변환하는 것은 E-mail 프로그램이나 서버 상에서 자동으로 이루어집니다.
+
+6) MIME은 확장이 가능합니다. MIME 표준은 새로운 Content-type과 또 다른 MIME 속성 값을 등록할 수 있는 방법으 정의하고 있습니다.
+
+// 출처 https://qssdev.tistory.com/47
+
+
+# MIME의 구조 
+1. MIME 헤더 
+	> MIME-Version
+		ex) MIME-Version:1.0
+		1) 해당 메세지가 MIME 형식임을 나타냅니다.	
+
+	> Content-Type
+		ex) Content-Type: text/plain
+		1) HTTP Message body에 들어가는 데이터 타입과 서브 타입을 나타냅니다.
+		2) multipart 타입을 통해 MIME은 트리구조의 메세지 형식을 정의할 수 있습니다.
+		
+2. Encoded-Word
+	> RFC 2822의 정의에 따르면, 메세지 헤더와 그 값은 항상 ASCII문자를 사용해야합니다.
+	> ASCII가 아닌 헤더 값은 encoded-word 문법에 따라 인코딩해야 합니다.
+	
+3. Multipart메세지
+	> 서로 붙어있는 여러 개의 메세지를 포함하여 하나의 복합 메세지로 보내집니다.
+	> MIME multipart 메세지는 "Content-type:" 헤더에 boundary 파라미터를 포함합니다.
+		1) boundary는 메세지 파트를 구분하는 역할을 하며, 메세지의 시작과 끝 부분에도 나타납니다.
+		2) 첫 번째 boundary 전에 나오는 내용은 MIME을 지원하지 않는 클라이언트를 위해 제공됩니다.
+		3) boundary를 선택하는 것은 클라이언트의 몫입니다. 보통 무작위의 문자를 선택해서  메세지읜 본문과 충돌을 피합니다.
+	> 멀티파트 폼 제출 
+		1) HTTP form을 채워서 체줄하면, 가변 길이 텍스트 필드와 업로드 될 객체는 각각 멀티파트 본문을 구성하는 하나의 파트가 되어 보내집니다.
+		    멀티파트 본문은 여러 다를 종류와 길이의 값으로 채워진 form을 허용합니다.
+		2) multipart/form-data : 
+		 	사용자가 양식을 작성한 결과 값의 집합을 번들고 만들어 보내는데 사용됩니다.
+			> 하나의 form안에 여러타입의 데이터를 추가했을때 사용됩니다.
+			   - 보통 업로드된 파일과, 내용을 같이 보내는데 사용됩니다.
+
+
+@ 간단한 파일업로드 원리(순서)
+# form기본 정보
+   form태그는 form 태그의 body안의 양식에 맞게 서버에 데이터를 전송시키는데 사용이 됩니다.
+> form태그의 속성
+	method : HTTP의 요청 방식을 정합니다. get, post 방식을 지원합니다.
+	action : 전송되는 경로를 지정합니다.
+	enctype : 기본 enctype은 "application/x-www-form-urlencoded"이며 해당 인코딩은
+		쿼리스트링 방식으로 값을 전송합니다.
+> 값전달
+전달되는 값은 보통 input태그를 통해 입력이 되며, 
+input태그의 name속성의 값을 key로 입력받는 값은 value로 하여 전송됩니다. 
+
+# form를 이용한 파일 업로드
+ex) 
+<form method="post" action="" enctype="multipart/form-data">
+	파일명 <input type="text" name="fileName" /> 
+	파일첨부 <input type="file" />
+	<input type="submit" value="전송"/>
+</form>
+
+> enctype="multipart/form-data"란?
+보통 form에서는 하나의 MIME타입을 이용하여 데이터를 전송(요청)합니다. (plan/text 같은)
+하지만 file태그를 통해 파일을 업로드 한 경우처럼 다른 타입의 데이터가 form태그의 body안에
+추가되는 경우에는 enctype을 "multipart/form-data"라고 명시하여야 합니다.
+그렇게 되면 HTTP massge에는 헤더에 content-type 필드의 값(MIME)에 해당 인코딩이 입력되어 
+서버에 Request를 보냅니다. (이는 HTTP Request에서 multipart의 Body를 전송하는 규약에 따릅니다.)
+서버에서는 해당 요청에서 헤더의 content-type를 확인하고 해당 인코딩 타입에 맞게 정보를 받습니다.
+
+> input태그의 file 타입이란? 
+해당 태그는 파일업로기능을 지원하는 태그입니다.
+file태그를 추가하면 기본적으로 파일추가 버튼이 생성되며, 버튼을 클릭시 
+파일을 올릴 수 있는 ui가 나타납니다. 
+사용자가 로컬에 있는 파일을 올리고 submit버튼을 클릭하게 되면 
+8비트짜리 이진 파일로 전송됩니다.
+추가된 파일은 자바스크립트의 files객체를 통해 조작이 가능합니다.
+
+
+
+
+
+
+
+

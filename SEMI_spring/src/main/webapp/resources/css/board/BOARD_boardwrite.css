@@ -1,0 +1,434 @@
+
+
+/*common*/
+* {margin:0; padding:0;}
+
+body{font-size: 14px; color: #000;}
+
+a{text-decoration: none; color: #000; outline:0;}
+
+
+
+
+/* 헤더 타이틀 */
+#headTitle h2{
+	padding:0 20px;
+	display: inline-block;
+	margin-bottom: 10px;
+	margin-top: 0px;
+}
+
+hr{ 
+	border: 1px solid #ddd;
+  	border-radius: 2px; 
+  	margin: 0 20px;
+  	width: 99.4% 
+}
+
+#headTitle .button{
+	background: none;
+	border: 1px solid #000;
+	width: 100px;
+	height: 30px;
+	margin-top: 0%;
+	margin-left: 20px;
+	float: right;
+}
+
+#headTitle .button:hover{
+	border: 2px solid #ff7e67;
+}
+ 
+#file{
+	float: right;
+}
+
+#file:hover{
+	border: 2px solid #ff7e67;
+}
+
+
+/*layout*/
+#container{
+	width: 100%; 
+	padding: 50px 10px;
+    box-sizing: border-box;
+}
+
+
+@media screen and (max-width:767px) {
+#board{
+	width:100%;
+	height:800px;
+	text-align: center;
+	padding:0 0 5px 0;
+}
+
+h2{
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+	padding: 10px 0 10px 0;
+}
+h3{
+	padding:0 20px;
+}
+span img{
+	width:40px; 
+	height: 40px;
+	margin-top:-10px;
+	border-radius: 50%;
+}
+
+
+
+#content{
+	border-radius: 15px;
+	background-color:#;
+	width:100%;
+	height:800px;
+	margin: 0;
+}
+#cdetail{
+	width:100%;
+	height:25px;
+	float: left;
+	padding: 5px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+#cdetail span {
+	float:left;
+	padding-left: 10px;
+}
+.cdetail2{
+	width:95%;
+	background-color:#f0f0f0;
+	position:relative;
+	left:2.5%;
+}
+.conimg{
+	width:90%;
+	margin: 5%;
+	padding: 5% 0 0;
+}	
+#ctext{
+	width:90%;
+	margin: 5%;
+	padding: 5% 0;
+}
+#writer{
+	float: left;
+	width: 138px;
+	height: 25px;
+}
+#date{
+	float: right;
+	width: 138px;
+	height: 25px;
+}
+
+#btn2{
+	float: right;
+	width: 130px;
+	padding-bottom:10px;
+}
+
+hr{ 
+	border: 1px solid #ddd;
+  	border-radius: 2px; 
+  	margin: 0 20px;
+ 
+  }
+  
+  #title{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 20px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #000;
+}
+
+#context{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 20px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #000;
+}
+
+#cbtn{
+	background: none;
+	border: 1px solid #000;
+	padding:5px;
+}
+
+}
+
+    
+
+
+/*태블릿 크기 768~1049*/
+@media screen and (min-width:768px) and (max-width:1049px) {
+
+#board{
+	width:80%;
+	height:1020px;
+	margin:0 10% 0 10%;
+	text-align: center;
+	padding:0 0 5px 0;
+	background-color: #f0f0f0;
+}
+
+h2{
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+	padding: 10px 0 10px 0;
+	color: #fff;
+}
+h3{
+	padding:0 20px;
+}
+span{color: #fff;}
+span img{
+	width:40px; 
+	height: 40px;
+	margin-top:-10px;
+	border-radius: 50%;
+}
+
+
+#content{
+	position:relative;
+	top:13px;
+	left:15%;
+	border-radius: 15px;
+	background-color:#000;
+	width:70%;
+	height:1000px;
+	margin: 0;
+}
+#cdetail{
+	width:96%;
+	height:40px;
+	float: left;
+	padding: 5px;
+	margin: 10px 2%;
+}
+#cdetail span {
+	float:left;
+	padding-left: 10px;
+}
+.cdetail2{
+	width:90%;
+	background-color:#f0f0f0;
+	position:relative;
+	left:5%;
+}
+.conimg{
+	width:90%;
+	margin: 5%;
+	padding: 5% 0 0;
+}	
+#ctext{
+	width:90%;
+	margin: 5%;
+	padding: 5% 0;
+}
+#writer{
+	float: left;
+	width: 138px;
+	height: 25px;
+}
+#date{
+	float: right;
+	width: 138px;
+	height: 25px;
+}
+
+#btn2{
+	float: right;
+	width: 190px;
+	padding-right: 20px;
+}
+
+hr{ 
+	border: 1px solid #ddd;
+  	border-radius: 2px; 
+  	margin: 0 20px;
+ 
+  }
+  
+  #title{
+  width: 96%;
+  margin: 2%;
+  padding: 12px 20px 20px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  border:none;
+  border-bottom: 2px solid #000;
+  
+}
+
+#context{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 20px 0;
+  box-sizing: border-box;
+  border: none;
+  border-bottom: 2px solid #000;
+}
+
+#cbtn{
+	background: none;
+	border: 1px solid #fff;
+	padding:5px;
+	color: #fff;
+}
+
+}
+
+
+
+
+/**********************pc*/
+@media screen and (min-width:1050px){
+	/* 자유게시판 타이틀 */
+	#headTitle{
+		width: 80%;
+		margin: -1%;
+		margin-left: -2.5%;
+		padding-left: 0%;
+		padding-top: 2%;
+		
+	}	
+	#headTitleL{
+		width: 20%;
+		margin: -1%; 
+		padding-left: 0%;
+		padding-top: 2%;
+	}		
+	
+	/* 내용 메인 컨테이너 */ 
+	#container{
+		width: 80%;
+		height: 930px;
+		margin: 2% 10%;
+		background: #f0f0f0;
+		text-align: center;
+	}
+
+	h2{
+		font-size: 25px;
+		font-weight: bold;
+		text-align: center;
+		padding: 10px 0 10px 0;
+	}
+	
+	h3{
+		padding:0 20px;
+	}
+	
+	#cdetail span img{
+		width:40px; 
+		height: 40px;
+		margin-top:-10px;
+		border-radius: 50%;
+	}
+	
+	/* 게시판 영역 */
+	#content{
+		width:80%;
+		height:800px;
+		margin: 0;
+		padding: 12px 20px;
+/* 		box-sizing: border-box; */
+		border: none;
+		border-bottom: 2px solid #000;
+		border-radius: 15px;
+		background-color:#fff;
+		position:relative;
+		top:13px;
+		left:10%;
+	}
+
+	/* 게시판 제목 입력 */
+	#title{
+	  width: 100%;
+	  padding: 12px 20px;
+	  margin: 20px 0;
+	  box-sizing: border-box;
+	  border: none;
+	  border-bottom: 2px solid #000;
+	}
+
+	
+	/* 작설자 */
+	#cdetail{
+		width:100%;
+		height:25px;
+		float: left;
+		padding: 5px;
+	}
+	
+	#cdetail span {
+		float:left;
+		padding-left: 10px;
+	}
+	
+		
+	#cdetail  hr{ 
+		border: 1px solid #ddd;
+	  	border-radius: 2px; 
+	  	margin: 0%;
+	}
+	
+	.cdetail2{
+		width:90%;
+		background-color:#f0f0f0;
+		position:relative;
+		left:5%;
+	}
+	
+	/* 여백 */
+	.blank{
+		width:90%;
+		margin: 5%;
+	}	
+	
+	#ctext{
+		width:90%;
+		margin: 5%;
+		padding: 5% 0;
+	}
+	
+	#writer{
+		float: left;
+		width: 138px;
+		height: 25px;
+	}
+	
+	#date{
+		float: right;
+		width: 138px;
+		height: 25px;
+	}
+
+	#btn2{
+		float: right;
+		width: 190px;
+		padding-right: 20px;
+	}
+
+	#cbtn{
+		background: none;
+		border: 1px solid #000;
+		padding:5px;
+	}
+
+
+
+}

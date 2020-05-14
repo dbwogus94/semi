@@ -21,7 +21,7 @@
 
 	
 <body>
-<f:form action="profileInsert.do" method="post" modelAttribute="mentorDto" enctype="multipart/form-data" onsubmit="return confirmSubmit()">	
+<f:form action="profileInsert.do" method="post" modelAttribute="mentorDto" enctype="multipart/form-data" onsubmit="return validateForm(this)">	
 	<fieldset class="container" id="main_container">
 		<legend id="title">멘토 프로필</legend>
 		<f:hidden path="id"/>

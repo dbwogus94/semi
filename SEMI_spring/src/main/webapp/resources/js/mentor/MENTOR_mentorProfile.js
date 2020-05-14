@@ -89,6 +89,15 @@ function tagCreate(value) {
 	console.log("함수 호출")
 }
 
+// 서브밋 유효성 검사
+function validateForm(form){
+	
+	//console.log(form)
+	//alert("확인")
+	return true;
+}
+
+
 // 이미지 미리보기
 function imgUpload() {
 	// 파일 업로드 태그 >> 파일 업로드시 해당 파일을 가지고 있는 객체이다.

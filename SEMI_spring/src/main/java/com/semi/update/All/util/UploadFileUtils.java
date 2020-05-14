@@ -162,15 +162,7 @@ public class UploadFileUtils {
 		}
 	return "mentor01.png";
 	}
-		
-	
-	// 보통 파일업로드
-	public static boolean fileUpload(File file, byte[] date) { 
-		InputStream inputStream = null;
-		OutputStream outputStream = null;
-			
-		return false;
-	}
+
 	
 	// 프로필 파일 다운로드
 	public static String SP_ProfileUpload(MultipartFile file, String uploadPath) {

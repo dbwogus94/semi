@@ -133,8 +133,9 @@ public class MentorController {
 			} else {
 				
 			// 파일저장 : 수정에서는 파일저장시  같은이름의 파일이 있다면 실행하지 말아야함
-				String oldFileName = mentorDto.getMemberContent().replace("/update/resources/img/mentor/P_", "");
-				String[] fileNames = Util.getFilesName(uploadPath);
+				String oldFileName = mentorDto.getMemberContent().replace("/update/resources/img/mentor/P_", ""); 	// 뷰에서 받아온 dto
+				//String oldFileName = dto.getMemberContent().replace("/update/resources/img/mentor/P_", "");		// DB에서 가져온 dto
+				String[] fileNames = Util.getFilesName(uploadPath);		// 인자로 받은 경로의 파일명을 모두 배열로 가져온다.
 				
 				boolean chk = true;
 				for(String name : fileNames) {

@@ -26,10 +26,10 @@
 		</div>
 	   <div id="nav">
 			<ul>
-				<li><a href="profile.do?command=mentor_profit">a</a></li>
-				<li><a href="profile.do?command=mentor_menteeList">b</a></li>
-				<li><a href="board.do?command=boardMain"></a>c</li>
-				<li><a href="" onclick="chatPopup()"></a>d</li>
+				<a href="../mentor/main.do"><li>멘토 메인페이지</li></a>
+				<a href="../mentor/profile.do"><li>프로필 확인</li></a>
+				<a href="../board/main.do"><li>게시판</li></a>
+				<a href="" onclick="chatPopup()"><li>채팅</li></a>
 		   </ul>
 		</div>
 	
