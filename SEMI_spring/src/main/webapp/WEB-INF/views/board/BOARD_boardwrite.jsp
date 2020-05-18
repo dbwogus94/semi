@@ -1,13 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-   
 <% request.setCharacterEncoding("UTF-8");%>
 <% response.setContentType("text/html; charset=UTF-8");%>
+<%
+ response.setHeader("Cache-Control","no-cache");
+ response.setHeader("Pragma","no-cache");
+ response.setDateHeader("Expires",0);
+%>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<meta http-equiv='Content-type' content='text/html; charset=utf-8'>
+<meta http-equiv="cache-control" content="no-cache, must-revalidate">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/BOARD_boardwrite.css">
 <title>게시글작성</title>
@@ -29,15 +38,19 @@
 </head>
 
 <body>
-<form action="" method="post" onsubmit ="return validateForm();" id="form">
+<form action="writeRes.do" method="post" id="form" enctype="multipart/form-data">
+	<input type="hidden" name="boardNo" value="0" id="boardNo">
+	<input type="hidden" name="id" value="${login.id }"/>
+	<input type="hidden" name="memberName" value="${login.memberName }"/>
 	<div class="row" >
-		<div class="col-md-12" id="headTitle" onsubmit="">
+		<div class="col-md-12" id="headTitle">
 			<hr>
 			<br>
 			<h2>자유게시판</h2>
-			<!-- onclick="location.href='writeCancel.do'" -->>
-			<input type="button" class="button" value="작성취소" onclick="validateForm();"/>
-			<input type="submit" class="button" value="저장하기"/>
+			<!-- onclick="location.href='writeCancel.do'" -->
+			<input type="button" class="button" value="작성취소" onclick="location.href='writeCancel.do'"/>
+			<input type="button" class="button" value="저장하기" onclick="AjaxFileUpload();"/>
+			<input type="submit" id="submit" style="display: none" value="submit"/>
 
 	    	
 			<br>
@@ -50,11 +63,11 @@
 			<div id="content">
 				<div id="cdetail">
 			 
-		  			<input type="text" id="title" name="title" placeholder="제목을 입력해주세요"/>
+		  			<input type="text" id="title" name="boardTitle" placeholder="제목을 입력해주세요"/>
 					<br>
 					<div id="cdetail">
-						<span><img src="${pageContext.request.contextPath}/resources/img/mentor/mentor01.png"></span><span>작성자</span>
-						<input type="file" id="file" multiple="multiple"/>
+						<span><img src="${login.memberContent}"></span><span>${login.memberName }</span>
+						<input type="file" id="file" multiple="multiple" name="file"/>
 					</div>
 					<br>
 					<br>
@@ -62,12 +75,10 @@
 					<div class="cdetail2">
 						<div class="blank"></div>
 						<div id="ctext">
-							<textarea rows="100" cols="100" id="summernote"></textarea>
+							<textarea rows="100" cols="100" id="summernote" name="boardContent">${boardDto.boardContent }</textarea>
 							<!-- <input type="text" id="context" name = "content" placeholder="내용을 입력해주세요"/> -->
 						</div>
 						<div id="btn2">
-							<input type = "hidden" name = "name" value=""/>
-							<input type = "hidden" name = "id" value=""/>
 						</div>
 					</div>
 				</div>	

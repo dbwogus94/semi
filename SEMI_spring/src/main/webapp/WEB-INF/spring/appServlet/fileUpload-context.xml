@@ -12,9 +12,20 @@
 	<!-- 30) xml파일 생성  업로드 패스 적용 + CommonsMultipartResolver 빈생성-->
 	
 	<!-- 업로드 패스 설정 --> 
-	<beans:bean class="java.lang.String" id="uploadPath">
+	<beans:bean class="java.lang.String" id="mentorImgUploadPath">
 	 	<beans:constructor-arg value="C:\git\semi\SEMI_spring\src\main\webapp\resources\img\mentor" />
 	</beans:bean>
+	
+	<beans:bean class="java.lang.String" id="boardImgUploadPath">
+	 	<beans:constructor-arg value="C:\git\semi\SEMI_spring\src\main\webapp\resources\img\board\img" />
+	</beans:bean>
+	
+	<beans:bean class="java.lang.String" id="boardFileUploadPath">
+	 	<beans:constructor-arg value="C:\git\semi\SEMI_spring\src\main\webapp\resources\img\board\file" />
+	</beans:bean>
+	
+	
+	
 
 	<!-- 파일 업로드 -->		
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

@@ -8,10 +8,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/Board_Main.css">
 
-<title>자유게시판</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/Board_Main.css">
 <%@ include file="../mentor/mentorHeader.jsp"%>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_BoardMain.js"></script>
+<title>자유게시판</title>
 </head>
 <body>
 
@@ -30,125 +31,50 @@
 
 </div>
 <div id="container">
-<form action="board.do" method="post">
+<form action="main.do" method="post">
     <div id="search1">
     	<select name = "category">
     		<option value="0">---선택---</option>
-    		<option value="id">아이디</option>
-    		<option value="name">이름</option>
-    		<option value="addr">제목</option>
+    		<option value="content">내용</option>
+    		<option value="title">제목</option>
+    		<option value="name">작성자</option>
     	</select>
-    	<input type="text" name = "search2" placeholder="검색할 내용을 입력하고 엔터키를 눌러주세요" onkeypress = "if(event.keyCode == 13) {submit();}">
+    	<input type="text" name = "keyword" placeholder="검색할 내용을 입력하고 엔터키를 눌러주세요" onkeypress = "if(event.keyCode == 13) {submit();}">
     </div>
     <div id="button">
-    
-    
     </div>
 </form>
 	<div id="board">
     <ul>
-
-		<li>
-           <a href="">
-           		 <div class="top">
-           		 	<img class="board_img" alt="" src="https://macinjune.com/wp-content/uploads/2018/06/th_google_image_search_2.jpg">
-           		 </div>
-           		 <div class="body">
-					 <div class="title" name="">제목</div>
-					 <div class="content" name="">이곳은 글의  내용이 들어가는 곳입니다.</div>
-					 <div class="date" name="">2020년 05월 11일</div>
-				 </div>
-			</a>	 
-				 <div class="footer">
-				 	<a href=""><div class="writer">작성자(클릭시 유저 메인으로)</div></a>
-				 	<div class="like">좋아요(보여주기만)</div>
-				 </div>
-        </li>
-        
-        
-		
-		<li>
-           <a href="">
-           		 <div class="top">
-           		 	<img class="board_img" alt="" src="https://macinjune.com/wp-content/uploads/2018/06/th_google_image_search_2.jpg">
-           		 </div>
-           		 <div class="body">
-					 <div class="title" name="">제목</div>
-					 <div class="content" name="">이곳은 글의  내용이 들어가는 곳입니다.</div>
-					 <div class="date" name="">2020년 05월 11일</div>
-				 </div>
-			</a>	 
-				 <div class="footer">
-				 	<a href=""><div class="writer">작성자(클릭시 유저 메인으로)</div></a>
-				 	<div class="like">좋아요(보여주기만)</div>
-				 </div>
-        </li>
-        
-        <li>
-           <a href="">
-           		 <div class="top">
-           		 	<img class="board_img" alt="" src="https://macinjune.com/wp-content/uploads/2018/06/th_google_image_search_2.jpg">
-           		 </div>
-           		 <div class="body">
-					 <div class="title" name="">제목</div>
-					 <div class="content" name="">이곳은 글의  내용이 들어가는 곳입니다.</div>
-					 <div class="date" name="">2020년 05월 11일</div>
-				 </div>
-			</a>	 
-				 <div class="footer">
-				 	<a href=""><div class="writer">작성자(클릭시 유저 메인으로)</div></a>
-				 	<div class="like">좋아요(보여주기만)</div>
-				 </div>
-        </li>
-	
-		<li>
-           <a href="">
-           		 <div class="top">
-           		 	<img class="board_img" alt="" src="https://macinjune.com/wp-content/uploads/2018/06/th_google_image_search_2.jpg">
-           		 </div>
-           		 <div class="body">
-					 <div class="title" name="">제목</div>
-					 <div class="content" name="">이곳은 글의  내용이 들어가는 곳입니다.</div>
-					 <div class="date" name="">2020년 05월 11일</div>
-				 </div>
-			</a>	 
-				 <div class="footer">
-				 	<a href=""><div class="writer">작성자(클릭시 유저 메인으로)</div></a>
-				 	<div class="like">좋아요(보여주기만)</div>
-				 </div>
-        </li>
-        <li>
-           <a href="">
-           		 <div class="top">
-           		 	<img class="board_img" alt="" src="https://macinjune.com/wp-content/uploads/2018/06/th_google_image_search_2.jpg">
-           		 </div>
-           		 <div class="body">
-					 <div class="title" name="">제목</div>
-					 <div class="content" name="">이곳은 글의  내용이 들어가는 곳입니다.</div>
-					 <div class="date" name="">2020년 05월 11일</div>
-				 </div>
-			</a>	 
-				 <div class="footer">
-				 	<a href=""><div class="writer">작성자(클릭시 유저 메인으로)</div></a>
-				 	<div class="like">좋아요(보여주기만)</div>
-				 </div>
-        </li>
-        <li>
-           <a href="">
-           		 <div class="top">
-           		 	<img class="board_img" alt="" src="https://macinjune.com/wp-content/uploads/2018/06/th_google_image_search_2.jpg">
-           		 </div>
-           		 <div class="body">
-					 <div class="title" name="">제목</div>
-					 <div class="content" name="">이곳은 글의  내용이 들어가는 곳입니다.</div>
-					 <div class="date" name="">2020년 05월 11일</div>
-				 </div>
-			</a>	 
-				 <div class="footer">
-				 	<a href=""><div class="writer">작성자(클릭시 유저 메인으로)</div></a>
-				 	<div class="like">좋아요(보여주기만)</div>
-				 </div>
-        </li>
+		<c:choose>
+			<c:when test="${empty list }">
+				<li>
+					<div class="body">
+						============글이 없습니다============
+					</div>
+				</li>
+			</c:when>
+			<c:otherwise>
+				<c:forEach items="${list }" var="dto">
+					<li>
+			           <a href="">
+			           		 <div class="top">
+			           		 	<img class="board_img" alt="" src="${dto.thumbnail }" onerror="this.src='/update/resources/img/board/board.jpeg';">
+			           		 </div>
+			           		 <div class="body">
+								 <div class="title" name=""><b>${dto.boardTitle}</b></div>
+								 <div class="content" name="">${dto.boardContent }</div>
+								 <div class="date" name="">${dto.boardRegdate }</div>
+							 </div>
+						</a>	 
+							 <div class="footer">
+							 	<a href=""><div class="writer">${dto.memberName}(클릭시 유저 메인으로)</div></a>
+							 	<div class="like">${dto.boardLike }</div>
+							 </div>
+			        </li>
+				</c:forEach>		
+			</c:otherwise>
+		</c:choose>
     </ul>
     </div>
 	

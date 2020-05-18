@@ -6,9 +6,7 @@
 		<!-- 테이블당 1개 dto 9개 + 2개(게시판용 dto + 2) 총 10개 -->
 		<typeAlias type="com.semi.update.join.dto.JoinDto" alias="joinDto" />
 		<!-- 게시판용 dto개 >> 테이블은 1개를 사용하고 기능별로 dto를 나누어 사용함 -->
-		<typeAlias type="com.semi.update.member.board.dto.AnswerBoardDto" alias="answerBoardDto" />
 		<typeAlias type="com.semi.update.member.board.dto.BoardDto" alias="boardDto" />
-		<typeAlias type="com.semi.update.member.board.dto.ReviewDto" alias="reviewDto" />
 		
 		<typeAlias type="com.semi.update.member.match.dto.MatchDto" alias="matchDto" />
 		<typeAlias type="com.semi.update.member.mentee.dayMenu.dto.DayMenuDto" alias="dayMenuDto" />

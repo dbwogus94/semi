@@ -29,18 +29,33 @@ public class UploadFileUtils {
 	static final int PORFILE_HEIGHT = 200;
 	
 	
+	// img 업로드
+	public static String fileUpload(String uploadPath, String fileName, byte[] fileData, String id_ymdPath) throws IOException {
+		// 랜덤 id 생성
+		UUID uid = UUID.randomUUID(); 
+		// 랜덤 id + 파일명
+		String newFileName = uid + "_" + fileName;
+		// 이미지 경로 : uploadPath + ymdPath(년/월/일을 경로에 추가하기 위한 path)
+		String imgPath = uploadPath + id_ymdPath;
+		// File 객체 생성(경로 , 이름)
+		File target = new File(imgPath, newFileName);
+		// 파일 복사 : 받아온 바이트 데이터(fileData)를  위에 생성한 새로운 File 객체에 복사한다.  
+		FileCopyUtils.copy(fileData, target); 
+		// 스프링 프레임워크에서 지원하는 기능 > 스트림을 열어 > 반복문으로 파일 복사 > flush > close
+		
+		return newFileName;
+	}
 	
-	private String fileName;
-	
-	public static String fileUploadAndThumb(String uploadPath, String fileName, byte[] fileData, String ymdPath) throws IOException {
-	
+	public static String[] imgUploadAndThumb(String uploadPath, String fileName, byte[] fileData, String id_ymdPath) throws IOException {
+		String[] fileNames = new String[2];
+		
 	// 받아온 데이터로 파일객체 생성
 		// 랜덤 id 생성
 		UUID uid = UUID.randomUUID();  // java.util의 UUID는 랜덤으로 2f48f241-9d64-4d16-bf56-70b9d4e0e79a 이와같은 형태로 고유한 값 생성
 		// 랜덤 id + 파일명
 		String newFileName = uid + "_" + fileName;
-		// 이미지 경로 : uploadPath + ymdPath(년/월/일을 경로에 추가하기 위한 path)
-		String imgPath = uploadPath + ymdPath;
+		// 이미지 경로 : uploadPath + id_ymdPath(id/년/월/일/ 을 경로에 추가하기 위한 path)
+		String imgPath = uploadPath + File.separator  + id_ymdPath;
 		// File 객체 생성(경로 , 이름)
 		File target = new File(imgPath, newFileName);		// File(File parent, String Child) :  parent 객체 폴더의 child 라는 파일에 대한 File 객체를 생성한다
 		
@@ -68,41 +83,50 @@ public class UploadFileUtils {
 			Thumbnails.of(image).size(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT).toFile(thumbnail);
 		}
 		
-		return newFileName;
+		fileNames[0] = thumbFileName;   // 썸내일
+		fileNames[1] = newFileName;		// 원본파일 
+		
+		return fileNames;
 	}
 	
-	// 년/월/일 경로 생성
-	public static String calcPath(String uploadPath) {
+	//  /유져id/년/월/일 경로 생성, 폴더생성
+	public static String calcPath(String uploadPath, String userId) {
 		  Calendar cal = Calendar.getInstance();
-		  // 년
-		  String yearPath = File.separator + cal.get(Calendar.YEAR);
-		  // 월
+		  
+		  // /id/yyyy
+		  String yearPath = File.separator + userId + File.separator + cal.get(Calendar.YEAR);
+		  // /id/yyyy/mm
 		  String monthPath = yearPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.MONTH) + 1);	// new DecimalFormat("00").format(1); >>> 사용하면 01  표현형식을 format해준다.
-		  // 일
+		  // /id/yyyy/mm/dd
 		  String datePath = monthPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.DATE));
+		  
+		  // 원본파일
+		  makeDir(uploadPath, File.separator +userId, yearPath, monthPath, datePath);
+		  // 썸내일은 s 폴더 하나더 생성하여 관리
+		  makeDir(uploadPath, File.separator +userId, yearPath, monthPath, datePath + "\\s");
 
-		  makeDir(uploadPath, yearPath, monthPath, datePath);
-		  makeDir(uploadPath, yearPath, monthPath, datePath + "\\s");
-
+		  // 유져id/년/월/일
 		  return datePath;
 	}
 	
-	// String... >>  해당 메서드의 두번째 이후 파라미터는 배열로 받는다 
+	// 폴더생성
+	// String... >>  해당 메서드의 두번째 이후 파라미터는 배열로 받는다  >>> [/id, /id/yyyy, /id/yyyy/mm, /id/yyyy/mm/dd]
 	private static void makeDir(String uploadPath, String... paths) {
-
-		  if (new File(paths[paths.length - 1]).exists()) { // 해당파일이 있으면 true 
+		  if (new File(uploadPath + paths[paths.length - 1]).exists()) { // 배열의 가장 끝 폴더가 이미 있으면 리턴 
 			  return; 
 		  }
 		  
-		  //
+		  // paths = [/id, /id/yyyy, /id/yyyy/mm, /id/yyyy/mm/dd]
 		  for (String path : paths) {
 			  File dirPath = new File(uploadPath + path);
-
-			  if (!dirPath.exists()) {
+			  if (!dirPath.exists()) { // 배열의 폴더를 매번 검사해 없으면 폴더 생성
 				  dirPath.mkdir();
 			  }
 		  }
+		  // 의문? : mkdir()를 사용하지 않고 mkdirs()를 사용했다면 이렇게 번거롭게 코드를 짤 필요가 없지 않을까?
 	}
+	
+	
 	
 	// 스프링에서 지원하는 MultipartFile을 사용한 파일 업로드
 	public static String SP_fileUpload(MultipartFile file, String uploadPath) {
@@ -164,7 +188,7 @@ public class UploadFileUtils {
 	}
 
 	
-	// 프로필 파일 다운로드
+	// 프로필 파일 업로드
 	public static String SP_ProfileUpload(MultipartFile file, String uploadPath) {
 		System.out.println("FileUpload >>>>>>>>>>>>>>>>>>>> [프로필 업로드 실행]");
 		InputStream inputStream = null;

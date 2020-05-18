@@ -38,7 +38,7 @@ public class MentorController {
 	@Autowired
 	private JoinBiz joinBiz;
 	
-	@Resource(name="uploadPath")	// 업로드 파일 경로
+	@Resource(name="mentorImgUploadPath")	// 업로드 파일 경로
 	private String uploadPath;
 
 	// 멘토 메인
@@ -46,7 +46,7 @@ public class MentorController {
 	public String mentroMain(Model model, HttpSession session) {
 		logger.info("mentor Main page");
 		MentorDto login = (MentorDto) session.getAttribute("login");
-		MentorDto mentorDto = profileBiz.MentorSelectOne(login.getId());
+		MentorDto mentorDto = profileBiz.MentorSelectOne(login.getId()); //??
 		model.addAttribute("mentorDto", mentorDto);
 		return "mentor/MENTOR_Main";
 	}
