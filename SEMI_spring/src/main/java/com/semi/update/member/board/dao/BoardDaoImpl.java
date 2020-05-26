@@ -54,5 +54,12 @@ public class BoardDaoImpl implements BoardDao{
 		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>>> boardList : " + dto);
 		return session.selectList(NANESPACE + "boardList" , dto);
 	}
+
+	// select one (작성자 프로필 사진경로 포함)
+	@Override
+	public BoardDto selectOne(int boardNo) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> selectOne : " + boardNo);
+		return session.selectOne(NANESPACE + "selectOne", boardNo);
+	}
 	
 }

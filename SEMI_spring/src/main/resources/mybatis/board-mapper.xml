@@ -13,6 +13,7 @@
 		<result property = "filePath" column = "BOARD_FILEPATH"/>
 		<result property = "imgPath" column = "BOARD_IMGPATH"/>
 		<result property = "thumbnail" column = "BOARD_THUMBNAIL"/>
+		<result property = "profileSrc" column = "MEMBER_CONTENT"/>
 	</resultMap>
 	
 	<insert id="insertImg" parameterType="boardDto">
@@ -63,6 +64,18 @@
 				AND BOARD_NAME LIKE ('%' || #{keyword} || '%')
 			</if>
 		</trim>
+		ORDER BY BOARD_NO DESC 
+	</select>
+	
+	<!-- select One : 
+		유저의 프로필 사진을 가져와야해서 3중 조인을 하였음
+		질의문을 통한 join(ANSI 아님) >> FREE_BOARD, MEMBER_JOIN, MEMBER_PROFILE -->
+	<select id="selectOne" resultMap="ResultMap">
+		SELECT f.BOARD_NO, f.ID, f.BOARD_NAME, f.BOARD_TITLE, f.BOARD_CONTENT, f.BOARD_LIKE ,f.BOARD_FILEPATH, m.MEMBER_CONTENT 
+		FROM FREE_BOARD f, MEMBER_JOIN J, MEMBER_PROFILE m
+		WHERE f.ID = j.ID
+		AND j.ID = m.ID
+		AND f.BOARD_NO = #{boardNo}
 	</select>
 	
 	

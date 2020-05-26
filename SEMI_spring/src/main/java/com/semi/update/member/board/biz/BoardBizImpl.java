@@ -51,4 +51,11 @@ public class BoardBizImpl implements BoardBiz {
 		return dao.boardList(dto);
 	}
 
+	// select one (작성자 프로필 사진경로 포함)
+	@Override
+	public BoardDto selectOne(int boardNo) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>>> boardList : " + boardNo);
+		return dao.selectOne(boardNo);
+	}
+
 }

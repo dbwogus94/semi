@@ -38,6 +38,11 @@ public class BoardDto {
 	    // 썸내일 경로
 	    private String thumbnail;
 	    
+	    /*================================== DB 칼럼과 일치하지 않는 추가된 항목 ================================ */
+	    
+	    // 게시판 작성한 유저의 프로필 사진 경로
+	    private String profileSrc;
+	    
 	    // 스프링에서 지원하는 multipart
 	    private MultipartFile[] file;
 	    
@@ -133,6 +138,14 @@ public class BoardDto {
 			this.thumbnail = thumbnail;
 		}
 
+		public String getProfileSrc() {
+			return profileSrc;
+		}
+
+		public void setProfileSrc(String profileSrc) {
+			this.profileSrc = profileSrc;
+		}
+
 		public MultipartFile[] getFile() {
 			return file;
 		}
@@ -162,9 +175,9 @@ public class BoardDto {
 			return "BoardDto [boardNo=" + boardNo + ", id=" + id + ", memberName=" + memberName + ", boardTitle="
 					+ boardTitle + ", boardContent=" + boardContent + ", boardRegdate=" + boardRegdate + ", boardLike="
 					+ boardLike + ", filePath=" + filePath + ", imgPath=" + imgPath + ", thumbnail=" + thumbnail
-					+ ", file=" + Arrays.toString(file) + ", category=" + category + ", keyword=" + keyword + "]";
+					+ ", profileSrc=" + profileSrc + ", file=" + Arrays.toString(file) + ", category=" + category
+					+ ", keyword=" + keyword + "]";
 		}
-
 
 }
 	  

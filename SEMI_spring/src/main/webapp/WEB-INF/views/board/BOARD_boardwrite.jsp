@@ -42,6 +42,7 @@
 	<input type="hidden" name="boardNo" value="0" id="boardNo">
 	<input type="hidden" name="id" value="${login.id }"/>
 	<input type="hidden" name="memberName" value="${login.memberName }"/>
+	<input type="hidden" name="boardContent"/>
 	<div class="row" >
 		<div class="col-md-12" id="headTitle">
 			<hr>
@@ -50,8 +51,8 @@
 			<!-- onclick="location.href='writeCancel.do'" -->
 			<input type="button" class="button" value="작성취소" onclick="location.href='writeCancel.do'"/>
 			<input type="button" class="button" value="저장하기" onclick="AjaxFileUpload();"/>
-			<input type="submit" id="submit" style="display: none" value="submit"/>
-
+			<input type="submit" style="display: none" id="submit"/>
+			
 	    	
 			<br>
 			<hr>
@@ -75,7 +76,7 @@
 					<div class="cdetail2">
 						<div class="blank"></div>
 						<div id="ctext">
-							<textarea rows="100" cols="100" id="summernote" name="boardContent">${boardDto.boardContent }</textarea>
+							<textarea rows="100" cols="100" id="summernote"></textarea>
 							<!-- <input type="text" id="context" name = "content" placeholder="내용을 입력해주세요"/> -->
 						</div>
 						<div id="btn2">

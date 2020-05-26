@@ -57,14 +57,14 @@
 			<c:otherwise>
 				<c:forEach items="${list }" var="dto">
 					<li>
-			           <a href="">
+			           <a href="detail.do?boardNo=${dto.boardNo }">
 			           		 <div class="top">
 			           		 	<img class="board_img" alt="" src="${dto.thumbnail }" onerror="this.src='/update/resources/img/board/board.jpeg';">
 			           		 </div>
 			           		 <div class="body">
-								 <div class="title" name=""><b>${dto.boardTitle}</b></div>
-								 <div class="content" name="">${dto.boardContent }</div>
-								 <div class="date" name="">${dto.boardRegdate }</div>
+								 <div class="title"><b>${dto.boardTitle}</b></div>
+								 <div class="content">${dto.boardContent }</div>
+								 <div class="date">${dto.boardRegdate }</div>
 							 </div>
 						</a>	 
 							 <div class="footer">

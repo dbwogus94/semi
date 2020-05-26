@@ -21,4 +21,7 @@ public interface BoardDao {
 	
 	//전체 선택(페이징) + 검색
 	public List<BoardDto> boardList(BoardDto dto);
+	
+	// select one (작성자 프로필 사진경로 포함)
+	public BoardDto selectOne(int boardNo); 
 }

@@ -1,7 +1,9 @@
 package com.semi.update.All.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,6 +44,7 @@ public class UploadFileUtils {
 		// 파일 복사 : 받아온 바이트 데이터(fileData)를  위에 생성한 새로운 File 객체에 복사한다.  
 		FileCopyUtils.copy(fileData, target); 
 		// 스프링 프레임워크에서 지원하는 기능 > 스트림을 열어 > 반복문으로 파일 복사 > flush > close
+		// 내부적으로 java.nio를 통하여  inputStream과 OutputStream을 만들어 준다.
 		
 		return newFileName;
 	}
@@ -127,7 +130,6 @@ public class UploadFileUtils {
 	}
 	
 	
-	
 	// 스프링에서 지원하는 MultipartFile을 사용한 파일 업로드
 	public static String SP_fileUpload(MultipartFile file, String uploadPath) {
 		System.out.println("FileUpload >>>>>>>>>>>>>>>>>>>> [파일 업로드 실행]");
@@ -159,6 +161,7 @@ public class UploadFileUtils {
 			
 			// file의 크기만큼 바이트 빈 배열 생성  >> 한번에 읽을 데이터 크기설정 하는것이다.(배열의 크기많큼 한번에 읽는다)
 			byte[] b = new byte[(int) file.getSize()];											// file.getSize() : 업로드한 파일의 크기를 구한다.
+			//byte[] b = new byte[4096];		
 			// 읽기 : 스트림에 들어간 데이터 읽기
 			int read =  0; 		// 1byte : 0 ~ 255
 								// int : 1byte * 4 >>> 0000 0000 0000 0000
@@ -210,11 +213,8 @@ public class UploadFileUtils {
 			}
 			// 저장할 파일 생성 >> 경로 + 고유번호 + 업로드한 파일의 이름
 			File newFile = new File(path + File.separator + newFileName);						// file.getOriginalFilename() : 업로드한 파일의 이름을 구한다.
-			if(!newFile.exists()) {
-				newFile.createNewFile();	// 경로에 새로운 빈 파일 생성
-			}
 			
-			outputStream = new FileOutputStream(newFile);	// 쓰여질 파일을 인자로 전달
+			outputStream = new FileOutputStream(newFile);	// 쓰여질 파일을 인자로 전달 >> 이 때 파일 생성
 			
 			// file의 크기만큼 바이트 빈 배열 생성 >> 한번에 읽을 데이터 크기설정 하는것이다.(배열의 크기많큼 한번에 읽는다)
 			byte[] b = new byte[(int) file.getSize()];											// file.getSize() : 업로드한 파일의 크기를 구한다.
@@ -223,14 +223,11 @@ public class UploadFileUtils {
 														
 			// 쓰기 : 새로 생성된 newfile에  데이터 쓰기 
 			while((read = inputStream.read(b)) != -1) { 
-														// inputStream.read(byte[] input): 배열의 크기만큼 읽는다. 스트림 끝에 도달하면 -1을 반환한다.
-														// inputStream.read(byte[] input, int offset, int length) : offset부터 leagth까지 읽는다. 스트림 끝에 도달하면 -1을 반환 
-				outputStream.write(b, 0, read);			// outputStream.write(byte[ ] b, int off, int len) :  출력 스트림으로 주어진 바이트 배열 b[off]부터 len개까지의 바이트를 보냅니다.
-														// outputStream.write(byte[ ] b) : 출력 스트림에 인자로 전달된 파일에 바이트 배열 b의 모든 바이트를 보냅니다(입력합니다).
-				outputStream.flush();					// 잔여 바이트가 있다면 모두 내보내자
+				outputStream.write(b, 0, read);			
+				outputStream.flush();					
 			}
 			
-		// 프로필 파일명 : P_ + 원본 파일명
+			// 프로필 파일명 : P_ + 원본 파일명
 			String thumbFileName = "P_" + newFileName;
 			
 			// File 객체생성(경로 /랜덤id+원본 파일명)
@@ -260,9 +257,8 @@ public class UploadFileUtils {
 				e.printStackTrace();
 			}
 		}
-		
-	
-	return "mentor01.png";
+		return "mentor01.png";
 	}
+	
 	
 }

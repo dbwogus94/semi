@@ -308,13 +308,18 @@ input[type="text"]:hover{
 	
 	#board .title{
 		font-size: 14pt;
+		height: 15%;
 	}
 	
 	#board .content{
+		height:75%;	
 	}
 	
 	#board .date{
-	
+		text-align: left;
+		font-size:10px;
+		color: gray;
+		height:10%;
 	}
 	
 	/* 바텀영역 */

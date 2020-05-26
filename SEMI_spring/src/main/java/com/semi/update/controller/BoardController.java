@@ -2,11 +2,15 @@ package com.semi.update.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -17,10 +21,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.semi.update.All.util.DownloadFileUtils;
 import com.semi.update.All.util.UploadFileUtils;
+import com.semi.update.All.util.Util;
 import com.semi.update.member.board.biz.BoardBiz;
 import com.semi.update.member.board.dto.BoardDto;
 import com.semi.update.member.dto.MenteeDto;
@@ -45,7 +52,17 @@ public class BoardController {
 	@RequestMapping(value = "/main.do")
 	public String boardMain(Model model, @ModelAttribute BoardDto dto) {
 		logger.info("board main page");
+		List<BoardDto> newList = new ArrayList<BoardDto>();
 		List<BoardDto> list = boardBiz.boardList(dto);
+		for(BoardDto boardDto : list) {
+			if(boardDto.getBoardTitle() != null) {
+				boardDto.setBoardTitle(Util.omit(16, boardDto.getBoardTitle()));
+			} 
+			if(boardDto.getBoardContent() != null) {
+				boardDto.setBoardContent(Util.omit(220, boardDto.getBoardContent()));
+			}
+			
+		}
 		model.addAttribute("list", list);
 		// 향후 페이징 처리
 		
@@ -136,7 +153,7 @@ public class BoardController {
 
 	// 비동기 멀티 이미지 업로드
 	@ResponseBody
-	@RequestMapping(value = "/AjaxFileUplod.do")
+	@RequestMapping(value = "/AjaxFileUplod.do", method = RequestMethod.POST)
 	public Map<String, Object> AjaxFileUplod(@ModelAttribute("fileArr") MultipartFile[] fileArr, BoardDto boardDto, HttpSession session) throws IOException {
 		logger.info("[ajax] Ajax File Uplod : >>>>>>>>>>>>>>>>>>>>>  " + fileArr);
 		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + fileArr.length);
@@ -169,7 +186,7 @@ public class BoardController {
 
 		int j = 0;
 		for(MultipartFile file : fileArr) {
-			if(file != null) {
+			if(file.getSize() != 0) { // 파일이 있다면
 				if(j == 0) {
 					// 파일과 썸내일 생성 >> 썸내일이름[0], 원본파일이름[1] 배열로 리턴
 					String[] tempName =  UploadFileUtils.imgUploadAndThumb(imgUploadPath, file.getOriginalFilename(), file.getBytes(), id_ymdPath);
@@ -196,7 +213,7 @@ public class BoardController {
 			if(i == 0) {
 				imgNames = imgNameArr[0];
 			} else {
-				imgNames = imgNames + "&&" + imgNameArr[i];
+				imgNames = imgNames + "??" + imgNameArr[i];
 			}
 		}
 		boardDto.setImgPath(imgNames);
@@ -211,7 +228,7 @@ public class BoardController {
 			logger.info("Board >>>>>>>>>>>>>>>  추가한 BoardNo : " + boardNo);
 			// #5 여기까지 성공 헀다면 output를 만들어 보낸다 
 			if(boardNo != null || boardNo.equals("")) {
-				output.put("imgArr", imgNameArr);
+				output.put("imgSrcArr", imgNameArr);
 				output.put("msg", "success");
 				output.put("boardNo", boardNo);		
 			}
@@ -236,13 +253,20 @@ public class BoardController {
 		MultipartFile[] fileArr = boardDto.getFile();
 		String fileNames = "";  
 		
-		//폴더 생성 >> fileUploadPath + /id/yyyy/mm/dd/
-		String id_ymdPath = UploadFileUtils.calcPath(fileUploadPath, id);
-		
-		//파일 업로드
-		for(int i = 0; i<fileArr.length; i++) {
-			String temp = UploadFileUtils.fileUpload(fileUploadPath, fileArr[i].getOriginalFilename(),  fileArr[i].getBytes(), id_ymdPath);
-			fileNames = fileNames + "&&" + temp;
+		if (fileArr[0].getSize() != 0) {	// 들어온 파일이 있다면
+			//폴더 생성 >> fileUploadPath + /id/yyyy/mm/dd/ >> 있으면 pass
+			String id_ymdPath = UploadFileUtils.calcPath(fileUploadPath, id);
+			
+			//파일 업로드
+			for(int i = 0; i<fileArr.length; i++) {
+				if (i == 0) {
+					String temp = UploadFileUtils.fileUpload(fileUploadPath, fileArr[i].getOriginalFilename(),  fileArr[i].getBytes(), id_ymdPath);
+					fileNames = fileUploadPath + id_ymdPath + File.separator + temp;
+				} else {
+					String temp = UploadFileUtils.fileUpload(fileUploadPath, fileArr[i].getOriginalFilename(),  fileArr[i].getBytes(), id_ymdPath);
+					fileNames = fileNames + "??" + fileUploadPath + id_ymdPath + File.separator + temp;
+				}
+			}
 		}
 		
 		// id, fileNames(업로드한 파일명) dto 추가
@@ -260,6 +284,8 @@ public class BoardController {
 				return "redirect:/board/main.do";
 			} else {
 				logger.info("board Write Res >>>>>>>>>>>>>>>> [추가 실패] Board insert fail");
+				// date 포멧 변환 
+				// title, content 길이 변경
 				model.addAttribute("boardDto",boardDto);
 				return "redirect:/board/write.do";
 			}
@@ -281,10 +307,110 @@ public class BoardController {
 		}
 	}
 	
-	// 넘어온 데이터에서 boardNo가 있으면 >> 기존 seq를 이용해 이미지가 추가되었을 경우 update
-	// 넘어온 데이터에서 boardNo가 없으면>> 이미지가 추가되지 않았을 경우 insert
 
 	// 디테일
+	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
+	public String boardDetail(Model model, @RequestParam("boardNo") int boardNo, BoardDto boardDto) {
+		logger.info("board detail page");
+
+		boardDto = boardBiz.selectOne(boardNo);
+		if(boardDto.getFilePath() != null) {
+			if(boardDto.getFilePath().contains("??")) {
+				String[] fileNames = boardDto.getFilePath().split("\\?\\?");  // "\\" 두개를 붙이는 이유는  Meta character라서 정규식을 기반으로 구현한 메서드에 그대로 사용 불가하다.
+				/* 
+				 	# Meta character: / ? *
+				 	 정규 표현식에는 특별한 의미를 없애고 문자 그대로 표현식 내에서 처리하기 위해 이스케이프해야하는 14 개의 메타 문자
+				 */
+				boardDto.setFilePath("첨부된 파일 " + fileNames.length +"개 ");
+			} else {
+				int index = boardDto.getFilePath().lastIndexOf("_") + 1;
+				boardDto.setFilePath("첨부된 파일 1개 ");
+			}
+		}
+		model.addAttribute("board", boardDto);
+		
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> : " + boardDto);
+		return "board/BOARD_boardDetail";
+	}
+	
+	
+	@RequestMapping(value="/fileDetail.do", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> fileDown(@RequestParam("boardNo") int boardNo, BoardDto boardDto) {
+		Map<String, Object> output = new HashMap<String, Object>();
+		
+		boardDto = boardBiz.selectOne(boardNo);
+		if(boardDto.getFilePath() != null) {
+			String fileFullNames = boardDto.getFilePath(); 
+			if(fileFullNames.contains("??")) {
+				String[] fileFullNameArr = fileFullNames.split("\\?\\?");  // "\\" 두개를 붙이는 이유는  Meta character라서 정규식을 기반으로 구현한 메서드에 그대로 사용 불가하다.
+				String[] fileNameArr = new String[fileFullNameArr.length];
+				for(int i = 0; i < fileFullNameArr.length; i++) {
+					int index = fileFullNameArr[i].lastIndexOf("_") + 1;
+					fileNameArr[i] = fileFullNameArr[i].substring(index, fileFullNameArr[i].length());
+				}
+				output.put("msg", "success");
+				output.put("fileName", fileNameArr);
+				
+			} else {
+				// 파일이 1개 일때
+				int index = boardDto.getFilePath().lastIndexOf("_") + 1;
+				String fileName = fileFullNames.substring(index, fileFullNames.length());
+				output.put("msg", "success");
+				output.put("fileName", fileName);
+			}
+		} else {
+			output.put("msg", "fail");
+		}
+		
+		return output;
+	}
+	
+	
+	// 파일 다운로드
+	@RequestMapping(value="/fileDown.do", method = RequestMethod.POST)
+	@ResponseBody
+	public byte[] fileDown(HttpServletRequest request, HttpServletResponse response,@RequestParam("fileName") String fileName ,@RequestParam("boardNo") int boardNo, BoardDto boardDto) throws UnsupportedEncodingException {
+		logger.info("board file down");
+		byte[] down = null;
+		String outFilePath = "";
+		
+		boardDto = boardBiz.selectOne(boardNo);
+		if(boardDto.getFilePath() != null) {
+			String fileFullNames = boardDto.getFilePath(); 
+			if(fileFullNames.contains("??")) {
+				String[] fileFullNameArr = fileFullNames.split("\\?\\?");  // "\\" 두개를 붙이는 이유는  Meta character라서 정규식을 기반으로 구현한 메서드에 그대로 사용 불가하다.
+				
+				for(int i = 0; i < fileFullNameArr.length; i++) {		
+					int index = fileFullNameArr[i].lastIndexOf("_") + 1;	// 뒤에서 처음으로 _가 나오는 인덱스 번호를 찾는다.
+					String tempFileName = fileFullNameArr[i].substring(index, fileFullNameArr[i].length());	// 원본 파일명을 가져온다.
+					if(fileName.equals(tempFileName)) {			// 다운요청한 파일명과 일치하는 파일명을 찾는다
+						outFilePath = fileFullNameArr[i];
+					}
+				}
+			} else {
+				int index = fileFullNames.lastIndexOf("_") + 1;	// 뒤에서
+				String tempFileName = fileFullNames.substring(index, fileFullNames.length());
+				if(fileName.equals(tempFileName)) {			// 다운요청한 파일명과 일치하는 파일명을 찾는다
+					outFilePath = tempFileName;
+				}
+			}
+			// 단일 파일 다운로드
+			File file = new File(outFilePath);
+			down = DownloadFileUtils.file_toByte(file);	// == FileCopyUtils.copyToByteArray(file);	#스프링에서 제공하는 파일 다운로드 유틸 
+				
+			// 이후 코드 만들어야함
+			String filename = new String(file.getName().getBytes("utf-8"), "8859_1");	 			// 파일 이름을 "utf-8"의 바이트 코드로 변환, 8859_1 인코딩 설정
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+			response.setContentType("application/octet-stream"); 									// # application/octet-stream는 다른 모든 경우를 위한 기본값입니다. ,알려지지 않은 파일 타입은 이 타입을 사용해야 합니다
+			response.setContentLength(down.length);
+		}
+		
+		// 멀티 다운로드는 따로 있는게 아니라
+		// 서버에서 다운요청한 파일을 순차적으로 다운로드 실행하는것 
+		return down;
+	}
+	
 	// >> 
 	
 	// 좋아요
@@ -294,4 +420,5 @@ public class BoardController {
 	// 자신이 쓴 글 리스트 보기
 
 	// 자신이 쓴 글 멀티 삭제
+	
 }

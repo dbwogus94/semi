@@ -2,13 +2,13 @@
 /**
 * 부트트스랩에서 사용할 이미지 파일 업로드
 */
-function uploadSummernoteImageFile(file, editor, welEditable) {
+function uploadSummernoteImageFile(file, editor) {
 	/**
 	 # new FormData()
 	 >>> 데이터를 담는 객체 :
 	 	1) .append(key, value)를 사용하여 key/value 형태로 데이터를 넣을 수 있다.
 	 	2) 담아진 입력 내용을 인코딩한다.
-	 */
+	 */	
 	console.log("2")
 	var img_data = new FormData();		
 	img_data.append("file", file);
@@ -23,7 +23,8 @@ function uploadSummernoteImageFile(file, editor, welEditable) {
 		success : function(output) {
 			console.log("3 : " + output.img)
         	//항상 업로드된 파일의 url이 있어야 한다.
-			editor.insertImage(welEditable, "/update/resources/img/board/img/1994dbwogus/2020/05/18/s/s_cb191bf3-b22a-419f-aa34-e72e3d238ac3_js.png");
+			//editor.insertImage(welEditable, "");
+			$(editor).summernote('insertImage', "/update/resources/img/board/gym.png");
 		}
 	});
 }
@@ -67,10 +68,10 @@ $(document).ready(function() {
               ['Misc',['undo','redo']]
           ],
 //          callbacks: {					// 이미지가 추가될때마다 처리하는 콜백 함수  	>> ajax >> 저장 >> url리턴 >> 적용
-//				onImageUpload : function(files, editor, welEditable) {
+//				onImageUpload : function(files, editor) {
 //					for(var i = files.length -1; i >= 0; i--){
 //						console.log("1")
-//						uploadSummernoteImageFile(files[i], editor, welEditable);
+//						uploadSummernoteImageFile(files[i], editor);
 //					}
 //					
 //				}
@@ -83,53 +84,64 @@ $(document).ready(function() {
 
 //=======================================================================================================================================
 
-// file배열 객체 비동기 전송 == onsubmit
 /*
-	# ES5에서 ajax를 구현한 함수를 호출하고 리턴값을 다음코드에 사용하는 동기식으로 코드를 구현 할 수는 없는것 같다
-	    그렇기 때문에 ajax안에서 결과를 받고 다음 실행할 동작을 구현한 함수를 호출하여 사용하게 코드를 구현하였음
-	 
-	공통로직 : 
-	 	1) form태그에서 submit를 통작 하였을때 onsubmit에 적용된 함수를 먼저 실행
-	 	2) base64로 된 img를 file객체로 만들어 서버에 전송하여 저장한다.
-	 	3) 그 후 subbit를 정상 동작시켜서 게시판 내용을 서버에 저장 저장한다.
-	     
-	    
-	1. 원래 구상한 코드 구성
-		1) onsumbit을 동작하여 썸머노트의 base64를 file객체로 변환한다.
-		2) (ajax)파일 배열을 인자로 받는 비동기 파일업로드 함수를 실행하고 성공시 결과를 리턴시킨다./ 실패코드가 왔을시 재실행 시킨다.(일정시간이상 실패시 정지)
-		3) 위의 리턴 결과가 성공시 유효성검사를 실시한다 통과시 썸머노트의 img.src를 제거한다 / 실패시에 실패를 알리고 재실행을 유도한다.
-		4) 모두 정상 통과시 서브밋을 정상 동작시켜 서버에 form의 데이터를 전달한다.
-	 	
-	2. 변환한 코드 구성
-	 	1) 호출 : onsumbit의 이벤트로 ajax를 구현한 함수를 호출한다.
-	 	2) 가공 : (ajax)ajax를 구현한 함수에서 썸머노트의 base64를 file객체로 변환한다.
-	 	3) input : (ajax)변환한 파일배열을 서버에 전달한다. 그 후 서버에서  결과를 받아온다. 
-	 	4) output : (ajax)결과에 따라서 서버에서 성공코드가 왔다면 게시판 유효성 검사를 실행하고 통과시 썸머노트의 img.src를 제거한다. / 해당 함수를 실패시 재실행 시킨다.(일정시간이상 실패시 정지)
-	 	5) 이벤트 확산 : 모두 정상 통과시 서브밋을 정상 동작시켜 서버에 form의 데이터를 전달한다.
-	
-	3. 변환 코드
-	
+ @ summernote에서는 글내용에 이미지를 포함 시키기 위해 2가지 방법을 지원한다. 
+   1. 디폴트 : 추가한 이미지를 base64코드로 변환하여 img태그의 src에 적용
+   2. callback() : 이미지 추가시  file객체를 비동기로 서버에 전송 이미지를 업로드후 업로드 완료된 경로를 콜백으로 전달받아 적용한다.  
+  
+  >>> 위 의 두가지 방법 모두 불편함과 문제가 존재하여 조금 복잡하지만 나름의 방법으로 코드를 구성하였음
+
+  # ES5에서 ajax를 구현한 함수를 호출하고 리턴값을 다음코드에 사용하는 동기식으로 코드를 구현 할 수는 없는것 같다
+         그렇기 때문에 ajax안에서 결과를 받고 다음 실행할 동작을 구현한 함수를 호출하여 사용하게 코드를 구현하였음
+
+  	
+  # 코드 기본 로직 설명
+  		1) 추가(base64) : summernote의 디폴트 업로드 방식으로 사용자의 이미지를 본문에 추가합니다.
+  		2) 호출 : 사용자가 글을 작성 후 저장하기 클릭, 서버로 전송전에 전처리를 합니다.
+  		3) 가공 : 본문에 추가된 img태그의 src에서 base64코드를 받아와 file객체들로 변환합니다.
+  		4) input : 변환된 파일객체를 비동기로 서버에 전송하여 이미지 업로드를 실행하고 업로드된 경로들을 결과로 받아옵니다.
+  		5) output : 결과로 받아온 이미지 경로를 본문의 img태그에 src넣어 줍니다.
+  		6) 이벤트 확산 : 마지막으로 submit를 실행하여 form태그의 테이터를 서버로 전송 저장합니다. 
+  		
+
+ # 문제 발생 : img태그의 업로드 후 경로로 값을 변경 했음에도 base64코드로 서버에 전송되어 DB에 저장되었음
+ 	
+ 	1차 삽질. onsubmit를 사용하여 구현
+ 	   	# 문제 발생(img태그의 업로드 후 경로로 값을 변경 했음에도 base64코드로 서버에 전송되어 저장되었음) 
+ 	
+ 	2차 삽질. 2차시도 html의 캐시를 제거
+ 	    # 실패
+ 	    
+ 	3차 삽질. onsubmit발생 하면서 기존 form태그를 데이터를 가지고 있나 싶어서 onsubmit를 제거
+ 		# 실패 >>> onsubmit과 상관없음
+ 	
+ 	4차 삽질. src의 쿼리스트링에 버전을 부여하여 값을 캐시를 회피
+ 		# 실패 >>> 이후 부터 썸머노트가 캐시을 하고 있다는 가정을 하게되었음.
+ 				 + console.log()나 Html을 확인했을때는 변경된 src를 가지고 있음
+ 		
+ 	5차 성공. 다른 input 태그의 값으로 전달
+ 		#성공 >>> img의 src 확인하면  변경된 데이터를 가지고 있음 그래서 
+ 				submit를 발생전에  summernote의 내용을 input:hidden태그의 value로 보내어 form태그의 데이터에 포함하여 서버에 보내면 될 것이라 가정하였음
   
  */
-// 재실행 카운트
-var cnt = 0; 
+var cnt = 0; 	// 코드 재실행 카운트 3번 호출되면 종료 >> 알림창 
 function AjaxFileUpload(){	// fileList 파일 배열
-	//1) 호출
-	var content = document.getElementsByClassName("note-editable")[0]		// img를 가지고 있는 content(부모태그)
-	var imgArr = content.getElementsByTagName("img"); 						// content에서 img태그를 배열로 가져온다.
+	//2) 호출
+	var content = document.getElementsByClassName("note-editable")[0]			// img를 가지고 있는 content(부모태그)
+	var imgArr = content.getElementsByTagName("img"); 							// content에서 img태그를 배열로 가져온다.
 	
-	console.log("1) AjaxFileUpload >>>>> imgArr : " + imgArr[0])
-	//2) 가공
-	if(imgArr.length > 0){													// img가 있을경우
+	console.log("2) AjaxFileUpload >>>>> imgArr : " + imgArr[0])
+	//3) 가공
+	if(imgArr.length > 0){														// img가 있을경우
 		var fileList = new Array()				
 		for(var i = 0; i<imgArr.length; i++){
 			// dataURLtoFile(base64 문자열, 이름.확장자) : base64 >> new File() 변환
 			let file = dataURLtoFile(imgArr[i].src, "board_" + i)
 			fileList[i] = file
 		}																		// base64로 되어있는 img를 file객체로 만들어 배열에 담는다. 
-		console.log("2) AjaxFileUpload >>>>> date : " + fileList);
+		console.log("3) AjaxFileUpload >>>>> date : " + fileList);
 		
-		//3) input
+		//4) input
 		let fileDate = new FormData();											// 자바스크립트에서 제공하는 전송용 객체에 만들기		
 		
 		for(let i = 0; i<fileList.length; i++){									// 전송용객체에 데이터를 담는다.
@@ -137,7 +149,7 @@ function AjaxFileUpload(){	// fileList 파일 배열
 			fileDate.append("fileArr", fileList[i]);	
 		}
 		
-		console.log("3) AjaxFileUpload >>>>> input : " + fileDate);
+		console.log("4) AjaxFileUpload >>>>> input : " + fileDate);
 		
 		$.ajax({
 			url : "AjaxFileUplod.do",
@@ -148,38 +160,34 @@ function AjaxFileUpload(){	// fileList 파일 배열
 			contentType : false,				// 서버에 데이터를 보낼 때 사용되는 내용 유형
 			processData : false,				// DOMDocument 또는 처리되지 않은 데이터 파일을 보내려면 false
 			success : function(output) {	
-				//4) output
+				//5) output
 				let boardNo = output.boardNo
-				console.log("4) AjaxFileUpload >>>>>> output : " + output)
+				console.log("5) AjaxFileUpload >>>>>> output : " + output)
 				if(output.msg === "success"){
 					console.log("이미지 저장 성공")
 					
 					if(boardConfirm()){
 						console.log("유효성검사 통과 >>> img.src 제거")
+						
 						// 이미지 업로드 성공시 받아온 boardNo를 view에 적용
 						document.getElementById("boardNo").value = boardNo
 						
-						var date = new Date();
+						var date = new Date();	
 						for(let i = 0; i<imgArr.length; i++){
-							
-							// 이미지의 상위 부모 태그 가져오기 > p태그
-							let parent = imgArr[i].parentNode 
-							// 부모태그 하위 첫번째 자식 노드 삭제
-							parent.removeChild(parent.firstChild)
-							// 새로운 img 생성
-							let newImg = document.createElement("img")
-							newImg.setAttribute('src', output.imgArr[i] + "?" + date.getTime())
-							parent.appendChild(newImg)
-							
-							//imgArr[i].setAttribute('src', output.imgArr[i] + "?" + date.getTime())
+							imgArr[i].setAttribute("class", "input_img")
+							// 파일업로드후 결과로 받아온 경로를 img태그에 적용 
+							imgArr[i].setAttribute('src', output.imgSrcArr[i] + "?" + date.getTime())
 							
 							if(i == imgArr.length-1){
-								//5) 서브밋 발생
-								console.log("5) AjaxFileUpload >>>>>> submit")
-								document.getElementById("submit").click()
-								
+								// 문제 해결 코드 : 썸머노트의 캐시를 피하기위해 썸머노트의 본문 내용을 hidden태그의 value 넣어서 submit 실행
+								let summernoteContent = document.getElementsByClassName("note-editable")[0]
+								let content = document.getElementsByName("boardContent")[0]
+								content.value = summernoteContent.innerHTML		// div의 내용은 innerHTML을 통해 가져올 수 있다.
 							}
 						}
+						// for문 종료 >> 6) 서브밋 발생
+						console.log("6) AjaxFileUpload >>>>>> submit")
+						document.getElementById("submit").click()
 					}
 				} else {
 					console.log("이미지 저장 실패")
@@ -201,19 +209,22 @@ function AjaxFileUpload(){	// fileList 파일 배열
 		console.log("이미지 없음 >> 유효성 검사 실행")
 		// 유효성검사
 		if(boardConfirm()){
+			let summernoteContent = document.getElementsByClassName("note-editable")[0]
+			let content = document.getElementsByName("boardContent")[0]
+			content.value = summernoteContent.innerHTML
 			document.getElementById("submit").click()
 		}
 	}
 }
 
 
-//이미지 변환 : base64 >> new File()
+//이미지 변환 : base64 >> new File(데이터, 이름 , 타입)
 const dataURLtoFile = (dataurl, fileName) => {
     var arr = dataurl.split(',') 
     var	mime = arr[0].match(/:(.*?);/)[1]   // base64에서 미디어 타입을 가져온다. 
     var fileType = mime.split("/")[1]		// 확장자 가져오기
     var	bstr = atob(arr[1]) 				// 미디어 타입이 제거된 base64코드를 가져와서 16진수 byte코드로 변환한다.
-    										// atob("ASCII to binary") base64로 인코딩 된 문자열을 디코딩 : base64문자열 >> 16진수 byte
+    										// atob("ASCII to binary") base64로 인코딩 된 문자열을 디코딩 : base64문자열(==16진수 byte) >> 8진수 byte
         									// btoa("binary to ASCII") 이진 데이터의 "문자열"을 base64로 인코딩된  "ASCII문자열"을 만든다 : byte문자열 >> base64문자열
     var	n = bstr.length 
     var u8arr = new Uint8Array(n)			// Uint8Array 해당 어레이는 8 비트 부호없는 정수의 배열을 나타낸다. 

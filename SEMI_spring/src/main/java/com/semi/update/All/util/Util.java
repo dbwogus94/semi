@@ -36,6 +36,22 @@ public class Util {
 		return fileNames;
 	}
 	
+	// veiw에 표시될 문자열 길이 조절
+	public static String omit(int length, String text) {
+		text = removeTag(text);
+		if(text.length() > length) {
+			return text.substring(0, length) + "...";
+		} else {
+			return text; 
+		}
+	}
+	
+	// 정규식으로 html태그 제거 
+	public static String removeTag(String html) {
+		return html.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");
+	}
+	
+	
 
 	// Date -> String (yyyyMMdd) 형식으로 변환
 	public static String isString(Date date) {
