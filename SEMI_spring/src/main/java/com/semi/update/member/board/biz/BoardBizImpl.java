@@ -58,4 +58,24 @@ public class BoardBizImpl implements BoardBiz {
 		return dao.selectOne(boardNo);
 	}
 
+	@Override
+	public int updateImg(BoardDto dto) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>>> updateImg : " + dto);
+		return dao.updateImg(dto);
+	}
+	
+	@Override
+	public int updateNoImgBoard(BoardDto dto) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>> updateNoImgBoard : " + dto);
+		return dao.updateNoImgBoard(dto);
+	}
+
+	@Override
+	public int updateBoard(BoardDto dto) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>>> updateBoard : " + dto);
+		return dao.updateBoard(dto);
+	}
+
+	
+
 }

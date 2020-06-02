@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
 <% request.setCharacterEncoding("UTF-8");%>
 <% response.setContentType("text/html; charset=UTF-8");%>
 <%
@@ -31,10 +32,10 @@
 		<div class="col-md-12" id="headTitle">
 			<hr>
 			<br>
-			<h2>자유게시판</h2>
+			<h2>${board.boardNo}번 글 상세</h2>
 			<!-- onclick="location.href='writeCancel.do'" -->
 			<input type="button" class="button" value="목록으로" onclick="location.href='writeCancel.do'"/>
-			<input type="button" class="button" value="수정하기" onclick=""/>
+			<input type="button" class="button" value="수정하기" onclick="authorityChk('${login.id }', '${board.id }', ${board.boardNo })"/>
 			<br>
 			<hr>
 		</div>
@@ -43,12 +44,17 @@
 		<div id="board">
 			<div id="content">
 				<div id="cdetail">
-		  			<input type="text" id="title" name="boardTitle" value="${board.boardTitle }"/>
+		  			<input type="text" id="title" name="boardTitle" value="${board.boardTitle }" readonly="readonly"/>
 					<br>
 					<div id="cdetail">
 						<span><img src="${board.profileSrc }" onerror="this.src='/update/resources/img/user.png';"></span><span>${board.memberName }</span>
-						<span id="fileDown">	
-							<input type="text" name="name" value="${board.filePath }" readonly="readonly"/>
+						<span id="fileDown">
+							<c:if test="${empty board.filePath }">
+								첨부파일 없음
+							</c:if>
+							<c:if test="${not empty board.filePath }">
+								${board.filePath }
+							</c:if>
 							<input type="button" value="첨부파일 확인" class="button" onclick="fileDetail('${board.boardNo }');"/>
 						</span>	
 					</div>
@@ -77,7 +83,7 @@
 						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+					<h4 class="modal-title" id="myModalLabel">첨부 파일 리스트</h4>
 				</div>
 				<div class="modal-body"></div>
 				<div class="modal-footer">

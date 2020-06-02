@@ -74,16 +74,17 @@ public class DownloadFileUtils {
 		//System.out.println(DownloadFileUtils.file_toByte(f).length);
 		
 		// 스트림을 이용한 콘솔의 입력값을 출력  
-//		InputStreamReader rd = new InputStreamReader(System.in);
+//		InputStreamReader rd = new InputStreamReader(System.in); // A >> 65 
 //		int c = rd.read();
 //		System.out.println(c);
 		
-		//파일 읽기
-//		File f = new File("C:\\Users\\1994d\\Desktop\\test.txt");
+//		//파일 읽기
+//		File f = new File("C:\\Users\\1994d\\Desktop\\conimg.jpg");
+//		int size = (int) f.length();
 //		FileInputStream fin = new FileInputStream(f);  // 파일을 열고 스트림 fin 생성
 //
 //		int c;
-//		while((c = fin.read()) != -1){               //파일 끝까지 한 바이트씩 c에 읽어드린다
+//		while((c = fin.read(new byte[size])) != -1){               //파일 끝까지 한 바이트씩 c에 읽어드린다
 //		 System.out.print("A : " + (char)c);         // 바이트 c를 문자로 변환하여 화면에 출력한다.
 //		 System.out.println();
 //		 System.out.print("B : " +c);                // 바이트 c를 문자로 변환하여 화면에 출력한다.
@@ -93,9 +94,9 @@ public class DownloadFileUtils {
 		
 		// 파일 쓰기 
 //		FileOutputStream fout = new FileOutputStream("C:\\Users\\1994d\\Desktop\\testOut.txt");
-//		int num[]={49,50,51,52,53};
-//		//int num[]={1,4,63,-5,50};
-//		byte b[]={65,66,67,68,69,70,13};
+//		int num[]={49,50,51,52,53};			// 1,2,3,4,5
+//		//int num[]={1,4,63,-5,50};	
+//		byte b[]={65,66,67,68,69,70,13};	// A,B,C,D,E,F,\n
 //		for(int i=0; i<num.length; i++) {
 //			fout.write(num[i]);      // 파일에 num 배열의 정수 값으 ㄹ바이트 정보로 기록한다.
 //			fout.write(58);
@@ -107,9 +108,11 @@ public class DownloadFileUtils {
 		// 버퍼 필터 스트림으로 파일 복사
 		File f = new File("C:\\Users\\1994d\\Desktop\\[파일 업로드] JAVA io.txt");
 		
+		// 1차 스트림 == 주 스트림
 		InputStream in = new FileInputStream(f);  // 파일을 열고 스트림 fin 생성
 		OutputStream out = new FileOutputStream("C:\\Users\\1994d\\Desktop\\testOut.txt");		// 이때 빈 파일 생성
 		
+		// 2차 스트림 -- 보조 스트림
 		BufferedInputStream bin = new BufferedInputStream(in);		
 		BufferedOutputStream bout = new BufferedOutputStream(out);
 		
@@ -124,7 +127,6 @@ public class DownloadFileUtils {
 		}
 		bin.close();
 		bout.close();
-
 	}
 	
 	

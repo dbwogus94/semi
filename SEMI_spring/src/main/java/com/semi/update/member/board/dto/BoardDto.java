@@ -29,10 +29,10 @@ public class BoardDto {
 	    // 좋아요
 	    private int boardLike;
 	    
-	    // 파일경로 (&& 구분)
+	    // 파일경로 (?? 구분)
 	    private String filePath;
 	    
-	    // 이미지 경로(&& 구분)
+	    // 이미지 경로(?? 구분)
 	    private String imgPath;
 	    
 	    // 썸내일 경로

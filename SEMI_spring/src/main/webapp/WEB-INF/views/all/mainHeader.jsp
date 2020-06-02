@@ -16,7 +16,7 @@
 <body>
 		<header>
 		<div id="logo">
-			<img src="${pageContext.request.contextPath}/resources/images/logo_white.png" onclick="location.href='../mentor/main.do'"/>
+			<img src="${pageContext.request.contextPath}/resources/images/logo_white.png" onclick="location.href='../join/main.do'"/>
 		</div>
 		<h1>운토티</h1>
 		<div class="header_container" onclick="myFunction(this)">
@@ -26,10 +26,10 @@
 		</div>
 	   <div id="nav">
 			<ul>
-				<a href="../mentor/main.do"><li>멘토 메인페이지</li></a>
-				<a href="../mentor/profile.do"><li>프로필 확인</li></a>
-				<a href="../board/main.do"><li>게시판</li></a>
-				<a href="../mentor/logOut.do"><li>로그아웃</li></a>
+				<a href="../join/loginPopUp.do"><li>로그인</li></a>
+				<a href="../join/loginSignUp.do"><li>회원가입</li></a>
+					<a href="../join/kakaoSingUp.do"><li>카카오가입</li></a>
+				<a href="../join/googleSingUp.do"><li>구글가입</li></a>
 		   </ul>
 		</div>
 	

@@ -24,6 +24,7 @@ import com.semi.update.All.util.UploadFileUtils;
 import com.semi.update.All.util.Util;
 import com.semi.update.join.biz.JoinBiz;
 import com.semi.update.join.dto.JoinDto;
+import com.semi.update.member.dto.MenteeDto;
 import com.semi.update.member.dto.MentorDto;
 import com.semi.update.member.profile.biz.ProfileBiz;
 
@@ -40,12 +41,16 @@ public class MentorController {
 	
 	@Resource(name="mentorImgUploadPath")	// 업로드 파일 경로
 	private String uploadPath;
-
+	
 	// 멘토 메인
 	@RequestMapping(value = "/main.do", method = RequestMethod.GET)
 	public String mentroMain(Model model, HttpSession session) {
 		logger.info("mentor Main page");
+		
 		MentorDto login = (MentorDto) session.getAttribute("login");
+		if(login == null) {
+			return "redirect:/join/main.do"; 
+		}
 		MentorDto mentorDto = profileBiz.MentorSelectOne(login.getId()); //??
 		model.addAttribute("mentorDto", mentorDto);
 		return "mentor/MENTOR_Main";
@@ -67,7 +72,9 @@ public class MentorController {
 	public String mentorProfile(Model model, HttpSession session) {
 		logger.info("mentor profile page");
 		MentorDto login = (MentorDto) session.getAttribute("login");
-		
+		if(login == null) {
+			return "redirect:/join/main.do"; 
+		}
 		//MentorDto dto = profileBiz.MentorSelectOne(login.getId());
 		// form:form과 hibernate를 사용하기위해 전달
 		model.addAttribute("mentorDto", login);
@@ -178,6 +185,13 @@ public class MentorController {
 	public String AddressPopup() {
 		logger.info("mentor profile Address PopUp");
 		return "all/AddressAPI";
+	}
+	
+	@RequestMapping(value="/logOut", method = RequestMethod.GET)
+	public String logOut(HttpSession session) {
+		logger.info("mentor logOut >>> redirect join/main.do");
+		session.invalidate();
+		return "redirect:/join/main.do";	
 	}
 
 }

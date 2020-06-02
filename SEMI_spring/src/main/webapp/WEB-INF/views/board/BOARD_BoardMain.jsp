@@ -8,6 +8,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta http-equiv='Content-type' content='text/html; charset=utf-8'>
+<meta http-equiv="cache-control" content="no-cache, must-revalidate">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/Board_Main.css">
 <%@ include file="../mentor/mentorHeader.jsp"%>

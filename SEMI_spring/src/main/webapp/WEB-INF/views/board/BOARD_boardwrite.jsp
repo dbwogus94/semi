@@ -17,9 +17,8 @@
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
 
-
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/BOARD_boardwrite.css">
-<title>게시글작성</title>
+<title>게시글 수정</title>
 <%@ include file="../mentor/mentorHeader.jsp"%>
 <!-- summernotr 부트스트랩4 연동 버전/ 3버전과 사용하면 css 충돌이 발생한다. -->
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"> -->
@@ -40,7 +39,6 @@
 <body>
 <form action="writeRes.do" method="post" id="form" enctype="multipart/form-data">
 	<input type="hidden" name="boardNo" value="0" id="boardNo">
-	<input type="hidden" name="id" value="${login.id }"/>
 	<input type="hidden" name="memberName" value="${login.memberName }"/>
 	<input type="hidden" name="boardContent"/>
 	<div class="row" >

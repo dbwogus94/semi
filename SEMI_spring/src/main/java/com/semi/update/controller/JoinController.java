@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.semi.update.All.mail.SMTPDto;
 import com.semi.update.join.biz.JoinBiz;
 import com.semi.update.join.dto.JoinDto;
+import com.semi.update.member.dto.MenteeDto;
 import com.semi.update.member.dto.MentorDto;
 import com.semi.update.member.profile.biz.ProfileBiz;
 

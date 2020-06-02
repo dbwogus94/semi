@@ -71,7 +71,7 @@
 		유저의 프로필 사진을 가져와야해서 3중 조인을 하였음
 		질의문을 통한 join(ANSI 아님) >> FREE_BOARD, MEMBER_JOIN, MEMBER_PROFILE -->
 	<select id="selectOne" resultMap="ResultMap">
-		SELECT f.BOARD_NO, f.ID, f.BOARD_NAME, f.BOARD_TITLE, f.BOARD_CONTENT, f.BOARD_LIKE ,f.BOARD_FILEPATH, m.MEMBER_CONTENT 
+		SELECT f.BOARD_NO, f.ID, f.BOARD_NAME, f.BOARD_TITLE, f.BOARD_CONTENT, f.BOARD_LIKE, f.BOARD_FILEPATH, f.BOARD_IMGPATH, m.MEMBER_CONTENT 
 		FROM FREE_BOARD f, MEMBER_JOIN J, MEMBER_PROFILE m
 		WHERE f.ID = j.ID
 		AND j.ID = m.ID
@@ -79,7 +79,32 @@
 	</select>
 	
 	
+	<!-- 이미지 수정 -->
+	<update id="updateImg" parameterType="boardDto">
+		UPDATE FREE_BOARD
+		SET BOARD_IMGPATH = #{imgPath}, BOARD_THUMBNAIL= #{thumbnail}
+		WHERE ID = #{id}
+		AND BOARD_NO = #{boardNo}
+	</update>
 	
+	
+	<!-- 이미지 없을시 -->
+	<update id="updateNoImgBoard" parameterType="boardDto">
+		UPDATE FREE_BOARD
+		SET BOARD_TITLE = #{boardTitle}, BOARD_CONTENT = #{boardContent}, BOARD_FILEPATH = #{filePath}, BOARD_REGDATE = SYSDATE,
+		BOARD_IMGPATH = null, BOARD_THUMBNAIL = null
+		WHERE ID = #{id}
+		AND BOARD_NO = #{boardNo}
+	</update>
+	
+	
+	<!-- 이미지 있을시 게시판 수정 -->
+	<update id="updateBoard" parameterType="boardDto">
+		UPDATE FREE_BOARD
+		SET BOARD_TITLE = #{boardTitle}, BOARD_CONTENT = #{boardContent}, BOARD_FILEPATH = #{filePath}, BOARD_REGDATE = SYSDATE
+		WHERE ID = #{id}
+		AND BOARD_NO = #{boardNo}
+	</update>
 
 
 	

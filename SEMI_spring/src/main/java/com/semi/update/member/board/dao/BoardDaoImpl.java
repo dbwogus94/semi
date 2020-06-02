@@ -61,5 +61,25 @@ public class BoardDaoImpl implements BoardDao{
 		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> selectOne : " + boardNo);
 		return session.selectOne(NANESPACE + "selectOne", boardNo);
 	}
+
+	@Override
+	public int updateImg(BoardDto dto) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> updateImg : " + dto);
+		return session.update(NANESPACE + "updateImg", dto);
+	}
+
+	@Override
+	public int updateNoImgBoard(BoardDto dto) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> updateNoImgBoard : " + dto);
+		return session.update(NANESPACE + "updateNoImgBoard", dto);
+	}
+	
+	@Override
+	public int updateBoard(BoardDto dto) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> updateBoard : " + dto);
+		return session.update(NANESPACE + "updateBoard", dto);
+	}
+
+	
 	
 }

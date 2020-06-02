@@ -1,3 +1,18 @@
+function authorityChk(id, boardId, boardNo){
+	if(id === boardId){
+		location.href='update.do?boardNo=' + boardNo
+	} else {
+		alert("글 수정 권한이 없습니다.")
+	}
+} 
+
+
+
+
+
+
+
+
 function postSend(path, params, method) {
 	method = method || "post";
 	var form = document.createElement("form");
@@ -31,7 +46,6 @@ function fileDetail(boardNo){
 		data : {boardNo : boardNo},
 		dataType : "json",	// 디폴트
 		success : function(output) {
-			
 			if(output.msg == "success"){
 				let fileName = output.fileName
 				let modal_body = document.getElementsByClassName("modal-body")[0]
@@ -66,7 +80,7 @@ function createCheckbox(text){
 	var input = document.createElement("input")
 	input.setAttribute("type","checkbox")
 	input.setAttribute("name","file")
-	input.setAttribute("value", text)
+	input.setAttribute("value", text)		// 파일명
 	 
 	modal_body.appendChild(div)
 	div.appendChild(label)
@@ -98,7 +112,7 @@ function createCheckbox(text){
  */
 
 // 성공 코드 : 재귀함수를 사용한 다중파일 다운로드 요청
-var index = 0;
+var index = 0; 
 function fileDownChk(){
 	let checkbox = document.getElementsByName("file")
 	var boardNo = document.getElementById("boardNo").value
@@ -106,12 +120,19 @@ function fileDownChk(){
 		let fileName = checkbox[index].value
 		let path = "fileDown.do"
 		let params = {fileName:fileName, boardNo:boardNo}
-		index++
 		postSend(path, params, "post")
+	}
+	if(index >= checkbox.length-1){
+		console.log("초기화: " + index)
+		index = 0;
+		return false
+	} else {
 		setTimeout(function(){
+			console.log("재귀 실행: " + index)
+			index++
 			fileDownChk()
 		}, 1000)
-	} 
+	}
 }
 
 // 실패 코드 : for문을 사용한 서버의 다중 요청 코드는 재요청 코드 부분이 잘못되어서 실패하였다

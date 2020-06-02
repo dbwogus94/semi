@@ -2,6 +2,12 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
 <configuration>
 
+   <!-- null값과 false가 들어갈 수 있게 허용해주는 setting -->
+   <settings>
+      <setting name="cacheEnabled" value="false"/>
+      <setting name="jdbcTypeForNull" value="NULL"/>
+   </settings>
+
 	<typeAliases>
 		<!-- 테이블당 1개 dto 9개 + 2개(게시판용 dto + 2) 총 10개 -->
 		<typeAlias type="com.semi.update.join.dto.JoinDto" alias="joinDto" />

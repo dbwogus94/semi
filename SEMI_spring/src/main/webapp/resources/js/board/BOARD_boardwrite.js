@@ -1,4 +1,3 @@
-
 /**
 * 부트트스랩에서 사용할 이미지 파일 업로드
 */
@@ -135,8 +134,9 @@ function AjaxFileUpload(){	// fileList 파일 배열
 	if(imgArr.length > 0){														// img가 있을경우
 		var fileList = new Array()				
 		for(var i = 0; i<imgArr.length; i++){
+			let filename = imgArr[i].getAttribute('data-filename')
 			// dataURLtoFile(base64 문자열, 이름.확장자) : base64 >> new File() 변환
-			let file = dataURLtoFile(imgArr[i].src, "board_" + i)
+			let file = dataURLtoFile(imgArr[i].src, + i +"_" + filename)
 			fileList[i] = file
 		}																		// base64로 되어있는 img를 file객체로 만들어 배열에 담는다. 
 		console.log("3) AjaxFileUpload >>>>> date : " + fileList);
@@ -233,7 +233,7 @@ const dataURLtoFile = (dataurl, fileName) => {
         u8arr[n] = bstr.charCodeAt(n);		// 16진수를 담은 배열.charCodeAt(index) : 배열에서 주어진 index에 대한 UTF-16 코드를 나타내는 0부터 65535 사이의 정수를 반환
     }
     
-    return new File([u8arr], fileName + "." + fileType, {type:mime});
+    return new File([u8arr], fileName, {type:mime});
     /*
       	js의 File객채 생성자 
       	new File(bits, name[, options]);

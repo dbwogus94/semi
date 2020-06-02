@@ -24,4 +24,13 @@ public interface BoardDao {
 	
 	// select one (작성자 프로필 사진경로 포함)
 	public BoardDto selectOne(int boardNo); 
+	
+	// 이미지 수정
+	public int updateImg(BoardDto dto);
+	
+	// 이미지 없을시 게시판 수정
+	public int updateNoImgBoard(BoardDto dto);
+	
+	// 이미지 있을시 게시판 수정
+	public int updateBoard(BoardDto dto);
 }
