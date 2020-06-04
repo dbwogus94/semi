@@ -248,7 +248,6 @@ public class BoardController {
 				 */
 				boardDto.setFilePath("첨부된 파일 " + fileNames.length +"개 ");
 			} else {
-				int index = boardDto.getFilePath().lastIndexOf("_") + 1;
 				boardDto.setFilePath("첨부된 파일 1개 ");
 			}
 		}
@@ -304,7 +303,6 @@ public class BoardController {
 			String fileFullNames = boardDto.getFilePath(); 
 			if(fileFullNames.contains("??")) {
 				String[] fileFullNameArr = fileFullNames.split("\\?\\?");  // "\\" 두개를 붙이는 이유는  Meta character라서 정규식을 기반으로 구현한 메서드에 그대로 사용 불가하다.
-				
 				for(int i = 0; i < fileFullNameArr.length; i++) {		
 					int index = fileFullNameArr[i].lastIndexOf("_") + 1;	// 뒤에서 처음으로 _가 나오는 인덱스 번호를 찾는다.
 					String tempFileName = fileFullNameArr[i].substring(index, fileFullNameArr[i].length());	// 원본 파일명을 가져온다.

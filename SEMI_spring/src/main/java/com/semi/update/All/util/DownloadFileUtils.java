@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class DownloadFileUtils {
 
-	// 다운로드 >> 바이트 배열로 리턴
+	// 다운로드 요청시 파라미터로 받은 파일객체 >> 바이트 배열로 리턴
 	public static byte[] file_toByte(File file) {
 		byte[] outputData = null;
 		InputStream in = null;

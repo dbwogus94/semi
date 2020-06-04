@@ -7,12 +7,6 @@ function authorityChk(id, boardId, boardNo){
 } 
 
 
-
-
-
-
-
-
 function postSend(path, params, method) {
 	method = method || "post";
 	var form = document.createElement("form");
@@ -34,6 +28,7 @@ function postSend(path, params, method) {
 	document.body.appendChild(form);
 	form.submit();
 }
+
 
 
 // 모달 팝업에 파일 표시
@@ -122,6 +117,7 @@ function fileDownChk(){
 		let params = {fileName:fileName, boardNo:boardNo}
 		postSend(path, params, "post")
 	}
+	
 	if(index >= checkbox.length-1){
 		console.log("초기화: " + index)
 		index = 0;
