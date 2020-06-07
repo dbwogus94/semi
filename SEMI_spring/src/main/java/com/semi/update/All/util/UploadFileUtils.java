@@ -224,7 +224,7 @@ public class UploadFileUtils {
 			// 쓰기 : 새로 생성된 newfile에  데이터 쓰기 
 			while((read = inputStream.read(b)) != -1) { 
 				outputStream.write(b, 0, read);			
-				outputStream.flush();					
+				outputStream.flush();			
 			}
 			
 			// 프로필 파일명 : P_ + 원본 파일명
