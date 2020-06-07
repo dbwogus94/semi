@@ -18,6 +18,9 @@ public interface BoardBiz {
 	// 이미지 추가 안했을때 board insert
 	public int insertNoImgBoard(BoardDto dto);
 	
+	// 토탈 게시물 수 가져오기(검색포함)
+	public int getTotalBoard(BoardDto dto);
+	
 	//전체 선택(페이징) + 검색
 	public List<BoardDto> boardList(BoardDto dto);
 	

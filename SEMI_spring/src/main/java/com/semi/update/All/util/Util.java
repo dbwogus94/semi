@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.semi.update.All.pagination.OraclePagination;
+
 public class Util {
 	private static Logger logger = LoggerFactory.getLogger(Util.class);
 
@@ -132,42 +134,84 @@ public class Util {
 	
 	
 	public static void main(String[] args) {
-		int page = 22;
-		int countList = 10;
-		int countPage = 10;
-		int totalCount = 255;
-		int totalPage = totalCount / countList;
-		if (totalCount % countList > 0) {
-		    totalPage++;
+	
+//		int page = 1;			// 현재 페이지
+//		int countList = 10;		// 한 페이지에 출력될 게시물 수 
+//		int countPage = 10;		// 한 화면에 출력될 페이지 수
+//		int totalCount = 111;	// 총 게시물 수
+//		int totalPage = totalCount / countList;	// 총 페이지 수
+//		
+//		if (totalCount % countList > 0) {
+//		    totalPage++;
+//		}
+//		if (totalPage < page) {
+//		    page = totalPage;
+//		}
+//		int startPage = ((page - 1) / 10) * 10 + 1;
+//		int endPage = startPage + countPage - 1;
+//		if (endPage > totalPage) {
+//		    endPage = totalPage;
+//		}
+//		
+//	
+//		if (startPage > 1) {
+//		    System.out.print("<a href=\"?page=1\">처음</a> ");
+//		}
+//		if (page > 1) {
+//		    System.out.print("<a href=\"?page=" + (page - 1)  + "\">이전</a> \t");
+//		}
+//		for (int iCount = startPage; iCount <= endPage; iCount++) {
+//		    if (iCount == page) {
+//		        System.out.print(" <b>" + iCount + "</b>");
+//		    } else {
+//		        System.out.print(" " + iCount + " ");
+//		    }
+//		}
+//		if (page < totalPage) {
+//		    System.out.print("\t <a href=\"?page=" + (page + 1)  + "\">다음</a>");
+//		}
+//
+//		if (endPage < totalPage) {
+//		    System.out.print(" <a href=\"?page=" + totalPage + "\">끝</a>");
+//		}
+		
+		
+		int page = 7;			// 현재 페이지
+		int totalCount = 90;	// 총 게시물 수
+		OraclePagination pageing = new OraclePagination(totalCount, page);
+		System.out.println(pageing);
+		
+		int startPage = pageing.getStartPage();
+		int endPage = pageing.getEndPage();
+		int totalPage = pageing.getTotalPage();
+		
+		if(page != 1) {
+			System.out.print("<< ");
 		}
-		if (totalPage < page) {
-		    page = totalPage;
+		if(page > 6) {
+			System.out.print("1 ...");
 		}
-		int startPage = ((page - 1) / 10) * 10 + 1;
-		int endPage = startPage + countPage - 1;
-		if (endPage > totalPage) {
-		    endPage = totalPage;
-		}
-		if (startPage > 1) {
-		    System.out.print("<a href=\"?page=1\">처음</a> ");
-		}
-		if (page > 1) {
-		    System.out.print("<a href=\"?page=" + (page - 1)  + "\">이전</a> \t");
-		}
-		for (int iCount = startPage; iCount <= endPage; iCount++) {
-		    if (iCount == page) {
-		        System.out.print(" <b>" + iCount + "</b>");
+		
+		for (int i = startPage; i <= endPage; i++) {
+			
+		    if (i == page) {
+		        System.out.print(" <b>" + i + "</b>");
 		    } else {
-		        System.out.print(" " + iCount + " ");
+		        System.out.print(" " + i + " ");
 		    }
 		}
-		if (page < totalPage) {
-		    System.out.println("\t <a href=\"?page=" + (page + 1)  + "\">다음</a>");
+		
+		if(endPage != totalPage && totalPage > 10) {
+			System.out.print("... " + totalPage);
+		} else if (endPage == totalPage) {
+			System.out.print("");
 		}
-
-		if (endPage < totalPage) {
-		    System.out.print("<a href=\"?page=" + totalPage + "\">끝</a>");
+		
+		if(page != totalPage) {
+			System.out.print(" >>");
 		}
+	
 	}
+	
 
 }

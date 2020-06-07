@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.semi.update.All.pagination.OraclePagination;
 import com.semi.update.All.util.DownloadFileUtils;
 import com.semi.update.All.util.UploadFileUtils;
 import com.semi.update.All.util.Util;
@@ -51,11 +52,23 @@ public class BoardController {
 	private String fileUploadPath;
 
 	// 메인
-	@RequestMapping(value = "/main.do")
-	public String boardMain(Model model, @ModelAttribute BoardDto dto) {
-		logger.info("board main page");
-		List<BoardDto> newList = new ArrayList<BoardDto>();
+	@RequestMapping(value = "/main.do")									
+	public String boardMain(Model model, @ModelAttribute BoardDto dto, @RequestParam(defaultValue = "1") int currentPage) {
+		logger.info("board main page >>>>>>>>>>>>>>>> [input] boardDto : " + dto);	
+		
+		int totalBoardCount = boardBiz.getTotalBoard(dto);	// 전체게시물 수  or 검색한 게시물 수
+		
+		/* 페이징 클래스 >> 쿼리에 필요한 시작페이지 번호, 끝 페이지 번호를 계산해서 가지고 있음  */
+		OraclePagination pagination = new OraclePagination(totalBoardCount, currentPage);	// 전체 게시물 수, 현재 페이지 (== 요청된 페이지) 
+		logger.info("board main page >>>>>>>>>>>>>>> [페이징] OraclePagination : " + pagination );
+		
+		// boardDto에 시작 페이지, 끝 페이지 추가
+		dto.setStartBoardNo(pagination.getStartBoardNo());
+		dto.setEndBoardNo(pagination.getEndBoardNo());
+		
+		// top N 쿼리를 사용하여 게시물 리스트 가져오기 
 		List<BoardDto> list = boardBiz.boardList(dto);
+		logger.info("board main page >>>>>>>>>>>>>>> 페이징 처리된 boardDto 리스트 개수 : " + list.size());
 		for(BoardDto boardDto : list) {
 			if(boardDto.getBoardTitle() != null) {
 				boardDto.setBoardTitle(Util.omit(16, boardDto.getBoardTitle()));
@@ -63,11 +76,10 @@ public class BoardController {
 			if(boardDto.getBoardContent() != null) {
 				boardDto.setBoardContent(Util.omit(220, boardDto.getBoardContent()));
 			}
-			
 		}
-		model.addAttribute("list", list);
-		// 향후 페이징 처리
 		
+		model.addAttribute("list", list);
+		model.addAttribute("pagination", pagination);
 		return "board/BOARD_BoardMain";
 	}
 

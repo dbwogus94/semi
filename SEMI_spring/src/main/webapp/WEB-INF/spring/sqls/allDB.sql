@@ -263,9 +263,9 @@ DECLARE v_cnt NUMBER := 1;
 BEGIN
     LOOP
     	EXIT WHEN v_cnt = 100;
-		INSERT INTO FREE_BOARD(BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE, BOARD_LIKE, BOARD_FILEPATH, BOARD_IMGPATH, BOARD_THUMBNAIL) 
-		VALUES(FREE_BOARD_SEQ.NEXTVAL, '1994dbwogus', '유재현', '반복추가:'||to_char(v_cnt), '글내용', SYSDATE, ROUND(DBMS_RANDOM.VALUE (1, 100)), null, null, null);
-		v_cnt := v_cnt+1;
+			INSERT INTO FREE_BOARD(BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE, BOARD_LIKE, BOARD_FILEPATH, BOARD_IMGPATH, BOARD_THUMBNAIL) 
+			VALUES(FREE_BOARD_SEQ.NEXTVAL, '1994dbwogus', '유재현', '반복추가:'||to_char(v_cnt), '글내용', SYSDATE, ROUND(DBMS_RANDOM.VALUE (1, 100)), null, null, null);
+			v_cnt := v_cnt+1;
 	END LOOP;
 END;
 -- ========================================================================================================================================================
@@ -508,7 +508,7 @@ WHERE ID = 'MENTEE01';
 
 -- ROWNUM 연습1 -- 단순출력(잘못된 사용이다.)
 SELECT ROWNUM as RN, BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE 
-FROM FREE_BOARD
+FROM FREE_BOARD;
 
 
 -- ROWNUM 연습2 -- 인라인뷰 없이 ROWNUM + ORDER BY와 함께 사용		>> 잘못된 방법을 알기 위한 예시

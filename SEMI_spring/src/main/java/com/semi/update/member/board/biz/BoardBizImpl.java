@@ -44,6 +44,13 @@ public class BoardBizImpl implements BoardBiz {
 		return dao.insertNoImgBoard(dto);
 	}
 
+	// 게시물 개수 가져오기(검색 포함
+	@Override
+	public int getTotalBoard(BoardDto dto) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>>>>> getTotalBoard : " + dto);
+		return dao.getTotalBoard(dto);
+	}
+	
 	//전체 선택(페이징) + 검색
 	@Override
 	public List<BoardDto> boardList(BoardDto dto) {
@@ -76,6 +83,5 @@ public class BoardBizImpl implements BoardBiz {
 		return dao.updateBoard(dto);
 	}
 
-	
 
 }

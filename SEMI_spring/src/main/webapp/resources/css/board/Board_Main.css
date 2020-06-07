@@ -78,6 +78,15 @@ input[type="text"]:hover{
 	margin:5px;
 	border: 1px solid #000;
 }
+
+
+.none{
+	pointer-events: none;
+}
+#pageBar .page-item :active{
+	pointer-events: none;
+}
+
   /*******************************************mobile*/
 @media screen and (max-width:767px) {
 

@@ -33,3 +33,11 @@ function imgTagParentDelete(){
 		}
 	}
 }
+
+
+function paging(pageNum){
+	console.log(pageNum)
+//	var url = "main.do?currentPage=" + pageNum
+//	location.href = url
+	
+}

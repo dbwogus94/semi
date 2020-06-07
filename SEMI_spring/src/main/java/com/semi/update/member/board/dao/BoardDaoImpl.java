@@ -47,6 +47,13 @@ public class BoardDaoImpl implements BoardDao{
 		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> insertNoimgBoard : " + dto);
 		return session.insert(NANESPACE + "insertNoImgBoard", dto);
 	}
+	
+	// 토탈 게시물 수 가져오기(검색포함)
+	@Override
+	public int getTotalBoard(BoardDto dto) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> getTotalBoard : " + dto);
+		return session.selectOne(NANESPACE + "getTotalBoard", dto);
+	}
 
 	//전체 선택(페이징) + 검색
 	@Override
@@ -80,6 +87,5 @@ public class BoardDaoImpl implements BoardDao{
 		return session.update(NANESPACE + "updateBoard", dto);
 	}
 
-	
 	
 }

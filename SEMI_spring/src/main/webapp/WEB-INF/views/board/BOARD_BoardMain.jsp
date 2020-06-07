@@ -87,47 +87,60 @@
 			<div class="col-md-2"></div>
 			<div class="col-md-8">
 				<ul class="pagination">
-					<c:if test="${pagination.curRange ne 1 }">
+				
+					<!-- << -->
+					<c:if test="${pagination.currentPage ne 1 }">
+						<li onClick="paging(${pagination.prevPage })">
+							<a href="main.do?currentPage=${pagination.prevPage }" aria-label="Previous">
+								<span aria-hidden="true">&lt;&lt;</span>
+							</a>
+						</li>
+					</c:if>
+					
+					<!-- 처음 : ... 1 -->
+					<c:if test="${pagination.currentPage > 6 }">
 						<li onClick="paging(1)">
-							<a href="#" aria-label="Previous">
-								<span aria-hidden="true">처음</span>
+							<a href="main.do?currentPage=1" aria-label="Previous">
+								<span aria-hidden="true">1</span>
 							</a>
 						</li>
-					</c:if>
-					<c:if test="${pagination.curPage ne 1}">
-						<li onClick="paging('${pagination.prevPage }')">
-							<a href="#" aria-label="Previous"> 
-								<span aria-hidden="true">&laquo;</span>
-							</a>
+						<li class="none">
+							<span aria-hidden="true">...</span>
 						</li>
 					</c:if>
+					
+					<!-- 번호 출력 -->
 					<c:forEach var="pageNum" begin="${pagination.startPage }" end="${pagination.endPage }">
-						<c:choose>
-							<c:when test="${pageNum eq  pagination.curPage}">
-								<li onClick="paging('${pageNum }')">
-									<a href="#" class="paging-focus">${pageNum }</a>
-								</li>
-							</c:when>
-							<c:otherwise>
-								<li onClick="paging('${pageNum }')">
-									<a href="#">${pageNum }</a>
-								</li>
-							</c:otherwise>
-						</c:choose>
+						<li class="page-item  <c:out value="${pagination.currentPage == pageNum ? 'active' : ''}"/>"  onClick="paging('${pageNum }')">
+							<a class="page-link" href="main.do?currentPage=${pageNum }">${pageNum }</a>
+						</li>
 					</c:forEach>
-					<c:if test="${pagination.curPage ne pagination.pageCnt && pagination.pageCnt > 0}">
-						<li onClick="paging('${pagination.nextPage }')">
-							<a href="#" aria-label="Next"> 
-								<span aria-hidden="true">&raquo;</span>
+					
+					<!-- 끝 : ... N  -->
+					<c:choose>
+						<c:when test="${pagination.endPage ne pagination.totalPage && pagination.totalPage > 10}">
+							<li class="none">
+								<span aria-hidden="true">...</span>
+							</li>
+							<li onClick="paging(${pagination.totalPage })">
+								<a href="main.do?currentPage=${pagination.totalPage }" aria-label="Next"> 
+									<span aria-hidden="true">${pagination.totalPage }</span>
+								</a>
+							</li>
+						</c:when>
+						<c:otherwise>
+						</c:otherwise>
+					</c:choose>
+					
+					<!-- >> -->
+					<c:if test="${pagination.currentPage ne pagination.totalPage }">
+						<li onClick="paging(${pagination.nextPage })">
+							<a href="main.do?currentPage=${pagination.nextPage }" aria-label="Next"> 
+								<span aria-hidden="true">&gt;&gt;</span>
 							</a>
 						</li>
 					</c:if>
-					<c:if test="${pagination.curRange ne pagination.rangeCnt && pagination.rangeCnt > 0}">
-						<li onClick="paging('${pagination.pageCnt }')">
-						<a href="#" aria-label="Next"> 
-							<span aria-hidden="true">마지막</span>
-						</a></li>
-					</c:if>
+					
 				</ul>
 			</div>
 			<div class="col-md-2"></div>

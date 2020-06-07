@@ -165,11 +165,11 @@ WHERE X.RN >= 5
 # 페이징 쿼리에 사용할 시작게시물 번호(startCount)  끝게시물 번호(endCount)를 구하는 법
 =====================================================================================================================================
 1	int totalCount = 25;
-2	int countPage = 10;
+2	int countList = 10; 			// 한 화면에 출력될 게시물 수
 3	int page = 3;
 4
-5	int startCount = (page - 1) * countPage + 1;  	// 21
-6	int endCount = page * countPage;  		// 30
+5	int startCount = (page - 1) * countList + 1;  	// 21
+6	int endCount = page * countList;  	// 30
 7 	// 마이바티스 메퍼의 쿼리에 startCount , endCount를 보내어 실행
 =====================================================================================================================================
 

@@ -43,16 +43,10 @@
 	</insert>
 	
 	
-	<!-- 전체 가져오기  + 검색 -->
-	<!--
-		# <trim>
-		1.prefix 처리 후 엘리먼트의 내용이 있으면 가장 앞에 붙여준다.
-		2.prefixOverrides 처리 후 엘리먼트 내용 중 가장 앞에 해당 문자들이 있다면 자동으로 지워준다.
-		3.suffix 처리 후 엘리먼트 내에 내용이 있으면 가장 뒤에 붙여준다.
-		4.suffixOverrides 처리 후 엘리먼트 내용 중 가장 뒤에 해당 문자들이 있다면 자동으로 지워준다.
-	-->
-	<select id="boardList" parameterType="boardDto" resultMap="ResultMap">
-		SELECT * FROM FREE_BOARD
+	<!-- 전체 게시물 구하기 + 검색후 전체 게시물 구하기-->
+	<select id="getTotalBoard" resultType="int">
+		SELECT COUNT(*)
+		FROM FREE_BOARD
 		<trim prefix = "WHERE" prefixOverrides = "AND">
 			<if test="category == 'title' and keyword != null and keyword != ''">
 				AND BOARD_TITLE LIKE ('%' || #{keyword} || '%')
@@ -64,7 +58,37 @@
 				AND BOARD_NAME LIKE ('%' || #{keyword} || '%')
 			</if>
 		</trim>
-		ORDER BY BOARD_NO DESC 
+	</select>
+	
+	<!-- 전체 가져오기  + 페이징 + 검색  -->
+	<!--
+		# <trim>
+		1.prefix 처리 후 엘리먼트의 내용이 있으면 가장 앞에 붙여준다.
+		2.prefixOverrides 처리 후 엘리먼트 내용 중 가장 앞에 해당 문자들이 있다면 자동으로 지워준다.
+		3.suffix 처리 후 엘리먼트 내에 내용이 있으면 가장 뒤에 붙여준다.
+		4.suffixOverrides 처리 후 엘리먼트 내용 중 가장 뒤에 해당 문자들이 있다면 자동으로 지워준다.
+	-->
+	<select id="boardList" parameterType="boardDto" resultMap="ResultMap">
+		SELECT X.RN, X.BOARD_NO, X.ID, X.BOARD_NAME, X.BOARD_TITLE, X.BOARD_REGDATE, X.BOARD_LIKE
+		FROM(
+			SELECT ROWNUM as RN, A.BOARD_NO, A.ID, A.BOARD_NAME, A.BOARD_TITLE, A.BOARD_REGDATE, A.BOARD_LIKE 
+			FROM (
+				SELECT BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE 
+				FROM FREE_BOARD
+					<trim prefix = "WHERE" prefixOverrides = "AND">
+						<if test="category == 'title' and keyword != null and keyword != ''">
+							AND BOARD_TITLE LIKE ('%' || #{keyword} || '%')
+						</if>
+						<if test="category == 'content' and keyword != null and keyword != ''">
+							AND BOARD_CONTENT LIKE ('%' || #{keyword} || '%')
+						</if>
+						<if test="category == 'name' and keyword != null and keyword != ''">
+							AND BOARD_NAME LIKE ('%' || #{keyword} || '%')
+						</if>
+					</trim>
+				ORDER BY BOARD_NO DESC) A
+			WHERE ROWNUM <![CDATA[<=]]> #{endBoardNo}) X
+		WHERE X.RN >= #{startBoardNo}	
 	</select>
 	
 	<!-- select One : 

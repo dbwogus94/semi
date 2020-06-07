@@ -50,7 +50,9 @@ public class BoardDto {
 	    private String category;
 	    private String keyword;
 	    
-	    // 페이징
+	    /* 페이징 */
+	    private int startBoardNo;
+	    private int endBoardNo;
 	    
 
 	    // 기본생성자
@@ -168,6 +170,23 @@ public class BoardDto {
 
 		public void setKeyword(String keyword) {
 			this.keyword = keyword;
+		}
+		
+		
+		public int getStartBoardNo() {
+			return startBoardNo;
+		}
+
+		public void setStartBoardNo(int startBoardNo) {
+			this.startBoardNo = startBoardNo;
+		}
+
+		public int getEndBoardNo() {
+			return endBoardNo;
+		}
+
+		public void setEndBoardNo(int endBoardNo) {
+			this.endBoardNo = endBoardNo;
 		}
 
 		@Override
