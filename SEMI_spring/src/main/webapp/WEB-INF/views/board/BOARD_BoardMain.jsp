@@ -88,11 +88,20 @@
 			<div class="col-md-8">
 				<ul class="pagination">
 				
-					<!-- << -->
+					<!-- << : 10 페이지 뒤로-->
+					<c:if test="${pagination.startPage >= 11 }">
+						<li onClick="paging()">
+							<a href="main.do?currentPage=${pagination.currentPage -10}" aria-label="Previous">
+								<span aria-hidden="true">&lt;&lt;</span>
+							</a>
+						</li>
+					</c:if>
+					
+					<!-- < -->
 					<c:if test="${pagination.currentPage ne 1 }">
 						<li onClick="paging(${pagination.prevPage })">
 							<a href="main.do?currentPage=${pagination.prevPage }" aria-label="Previous">
-								<span aria-hidden="true">&lt;&lt;</span>
+								<span aria-hidden="true">&nbsp;&lt;&nbsp;</span>
 							</a>
 						</li>
 					</c:if>
@@ -111,7 +120,7 @@
 					
 					<!-- 번호 출력 -->
 					<c:forEach var="pageNum" begin="${pagination.startPage }" end="${pagination.endPage }">
-						<li class="page-item  <c:out value="${pagination.currentPage == pageNum ? 'active' : ''}"/>"  onClick="paging('${pageNum }')">
+						<li class="page-item  <c:out value="${pagination.currentPage == pageNum ? 'active' : ''}"/>" id="<c:out value="${pagination.currentPage == pageNum ? 'none' : ''}"/>" onClick="paging('${pageNum }')">
 							<a class="page-link" href="main.do?currentPage=${pageNum }">${pageNum }</a>
 						</li>
 					</c:forEach>
@@ -132,10 +141,19 @@
 						</c:otherwise>
 					</c:choose>
 					
-					<!-- >> -->
+					<!-- > -->
 					<c:if test="${pagination.currentPage ne pagination.totalPage }">
 						<li onClick="paging(${pagination.nextPage })">
 							<a href="main.do?currentPage=${pagination.nextPage }" aria-label="Next"> 
+								<span aria-hidden="true">&nbsp;&gt;&nbsp;</span>
+							</a>
+						</li>
+					</c:if>
+					
+					<!-- >> : 10 페이지 앞으로-->
+					<c:if test="${(pagination.currentPage +10) <= pagination.totalPage }">
+						<li onClick="paging(${pagination.nextPage })">
+							<a href="main.do?currentPage=${pagination.currentPage +10 }" aria-label="Next"> 
 								<span aria-hidden="true">&gt;&gt;</span>
 							</a>
 						</li>

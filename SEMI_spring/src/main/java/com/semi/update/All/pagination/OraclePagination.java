@@ -63,9 +63,34 @@ public class OraclePagination {
 		// 6. 이전페이지 다음페이지 설정
 		setPrevPage(currentPage - 1);
 		setNextPage(currentPage + 1);
-		
 	}
 
+	// 기본생성자로 생성후 >>> setter로 세팅후 >> 페이징 연산에 사용
+	public void calcPaging(int totalBoard, int currentPage) {
+		// 현재페이지 
+		setCurrentPage(currentPage);
+				
+		// 1. 총 게시물 수  	: DB에서 조회하여 파라미터로 전달 
+		setTotalBoard(totalBoard);
+				
+		// 2. 총 페이지 수 
+		setTotalPage(totalBoard);
+				
+		// 3. 시작페이지, 끝 페이지
+		setStartEndPage(currentPage);
+
+		// 4. 현재 페이지 시작게시물 번호(boardDto에 넣어서 메퍼에 사용)
+		setStartBoardNo(currentPage);
+				
+		// 5. 현재 페이지 끝게시물 번호(boardDto에 넣어서 메퍼에 사용)
+		setEndBoardNo(currentPage);
+				
+		// 6. 이전페이지 다음페이지 설정
+		setPrevPage(currentPage - 1);
+		setNextPage(currentPage + 1);		
+	}
+	
+	
 	public int getTotalBoard() {
 		return totalBoard;
 	}
@@ -97,7 +122,17 @@ public class OraclePagination {
 	/* 3. 시작페이지 끝페이지 설정 */
 	public void setStartEndPage(int currentPage) {
 		int totalPage = this.totalPage;		// 2. 에서 설정한 전체 페이지 수 가져온다
+
+//		// 한 화면에 출력되는 페이지 5개 기준
+//		// 현재페이지가 4페이지 보다 작을 때	>>>  현재페이지  < (pageSize/2 + 2)	or	현재페이지  <= (pageSize/2 + 1) 
+//		if(currentPage < 4) {
+//			this.startPage = 1;
+//			// 끝페이지 = 전체가 5 미만 / 5이상 
+//			this.endPage = (totalPage < 5)? totalPage : 5;
+//		// 현재 페이지가 (전체페이지 -
+//		} 
 		
+		// 한 화면에 출력되는 페이지 10개 기준
 		//현재페이지가 7 미만
 		if(currentPage < 7) {
 			this.startPage = 1;
@@ -236,10 +271,83 @@ public class OraclePagination {
 				+ ", prevPage=" + prevPage + ", nextPage=" + nextPage + "]";
 	}
 	
-
-	
-	
-	
-	
-	
+	public static void main(String[] args) {
+		
+//		int page =11;			// 현재 페이지
+//		int countList = 10;		// 한 페이지에 출력될 게시물 수 
+//		int countPage = 10;		// 한 화면에 출력될 페이지 수
+//		int totalCount = 111;	// 총 게시물 수
+//		int totalPage = totalCount / countList;	// 총 페이지 수
+//		
+//		if (totalCount % countList > 0) {
+//		    totalPage++;
+//		}
+//		if (totalPage < page) {
+//		    page = totalPage;
+//		}
+//		int startPage = ((page - 1) / 10) * 10 + 1;
+//		int endPage = startPage + countPage - 1;
+//		if (endPage > totalPage) {
+//		    endPage = totalPage;
+//		}
+//		
+//	
+//		if (startPage > 1) {
+//		    System.out.print("<a href=\"?page=1\">처음</a> ");
+//		}
+//		if (page > 1) {
+//		    System.out.print("<a href=\"?page=" + (page - 1)  + "\">이전</a> \t");
+//		}
+//		for (int iCount = startPage; iCount <= endPage; iCount++) {
+//		    if (iCount == page) {
+//		        System.out.print(" <b>" + iCount + "</b>");
+//		    } else {
+//		        System.out.print(" " + iCount + " ");
+//		    }
+//		}
+//		if (page < totalPage) {
+//		    System.out.print("\t <a href=\"?page=" + (page + 1)  + "\">다음</a>");
+//		}
+//
+//		if (endPage < totalPage) {
+//		    System.out.print(" <a href=\"?page=" + totalPage + "\">끝</a>");
+//		}
+		
+		
+//		int page = 13;			// 현재 페이지
+//		int totalCount = 90;	// 총 게시물 수
+//		OraclePagination pageing = new OraclePagination(totalCount, page);
+//		System.out.println(pageing);
+//		
+//		int startPage = pageing.getStartPage();
+//		int endPage = pageing.getEndPage();
+//		int totalPage = pageing.getTotalPage();
+//		
+//		if(page != 1) {
+//			System.out.print("<< ");
+//		}
+//		if(page > 6) {
+//			System.out.print("1 ...");
+//		}
+//		
+//		for (int i = startPage; i <= endPage; i++) {
+//			
+//		    if (i == page) {
+//		        System.out.print(" <b>" + i + "</b>");
+//		    } else {
+//		        System.out.print(" " + i + " ");
+//		    }
+//		}
+//		
+//		if(endPage != totalPage && totalPage > 10) {
+//			System.out.print("... " + totalPage);
+//		} else if (endPage == totalPage) {
+//			System.out.print("");
+//		}
+//		
+//		if(page != totalPage) {
+//			System.out.print(" >>");
+//		}
+		
+	}
 }

@@ -486,6 +486,8 @@ WHERE ID = 'MENTEE01';
 -- ROWNUM은 오라클에서 제공하는 Top-N 쿼리 프로세싱 기능이다 : 쿼리문의 로우 데이터가 출력될때  결과에 순서내로 숫자를 매겨서 나오게 한다.    
 --												응용으로는 넘버링된 숫자의 범위를 지정하여 데이터를 가져올 수 있다 
 
+-- ROWNUM의 비밀 ==> SELECT ROWNUM : 가상 칼럼을 만들어서 넘버를 붙인다 / WHERE ROWNUM : 오라클에서 제공하는 TOP-N 쿼리 프로세싱의 핵심 기술이다 
+
 -- # ROWNUM의 동작 원리
 -- ROWNUM은 쿼리 내에서 사용 가능한 (실제 컬럼이 아닌) 가상 컬럼(pseudocolumn)입니다. 
 -- ROWNUM에는 숫자 1, 2, 3, 4, ... N의 값이 할당됩니다. 여기서 N 은 ROWNUM과 함께 사용하는 로우의 수를 의미합니다. 
@@ -505,18 +507,23 @@ WHERE ID = 'MENTEE01';
 --출처: https://5dol.tistory.com/127 [5dol Story]
 
 
+-- 페이징 쿼리 >>> 정렬된 테이블 번호를 붙이고 범위를 잘라온다.
+
 
 -- ROWNUM 연습1 -- 단순출력(잘못된 사용이다.)
 SELECT ROWNUM as RN, BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE 
-FROM FREE_BOARD;
+FROM FREE_BOARD
+
+
 
 
 -- ROWNUM 연습2 -- 인라인뷰 없이 ROWNUM + ORDER BY와 함께 사용		>> 잘못된 방법을 알기 위한 예시
 
--- 2-1) 잘못된사용
+-- 2-1) 잘못된사용	>>> 번호를 붙인 테이블에 정렬이 되고 있음
 SELECT ROWNUM as RN, BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE 
 FROM FREE_BOARD
-ORDER BY BOARD_NO DESC;		
+ORDER BY BOARD_NO DESC		
+
 
 -- 결과 : 2-1)의 쿼리를 실행하면 아무문제 없이 출력이된다.
 -- 왜 일까?	BOARD_NO는 시퀀스이다 시퀀스는 생성하는 순서대로 작성이된다. 
@@ -535,7 +542,7 @@ ORDER BY BOARD_LIKE DESC;
 
 
 
--- ROWNUM 연습3 -- 인라인뷰 + ROWNUM + ORDER BY 함께 사용		>> 정확한 사용법을 알기 위한 예시
+-- ROWNUM 연습3 -- 인라인뷰 + SELECT문의 ROWNUM + ORDER BY 함께 사용		>> 정확한 사용법을 알기 위한 예시
 SELECT ROWNUM AS RN, A.BOARD_NO, A.BOARD_NAME, A.BOARD_TITLE, A.BOARD_REGDATE, A.BOARD_LIKE
 FROM (
 	SELECT BOARD_NO, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE
@@ -603,7 +610,7 @@ WHERE X.RN >= 5
 
 -- 결과 : 위의 4-2)와 같은 정상적으로 TOP N 쿼리를 내보낸다. 
 -- 왜 효율적일까?
---		4-2)와 4-2)의 쿼리는 데이터가 적다면 차이가 없다. 하지만 데이터가 많아지면 많아질수록 큰 성능 차이를 보여준다. 
+--		4-1)와 4-2)의 쿼리는 데이터가 적다면 차이가 없다. 하지만 데이터가 많아지면 많아질수록 큰 성능 차이를 보여준다. 
 -- 		먼저 두 쿼리는 공통적으로 먼저 BOARD_LIKE를 기준으로 정렬을 수행한다. 그 후 넘버링을 하고 필요한 범위를 가져온다
 --		여기서 생각해 볼것이 있다. 로우가 10만개 이상이라고 가정할 때 사용자가 요청하는 데이터는 정렬된 상위데이터 중 5 ~ 10 뿐이다.
 --		즉, 상위 10개의 데이터를 가져오자고 10만개의 데이터를 전부 정렬하고 번호를 일일이 붙이는 것은 너무 비효율적일 것이다   	

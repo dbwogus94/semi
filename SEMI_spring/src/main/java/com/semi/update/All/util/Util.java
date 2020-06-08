@@ -135,7 +135,7 @@ public class Util {
 	
 	public static void main(String[] args) {
 	
-//		int page = 1;			// 현재 페이지
+//		int page =11;			// 현재 페이지
 //		int countList = 10;		// 한 페이지에 출력될 게시물 수 
 //		int countPage = 10;		// 한 화면에 출력될 페이지 수
 //		int totalCount = 111;	// 총 게시물 수
@@ -176,41 +176,41 @@ public class Util {
 //		}
 		
 		
-		int page = 7;			// 현재 페이지
-		int totalCount = 90;	// 총 게시물 수
-		OraclePagination pageing = new OraclePagination(totalCount, page);
-		System.out.println(pageing);
+//		int page = 13;			// 현재 페이지
+//		int totalCount = 90;	// 총 게시물 수
+//		OraclePagination pageing = new OraclePagination(totalCount, page);
+//		System.out.println(pageing);
+//		
+//		int startPage = pageing.getStartPage();
+//		int endPage = pageing.getEndPage();
+//		int totalPage = pageing.getTotalPage();
+//		
+//		if(page != 1) {
+//			System.out.print("<< ");
+//		}
+//		if(page > 6) {
+//			System.out.print("1 ...");
+//		}
+//		
+//		for (int i = startPage; i <= endPage; i++) {
+//			
+//		    if (i == page) {
+//		        System.out.print(" <b>" + i + "</b>");
+//		    } else {
+//		        System.out.print(" " + i + " ");
+//		    }
+//		}
+//		
+//		if(endPage != totalPage && totalPage > 10) {
+//			System.out.print("... " + totalPage);
+//		} else if (endPage == totalPage) {
+//			System.out.print("");
+//		}
+//		
+//		if(page != totalPage) {
+//			System.out.print(" >>");
+//		}
 		
-		int startPage = pageing.getStartPage();
-		int endPage = pageing.getEndPage();
-		int totalPage = pageing.getTotalPage();
-		
-		if(page != 1) {
-			System.out.print("<< ");
-		}
-		if(page > 6) {
-			System.out.print("1 ...");
-		}
-		
-		for (int i = startPage; i <= endPage; i++) {
-			
-		    if (i == page) {
-		        System.out.print(" <b>" + i + "</b>");
-		    } else {
-		        System.out.print(" " + i + " ");
-		    }
-		}
-		
-		if(endPage != totalPage && totalPage > 10) {
-			System.out.print("... " + totalPage);
-		} else if (endPage == totalPage) {
-			System.out.print("");
-		}
-		
-		if(page != totalPage) {
-			System.out.print(" >>");
-		}
-	
 	}
 	
 

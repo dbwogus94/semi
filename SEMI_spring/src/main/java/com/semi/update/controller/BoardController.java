@@ -56,13 +56,15 @@ public class BoardController {
 	public String boardMain(Model model, @ModelAttribute BoardDto dto, @RequestParam(defaultValue = "1") int currentPage) {
 		logger.info("board main page >>>>>>>>>>>>>>>> [input] boardDto : " + dto);	
 		
+		//1) 전체 게시물 게수 가져오기
 		int totalBoardCount = boardBiz.getTotalBoard(dto);	// 전체게시물 수  or 검색한 게시물 수
 		
-		/* 페이징 클래스 >> 쿼리에 필요한 시작페이지 번호, 끝 페이지 번호를 계산해서 가지고 있음  */
+		/*2) 페이징 클래스 >> 쿼리에 필요한 시작페이지 번호, 끝 페이지 번호를 계산해서 가지고 있음  */
 		OraclePagination pagination = new OraclePagination(totalBoardCount, currentPage);	// 전체 게시물 수, 현재 페이지 (== 요청된 페이지) 
 		logger.info("board main page >>>>>>>>>>>>>>> [페이징] OraclePagination : " + pagination );
 		
-		// boardDto에 시작 페이지, 끝 페이지 추가
+		
+		//3) boardDto에 시작 페이지, 끝 페이지 추가
 		dto.setStartBoardNo(pagination.getStartBoardNo());
 		dto.setEndBoardNo(pagination.getEndBoardNo());
 		

@@ -83,7 +83,7 @@ input[type="text"]:hover{
 .none{
 	pointer-events: none;
 }
-#pageBar .page-item :active{
+#none{
 	pointer-events: none;
 }
 
