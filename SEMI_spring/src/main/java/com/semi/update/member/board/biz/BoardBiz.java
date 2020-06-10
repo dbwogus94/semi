@@ -35,4 +35,14 @@ public interface BoardBiz {
 	
 	// 이미지 없을시 게시판 수정
 	public int updateBoard(BoardDto dto);
+	
+	// 유저가 작성한 게시글 총 개수
+	public int getMyTotalBoard(BoardDto dto);
+	
+	// 유저가 작성한 게시글 리스트 확인(페이징 검색)
+	public List<BoardDto> myBoardList(BoardDto dto);
+	
+	// multi delete 
+	public int multiBoardDelete(int[] boardNoArr);
+		
 }

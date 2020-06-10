@@ -1,5 +1,6 @@
 package com.semi.update.member.board.biz;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -83,5 +84,24 @@ public class BoardBizImpl implements BoardBiz {
 		return dao.updateBoard(dto);
 	}
 
+	// 유저가 작성한 게시글 총 개
+	@Override
+	public int getMyTotalBoard(BoardDto dto) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>> getMyTotalBoard : " + dto);
+		return dao.getMyTotalBoard(dto);
+	}
+	
+	// 유저가 작성한 게시물 리스트
+	@Override
+	public List<BoardDto> myBoardList(BoardDto dto) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>> myBoardList : " + dto);
+		return dao.myBoardList(dto);
+	}
 
+	@Override
+	public int multiBoardDelete(int[] boardNoArr) {
+		logger.info("[BoardBizImpl] >>>>>>>>>>>>> multiBoardDelete : " + Arrays.toString(boardNoArr));
+		return dao.multiBoardDelete(boardNoArr);
+	}
+		
 }

@@ -5,31 +5,7 @@ function authorityChk(id, boardId, boardNo){
 		alert("글 수정 권한이 없습니다.")
 	}
 } 
-
-
-function postSend(path, params, method) {
-	method = method || "post";
-	var form = document.createElement("form");
-	form.setAttribute("method", method);
-	form.setAttribute("action", path);
-
-	// 히든으로 값을 넣는다.
-	for ( var key in params) { // {'name1':'var1','name2':'var2','name3':'var3'}
-		var input_tag = document.createElement("input");
-		input_tag.setAttribute("type", "hidden");
-		input_tag.setAttribute("name", key) // name1, name2, name3
-		input_tag.setAttribute("value", params[key]) // var1, var2, var3
-
-		console.log("name : " + key);
-		console.log("value : " + params[key]);
-
-		form.appendChild(input_tag);
-	}
-	document.body.appendChild(form);
-	form.submit();
-}
-
-
+/*=============================================[파일 다운로드 시작]=======================================================*/
 
 // 모달 팝업에 파일 표시
 function fileDetail(boardNo){
@@ -131,23 +107,86 @@ function fileDownChk(){
 	}
 }
 
-// 실패 코드 : for문을 사용한 서버의 다중 요청 코드는 재요청 코드 부분이 잘못되어서 실패하였다
-function fileDownChk1(){
-	let checkbox = document.getElementsByName("file")
-	var boardNo = document.getElementById("boardNo").value
-	for(let i = 0; i<checkbox.length; i++){
-		if(checkbox[i].checked){
-			let fileName = checkbox[i].value
-			let path = "fileDown.do"
-			let params = {fileName:fileName, boardNo:boardNo}
-			postSend(path, params, "post")
-			setTimeout(function(){
-				// 재요청이 들어가야함
-			}, 1000)
+
+// #form태그 생성 전송 모듈 >>> 파라미터 (경로, 배열 or json, 전송방식, 배열의경우 서버에서 받을 이름) 
+function postSend(path, params, method, ArrName) {
+	method = method || "post";		// 파라미터로 들어온 값이 없으면 디폴트값
+	
+	var form = document.createElement("form");
+	form.setAttribute("method", method);
+	form.setAttribute("action", path);
+	
+	// 히든으로 값을 넣는다.
+	if(Array.isArray(params)){
+		// Array
+		ArrName = ArrName || "arr";		// 파라미터로 배열이 들어온 경우 디폴트 name 
+		for(var i = 0; i<params.length; i++){
+			var input_tag = document.createElement("input");
+			input_tag.setAttribute("type", "hidden");
+			input_tag.setAttribute("name", ArrName) 
+			input_tag.setAttribute("value", params[i])
+			
+			form.appendChild(input_tag);
+		}
+	} else {
+		// json
+		for ( var key in params) { // {'name1':'var1','name2':'var2','name3':'var3'}
+			var input_tag = document.createElement("input");
+			input_tag.setAttribute("type", "hidden");
+			input_tag.setAttribute("name", key) // name1, name2, name3
+			input_tag.setAttribute("value", params[key]) // var1, var2, var3
+
+			form.appendChild(input_tag);
 		}
 	}
-} 
+	document.body.appendChild(form);
+	form.submit();
+}
+/*=============================================[파일 다운로드 끝]=======================================================*/
+
+
+
+
+// 글 삭제
+function deleteOne(boardNo){
+	warningMsg("","","location.href='deleteOne.do?boardNo="+boardNo + "'")
+}
+
+
+// #경고 모달 모듈 >>> 파라미터 (타이틀, 내용, 확인에 사용할 함수명()(문자열))
+function warningMsg(title_msg, msg, confirmFunc){
+	// 기본값
+	title_msg = title_msg || " 경고!";
+	msg = msg || "글을 삭제 하시겠습니까?</br> 주의! : 삭제된 글은 복구하지 못합니다.";
 	
+	var btn = document.getElementById("warningMsg-yes-btn")
+	// 확인 버튼 함수 있을 때
+	console.log(confirmFunc)
+	if(confirmFunc){
+		console.log(1)
+		btn.removeAttribute("data-dismiss")
+		btn.setAttribute("onclick", confirmFunc)
+	} else {
+		console.log(2)
+		if(btn.getAttribute("onclick")){
+			btn.setAttribute("data-dismiss", "modal")
+			btn.removeAttribute("onclick")
+		}
+	}
+	// 모달 팝업 내용추가
+	var modal = document.getElementById("warningMsg")
+	var title = modal.getElementsByClassName("modal-title")[0]
+	title.classList.add("glyphicon")		// 부트스트랩에서 제공하는
+	title.classList.add("glyphicon-alert")	// 경고표시 icon
+	title.innerHTML = title_msg
+	var body = modal.getElementsByClassName("modal-body")[0]
+	body.innerHTML = msg 
+
+	$('#warningMsg').modal('show');
+	//modal.classList.add("in")
+	//modal.style="display: block; padding-right: 16px;"
+}
+
 
 
 

@@ -13,10 +13,10 @@
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/Board_Main.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/Board_myMain.css">
 <%@ include file="../mentor/mentorHeader.jsp"%>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_BoardMain.js"></script>
-<title>자유게시판</title>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_myBoardMain.js"></script>
+<title>${login.memberName}님이 작성한 게시판</title>
 </head>
 <body>
 
@@ -24,10 +24,12 @@
 	<div class="col-md-12" id="headTitle">
 		<hr>
 		<br>
-		<h2>자유게시판</h2>
+		<h2>${login.memberName}님이 작성한 게시판</h2>
 		
-		<input type="button" class="button" value="게시글 관리" onclick="location.href='myMain.do'">
-    	<input type="button" class="button" value="글쓰기" onclick="location.href='write.do'">
+		<input type="button" class="button" value="돌아가기" onclick="location.href='main.do'">
+    	<input type="button" class="button" value="글 삭제" onclick="deleteBoard();">
+    	<input type="button" class="button" value="글 선택" onclick="deleteChk_show();">
+    	
     	
 		<br>
 		<hr>
@@ -60,6 +62,7 @@
 			<c:otherwise>
 				<c:forEach items="${list }" var="dto">
 					<li>
+					   <span class="deleteSpan"><label class="checkbox-inline"><input type="checkbox" class="deleteChk" value="${dto.boardNo }"><b>삭제할 글을 체크하세요</b></label></span>
 			           <a href="detail.do?boardNo=${dto.boardNo }">
 			           		 <div class="top">
 			           		 	<img class="board_img" alt="" src="${dto.thumbnail }" onerror="this.src='/update/resources/img/board/board.jpeg';">
@@ -164,6 +167,25 @@
 	</footer>
 	<!-- 페이징 영역 끝 -->
 </div>
-
+	<!-- 경고 메세지 모달 영역 -->
+	<div class="modal fade" id="warningMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel"></h4>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="warningMsg-yes-btn">확인</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 </body>
 </html>

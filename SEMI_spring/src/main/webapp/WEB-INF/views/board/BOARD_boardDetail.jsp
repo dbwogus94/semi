@@ -33,8 +33,10 @@
 			<hr>
 			<br>
 			<h2>${board.boardNo}번 글 상세</h2>
-			<!-- onclick="location.href='writeCancel.do'" -->
-			<input type="button" class="button" value="목록으로" onclick="location.href='writeCancel.do'"/>
+			<c:if test="${board.id eq login.id}">
+				<input type="button" class="button" value="글 삭제" onclick="deleteOne('${board.boardNo}')"/>
+			</c:if>	
+			<input type="button" class="button" value="목록으로" onclick="location.href='main.do'"/>
 			<input type="button" class="button" value="수정하기" onclick="authorityChk('${login.id }', '${board.id }', ${board.boardNo })"/>
 			<br>
 			<hr>
@@ -73,6 +75,43 @@
 			</div>
 		</div>
 	</div>
+	<div class="container" id="comment-container">
+		<table class="table table-bordered" class="shadow p-3 mb-5 bg-white rounded">
+			<tr>
+				<td colspan="4" class="reply-label">댓 글</td>
+			</tr>
+			<tr class="reply-area">
+				<td colspan="4">
+					<div class="reply-insert-area">
+						<input type="text" class="form-control" placeholder="바르고 고운말을 사용합시다." aria-label="Recipient's username" aria-describedby="button-addon2"
+								onkeydown="onKeyDown(${boardDetail.boardseq }, ${boardDetail.groupno });">
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="replyInsert(${boardDetail.boardseq });">입  력</button>
+						</div>
+					</div>
+				</td>
+			</tr>
+
+		<c:forEach items="${replyList }" var="reply">
+			<tr class="reply">
+				<th class="reply-email">${reply.joinemail }</th>
+				<td class="reply-content">${reply.content }</td>
+				<td class="reply-update-delete">
+			<c:choose>		
+				<c:when test="${reply.joinemail eq login.joinemail }">
+					<span><a href="#" onclick="deleteAlert('댓글', ${reply.boardseq });">삭제</a></span>
+				</c:when>
+				<c:otherwise>
+					<span><a href="#" onclick="rereply('${reply.joinemail }', ${reply.boardseq }); " >답글</a></span>
+				</c:otherwise>
+			</c:choose>
+				</td>
+				<td class="reply-date"><fmt:formatDate value="${reply.regdate}" pattern="yy-MM-dd HH:mm" /></td>
+			</tr>
+		</c:forEach>	
+		</table>
+	</div>
+	
 	
 	<!-- 모달 영역 -->
 	<div class="modal fade" id="boardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -89,6 +128,26 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" id="yes-btn"
 						onclick="fileDownChk();">선택 다운로드</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 경고 메세지 모달 영역 -->
+	<div class="modal fade" id="warningMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel"></h4>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="warningMsg-yes-btn">확인</button>
 					<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
 				</div>
 			</div>

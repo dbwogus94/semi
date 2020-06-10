@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -249,10 +250,10 @@ public class BoardController {
 	
 	// 디테일
 	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
-	public String boardDetail(Model model, @RequestParam("boardNo") int boardNo, BoardDto boardDto) {
+	public String boardDetail(Model model, @RequestParam("boardNo") int boardNo) {
 		logger.info("board detail page");
 
-		boardDto = boardBiz.selectOne(boardNo);
+		BoardDto boardDto = boardBiz.selectOne(boardNo);
 		if(boardDto.getFilePath() != null) {
 			if(boardDto.getFilePath().contains("??")) {
 				String[] fileNames = boardDto.getFilePath().split("\\?\\?");  // "\\" 두개를 붙이는 이유는  Meta character라서 정규식을 기반으로 구현한 메서드에 그대로 사용 불가하다.
@@ -523,7 +524,99 @@ public class BoardController {
 	// 좋아요
 	
 	// 자신이 쓴 글 리스트 보기
-
+	@RequestMapping(value = "/myMain.do")									
+	public String MyboardMain(Model model, @ModelAttribute BoardDto dto, @RequestParam(defaultValue = "1") int currentPage, HttpSession session) {
+		logger.info("My board main page >>>>>>>>>>>>>>>> [input] boardDto : " + dto);	
+		
+		// #1 세션에서 id 찾기
+		MentorDto mentorDto = (MentorDto) session.getAttribute("login");
+		String id = "";
+		if(mentorDto != null) {
+			id = mentorDto.getId();
+		} else {
+			MenteeDto menteeDto = (MenteeDto) session.getAttribute("login");
+			id = menteeDto.getId();
+		}
+		
+		dto.setId(id);
+		
+		// 1) 유저가 작성한 전체 게시물 게수 가져오기
+		int totalBoardCount = boardBiz.getMyTotalBoard(dto);	// 전체게시물 수  or 검색한 게시물 수
+		
+		/* 2) 페이징 클래스 >> 쿼리에 필요한 시작페이지 번호, 끝 페이지 번호를 계산해서 가지고 있음  */
+		OraclePagination pagination = new OraclePagination(totalBoardCount, currentPage);	// 전체 게시물 수, 현재 페이지 (== 요청된 페이지) 
+		logger.info("My board main page >>>>>>>>>>>>>>> [페이징] OraclePagination : " + pagination );
+		
+		
+		//3) boardDto에 시작 페이지, 끝 페이지 추가
+		dto.setStartBoardNo(pagination.getStartBoardNo());
+		dto.setEndBoardNo(pagination.getEndBoardNo());
+		
+		// top N 쿼리를 사용하여 유저가 작성한 게시물 리스트 가져오기 
+		List<BoardDto> list = boardBiz.myBoardList(dto);
+		logger.info("My board main page >>>>>>>>>>>>>>> 페이징 처리된 boardDto 리스트 개수 : " + list.size());
+		for(BoardDto boardDto : list) {
+			if(boardDto.getBoardTitle() != null) {
+				boardDto.setBoardTitle(Util.omit(16, boardDto.getBoardTitle()));
+			} 
+			if(boardDto.getBoardContent() != null) {
+				boardDto.setBoardContent(Util.omit(220, boardDto.getBoardContent()));
+			}
+		}
+		
+		model.addAttribute("list", list);
+		model.addAttribute("pagination", pagination);
+		return "board/BOARD_myBoardMain";
+	}
+	
+	/*
+	 * @RequestParam("boardNo") int boardNo == request.getParameter("boardNo");
+	 * 		>>> 추가 기능
+	 * 		1. @RequestParam(value = "boardNo", required = false)	>>>	required = false : 전달받은 값이 없어도 예외를 발생하지 않게 한다    
+	 * 		2. 배열로 받기  
+	 * 			>>> 서블릿에서 form태그에서 같은 이름으로 전송시(멀티삭제) getParameterValues()을 사용하여 배열로 받을수 있었다.
+	 * 				즉 @RequestParam은 form태그의 같은 name을 배열로 해당 기능도 지원한다.
+	 * 
+	 * @RequsetAttribute("boardDto") == request.getAttribute("boardDto");
+	 * 
+	 * @ModelAttribute("boardDto") == request.getAttribute("boardDto");
+	 * 		>>> form로 전송시 dto의 setter와 일치하는 name이 자동으로 바인딩된다. 주로 post전송시 많이 사용된다(ajax의 post전송시 사용해야함)
+	 *		>>> 이 어노테이션의 단점은 중복이름을 배열로 받는것을 지원하지 않는다는 것이다. 		
+	 */
+	
+	// 자신글 하나 삭제
+	@RequestMapping(value="/deleteOne.do", method=RequestMethod.GET)
+	public String deleteOne(@RequestParam("boardNo") int[] boardNo) {
+		logger.info("My board delete one input : " + boardNo[0]);
+		
+		int res = boardBiz.multiBoardDelete(boardNo);
+		
+		if(res > 0) {
+			logger.info("My board delete one success : " + res);
+			return "redirect:/board/myMain.do";
+		} else {
+			logger.info("My board delete one fail : " + res);
+			return "redirect:/board/detail.do?boardNo=" + boardNo[0];
+		}
+		
+	}
+	
 	// 자신이 쓴 글 멀티 삭제
+	@RequestMapping(value="/multiDelete.do", method=RequestMethod.POST)
+	public String multDelete(HttpSession session, @RequestParam("boardNoArr") int[] boardNoArr){
+												/* ##중요 >>> @ModelAttribute는 중복된 이름을 배열로 받는것을 지원하지 않는다.(객체를 리스트나 배열로 받으려면 >> class를 따로 만들어야 한다.) */  
+		logger.info("My board multiDelete input : " + boardNoArr.length);
+		
+		int res = boardBiz.multiBoardDelete(boardNoArr);
+		
+		// res는 삭제한 로우 개수를 반환받는다. 2개를 삭제했으면  : 2 	>> 트렌젝션 처리해야함
+		if(res > 0) {
+			logger.info("My board multiDelete success : " + res);
+			return "redirect:/board/myMain.do";
+		} else {
+			logger.info("My board multiDelete fail : " + res);
+			return "redirect:/board/myMain.do";
+		}
+	}
 	
 }

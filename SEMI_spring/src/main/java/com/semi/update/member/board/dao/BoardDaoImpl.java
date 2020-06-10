@@ -1,6 +1,9 @@
 package com.semi.update.member.board.dao;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
@@ -87,5 +90,26 @@ public class BoardDaoImpl implements BoardDao{
 		return session.update(NANESPACE + "updateBoard", dto);
 	}
 
+	// 유저가 작성한 게시글 총 개수
+	@Override
+	public int getMyTotalBoard(BoardDto dto) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> getMyTotalBoard : " + dto);
+		return session.selectOne(NANESPACE + "getMyTotalBoard", dto);
+	}
+	
+	// 유저가 작성한 게시글 리스트(페이징 + 검색)
+	@Override
+	public List<BoardDto> myBoardList(BoardDto dto) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>>> myBoardList : " + dto);
+		return session.selectList(NANESPACE + "myBoardList", dto);
+	}
+
+	@Override
+	public int multiBoardDelete(int[] boardNoArr) {
+		logger.info("[BoardDaoImpl] >>>>>>>>>>>>> multiBoardDelete : " + Arrays.toString(boardNoArr));
+		Map<String, int[]> parm = new HashMap<String, int[]>();
+		parm.put("boardNoArr", boardNoArr);
+		return session.delete(NANESPACE + "multiBoardDelete", parm);
+	}
 	
 }
