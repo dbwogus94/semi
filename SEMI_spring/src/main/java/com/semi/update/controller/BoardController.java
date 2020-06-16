@@ -421,7 +421,7 @@ public class BoardController {
 		}
 		boardDto.setImgPath(imgNames);
 		
-		// 수정전 이전 Dto 가져오기
+		// **수정전 이전 Dto 가져오기
 		BoardDto oldBoardDto = boardBiz.selectOne(boardNo);
 		
 		int res = boardBiz.updateImg(boardDto);
@@ -429,11 +429,11 @@ public class BoardController {
 		if(res > 0) {
 			logger.info("Board img 수정 성공");
 			
-			// #4  기존에 있던 이미지 삭제
+			// #4  **기존에 있던 이미지 삭제
 			logger.info("board Update Res >>>>>>>>>>>>>>>> 수정후 글의 이전 이미지 모두 삭제");
 			String[] formerImgPathArr = oldBoardDto.getImgPath().split("\\?\\?");	// .split() : 결과를 배열로 리턴한다. 문자열을 나눌 기준이 없을 경우 문자열을 그대로 배열의 0번지에 넣어 리턴한다.(즉 리턴되는 배열의 크기는  항상 1이상이다.)	
 											  
-			// 파일 삭제 코드 : while문을 사용하여 파일삭제가 실패한 경우에 재실행 코드 구현
+			// **파일 삭제 코드 : while문을 사용하여 파일삭제가 실패한 경우에 재실행 코드 구현
 			int i = 0;
 			while(i<formerImgPathArr.length) {
 				String fileName = Util.toAbsolutePath(formerImgPathArr[i], "C:\\git\\semi\\SEMI_spring\\src\\main\\webapp\\", 8);
