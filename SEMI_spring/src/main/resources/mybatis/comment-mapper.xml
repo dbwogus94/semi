@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.semi.update.mapper.Comment">
+
+	<resultMap type="commentDto" id="ResultMap">
+		<result property = "commentNo" column = "COMMENT_NO"/>
+		<result property = "boardNo" column = "BOARD_NO"/>
+		<result property = "commentGroupNo" column = "COMMENT_GROUPNO"/>
+		<result property = "commentGroupSeq" column = "COMMENT_GROUPSEQ"/>
+		<result property = "id" column = "ID"/>
+		<result property = "commentName" column = "COMMENT_NAME"/>
+		<result property = "commentContent" column = "COMMENT_CONTENT"/>
+		<result property = "commentGegdate" column = "COMMENT_REGDATE"/>
+		<result property = "commentUpdateRegDate" column = "COMMENT_UPDATE_REGDATE"/>
+	</resultMap>
+	
+	
+	<!-- 글하나의 댓글 총 개수 -->
+	<select id="count_commentList" parameterType="commentDto" resultType="int">
+		SELECT COUNT(*) FROM COMMENT_BOARD WHERE COMMENT_GROUPSEQ = 0 AND BOARD_NO = #{boardNo}
+	</select>
+	
+	<!-- 글하나 댓글들 selectList + 페이징-->
+	<select id="commentList" parameterType="commentDto" resultMap="ResultMap">
+		SELECT X.*
+		FROM (SELECT ROWNUM RN, A.*
+			FROM (SELECT cb.*, mp.MEMBER_CONTENT FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+				WHERE cb.ID = mp.ID
+				AND cb.BOARD_NO = #{boardNo}			
+				AND cb.COMMENT_GROUPSEQ = 0	
+				ORDER BY cb.COMMENT_GROUPNO) A
+			WHERE ROWNUM <![CDATA[<=]]> #{endBoardNo}) X					
+		WHERE X.RN >= #{startBoardNo} 	
+	</select>
+	
+	
+	<!-- 글하나의 댓글의 대댓글 총개수  -->
+	<select id="count_re_commentList" parameterType="commentDto">
+		SELECT COUNT(*)
+		FROM COMMENT_BOARD
+		WHERE BOARD_NO = #{boardNo}
+		AND COMMENT_GROUPNO = #{commentGroupNo}
+		AND NOT COMMENT_GROUPSEQ = 0
+	</select>
+	
+	
+	<!-- 글하나의 댓글에 해당하는 대댓글  selectList + 페이징 -->
+	<select id="re_commentList" parameterType="commentDto" resultMap="ResultMap">
+		SELECT X.*
+		FROM (SELECT ROWNUM RN, A.*
+				FROM (SELECT cb.*, mp.MEMBER_CONTENT FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+					WHERE cb.ID = mp.ID
+					AND cb.BOARD_NO = #{boardNo}
+					AND cb.COMMENT_GROUPNO = #{commentGroupNo}
+					AND NOT cb.COMMENT_GROUPSEQ = 0) A
+			WHERE ROWNUM <![CDATA[<=]]> #{endBoardNo}) X
+		WHERE X.RN >= #{startBoardNo} 	
+	</select>
+	
+	<!-- 댓글 작성 -->
+	<insert id="commentInsert" parameterType="commentDto">
+		INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+		VALUES(COMMENT_BOARD_SEQ.NEXTVAL, #{boardNo}, COMMENT_GROUP_NO.NEXTVAL, 0, #{id}, #{commentName}, #{commentContent}, SYSDATE, SYSDATE)	
+	</insert>
+	
+	<!-- 댓글 수정 => 변경 = [내용, 수정시간] / 조건 = [부모글, 그룹번호, 그룹순서 0, 작성자 id] -->
+	<update id="commentUpdate" parameterType="commentDto">
+		UPDATE COMMENT_BOARD
+		SET COMMENT_CONTENT = #{commentContent}, COMMENT_UPDATE_REGDATE = SYSDATE
+		WHERE BOARD_NO = #{boardNo}
+		AND COMMENT_NO = #{commentNo}
+		AND ID = #{id}
+	</update>
+
+	<!-- 대댓글 작성 -->
+	<insert id="re_commentInsert" parameterType="commentDto">
+		INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+		VALUES(
+			COMMENT_BOARD_SEQ.NEXTVAL, 
+			#{boardNo},
+			#{commentGroupNo}, 
+			(SELECT MAX(COMMENT_GROUPSEQ) 
+			FROM COMMENT_BOARD
+			WHERE BOARD_NO = #{boardNo}
+			AND COMMENT_GROUPNO = #{commentGroupNo}) + 1, 
+			#{id},
+			#{commentName},
+			#{commentContent},
+			SYSDATE, 
+			SYSDATE)
+	</insert>
+	
+	<!-- 대댓글 수정 -->
+	<update id="re_commentUpdate" parameterType="commentDto">
+		UPDATE COMMENT_BOARD
+		SET COMMENT_CONTENT = #{commentContent}, COMMENT_UPDATE_REGDATE = SYSDATE
+		WHERE BOARD_NO = #{boardNo}
+		AND COMMENT_NO = #{commentNo}
+		AND ID = #{id}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	
+	<!-- 대댓글 삭제 -->
+
+	
+</mapper>

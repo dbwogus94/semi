@@ -65,8 +65,12 @@ public class OraclePagination {
 		setNextPage(currentPage + 1);
 	}
 
-	// 기본생성자로 생성후 >>> setter로 세팅후 >> 페이징 연산에 사용
-	public void calcPaging(int totalBoard, int currentPage) {
+	
+	// "한 페이지에 출력될 게시물 수", "한 화면에 출력될 페이지 수"를 따로 설정 후 >> 페이징 처리
+	public OraclePagination(int boardListSize, int pageSize, int totalBoard, int currentPage) {
+		this.boardListSize = boardListSize;
+		this.pageSize = pageSize;
+		
 		// 현재페이지 
 		setCurrentPage(currentPage);
 				
@@ -87,7 +91,7 @@ public class OraclePagination {
 				
 		// 6. 이전페이지 다음페이지 설정
 		setPrevPage(currentPage - 1);
-		setNextPage(currentPage + 1);		
+		setNextPage(currentPage + 1);
 	}
 	
 	

@@ -106,6 +106,7 @@
 				</c:otherwise>
 			</c:choose>
 				</td>
+				${comment.List }
 				<td class="reply-date"><fmt:formatDate value="${reply.regdate}" pattern="yy-MM-dd HH:mm" /></td>
 			</tr>
 		</c:forEach>	

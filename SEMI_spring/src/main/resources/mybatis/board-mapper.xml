@@ -44,7 +44,7 @@
 	
 	
 	<!-- 전체 게시물 구하기 + 검색후 전체 게시물 구하기-->
-	<select id="getTotalBoard" resultType="int">
+	<select id="getTotalBoard" parameterType="boardDto" resultType="int">
 		SELECT COUNT(*)
 		FROM FREE_BOARD
 		<trim prefix = "WHERE" prefixOverrides = "AND">

@@ -33,6 +33,9 @@ import com.semi.update.All.util.DownloadFileUtils;
 import com.semi.update.All.util.UploadFileUtils;
 import com.semi.update.All.util.Util;
 import com.semi.update.member.board.biz.BoardBiz;
+import com.semi.update.member.board.comment.biz.CommentBiz;
+import com.semi.update.member.board.comment.dao.CommentDao;
+import com.semi.update.member.board.comment.dto.CommentDto;
 import com.semi.update.member.board.dto.BoardDto;
 import com.semi.update.member.dto.MenteeDto;
 import com.semi.update.member.dto.MentorDto;
@@ -45,6 +48,9 @@ public class BoardController {
 	
 	@Autowired
 	private BoardBiz boardBiz;
+	
+	@Autowired
+	private CommentBiz commentBiz;
 	
 	@Resource(name="boardImgUploadPath")
 	private String imgUploadPath;
@@ -248,9 +254,9 @@ public class BoardController {
 		}
 	}
 	
-	// 디테일
+	// 디테일 + 뎃글
 	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
-	public String boardDetail(Model model, @RequestParam("boardNo") int boardNo) {
+	public String boardDetail(Model model, @RequestParam("boardNo") int boardNo, @RequestParam(defaultValue = "1") int currentPage, CommentDto commentDto) {
 		logger.info("board detail page");
 
 		BoardDto boardDto = boardBiz.selectOne(boardNo);
@@ -266,6 +272,24 @@ public class BoardController {
 				boardDto.setFilePath("첨부된 파일 1개 ");
 			}
 		}
+		
+		// 답글 dto에 부모글 시퀀스 추가
+		commentDto.setBoardNo(boardNo);
+		// 부모글의 답글 총개수 
+		int totalComment = commentBiz.count_commentList(commentDto); 
+		
+		// 페이징 객체 생성(화면에 출력할 답글수(10, 출력될 페이지(여기서 필요없음), 총개수, 현재 페이지(1)
+		OraclePagination pagination = new OraclePagination(10, 10, totalComment, currentPage);
+		
+		// 페이징 시작번호
+		commentDto.setStartBoardNo(pagination.getStartBoardNo());
+		// 페이징 끝번호
+		commentDto.setEndBoardNo(pagination.getEndBoardNo());
+		
+		// 현재 게시물의 댓글 가져오기
+		List<CommentDto> commentList = commentBiz.commentList(commentDto);
+		
+		model.addAttribute("commentList", commentList);
 		model.addAttribute("board", boardDto);
 		
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> : " + boardDto);
@@ -506,7 +530,7 @@ public class BoardController {
 				return "redirect:/board/update.do";
 			}
 		} else {
-			// 이미지 있을경우 DB 수정 >> 이전 이미지 파일 삭제 로직 추가
+			// 이미지 있을경우 DB 수정
 			BoardDto oldBoardDto = boardBiz.selectOne(boardDto.getBoardNo());
 			logger.info("xxxxxxxxxxxxxxxxxx>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + oldBoardDto);
 			int res = boardBiz.updateBoard(boardDto);
