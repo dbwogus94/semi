@@ -81,7 +81,7 @@ public class Util {
 	//정규식으로 img 태그 찾기 
 	public static boolean isImgTag(String input){
 		Pattern pattern = Pattern.compile("<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>");
-		Matcher matcher = pattern.matcher("<img src='img/Desert.jpg'>");	// <img src=''> src가 없다면 안됨
+		Matcher matcher = pattern.matcher(input);	// <img src=''> src가 없다면 안됨
 		if(matcher.matches()) return true;
 		else return false;
 	}

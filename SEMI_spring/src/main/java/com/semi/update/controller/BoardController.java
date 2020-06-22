@@ -289,7 +289,7 @@ public class BoardController {
 		// 현재 게시물의 댓글 가져오기
 		List<CommentDto> commentList = commentBiz.commentList(commentDto);
 		
-		model.addAttribute("commentList", commentList);
+		model.addAttribute("comment", commentList);
 		model.addAttribute("board", boardDto);
 		
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> : " + boardDto);
@@ -520,10 +520,13 @@ public class BoardController {
 		}
 		
 		// content 안에 img태그가 없을 경우 >>> DB 이미지 썸내일 칼럼 삭제
-		if(!Util.isImgTag(boardDto.getBoardContent())) {
+		if(!Util.isImgTag(boardDto.getBoardContent())) {	
 			int noImgUpdateRes = boardBiz.updateNoImgBoard(boardDto);
 			if(noImgUpdateRes > 0) {
 				logger.info("board Update Res >>>>>>>>>>>>>>>> [No img 수정 성공] Board update success");
+				
+				// 썸내엘 본문 이미지 파일 삭제 코드 추가 예정
+				
 				return "redirect:/board/detail.do?boardNo=" + boardDto.getBoardNo();
 			} else {
 				logger.info("board Update Res >>>>>>>>>>>>>>>> [No img 수정 성공] Board update fail");
@@ -612,12 +615,15 @@ public class BoardController {
 	@RequestMapping(value="/deleteOne.do", method=RequestMethod.GET)
 	public String deleteOne(@RequestParam("boardNo") int[] boardNo) {
 		logger.info("My board delete one input : " + boardNo[0]);
-		
+		// 삭제전 글 가져오기
+		BoardDto boardDto = boardBiz.selectOne(boardNo[0]);
+		// 글삭제
 		int res = boardBiz.multiBoardDelete(boardNo);
-		
 		if(res > 0) {
 			logger.info("My board delete one success : " + res);
-			return "redirect:/board/myMain.do";
+			// 파일 삭제
+			fileDelete(boardDto);
+			return "redirect:/board/main.do";
 		} else {
 			logger.info("My board delete one fail : " + res);
 			return "redirect:/board/detail.do?boardNo=" + boardNo[0];
@@ -625,22 +631,98 @@ public class BoardController {
 		
 	}
 	
+	
 	// 자신이 쓴 글 멀티 삭제
 	@RequestMapping(value="/multiDelete.do", method=RequestMethod.POST)
 	public String multDelete(HttpSession session, @RequestParam("boardNoArr") int[] boardNoArr){
 												/* ##중요 >>> @ModelAttribute는 중복된 이름을 배열로 받는것을 지원하지 않는다.(객체를 리스트나 배열로 받으려면 >> class를 따로 만들어야 한다.) */  
 		logger.info("My board multiDelete input : " + boardNoArr.length);
 		
+		// 현재 boardNoArr 배열의 크기많큼 DB에 seletOne 요청을 하고있음	>> selectList로 바꿔야함 
+		BoardDto[] boardDtoArr = new BoardDto[boardNoArr.length]; 
+		
+		for(int i = 0; i<boardNoArr.length; i++) {
+			boardDtoArr[i] = boardBiz.selectOne(boardNoArr[i]);
+		}
+		
 		int res = boardBiz.multiBoardDelete(boardNoArr);
 		
 		// res는 삭제한 로우 개수를 반환받는다. 2개를 삭제했으면  : 2 	>> 트렌젝션 처리해야함
 		if(res > 0) {
 			logger.info("My board multiDelete success : " + res);
+			int count = 0;
+			// 삭제된 게시글 하나씩 파일 삭제
+			for(BoardDto boardDto : boardDtoArr) {
+				logger.info("board multiDelete [총 게시물  " + boardDtoArr.length + "개, 그 중 " + (count + 1) + "번째 글 파일 삭제 준비]");
+				// 파일 삭제 메서드
+				fileDelete(boardDto);				
+				count++;
+			}
+			logger.info("board multiDelete >>>>>>>>>>>>>>>> 글 멀티 삭제 후 글의 이미지 모두 삭제 [성공]");
 			return "redirect:/board/myMain.do";
 		} else {
 			logger.info("My board multiDelete fail : " + res);
 			return "redirect:/board/myMain.do";
 		}
+	}
+	
+	
+	// 게시판 글 삭제시 해당글 관련 파일 삭제 메서드
+	public void fileDelete(BoardDto boardDto) {
+		logger.info("board deleteOne [파일 삭제 메서드 실행] ====================================> 글 삭제 후 해당글 파일(이미지, 첨부파일) 모두 삭제 실행 ");
+		
+		// 각각의 파일명 없을 경우 처리 == NullPointerException 처리
+		String[] relativeImgPathArr = new String[0];
+		String[] filePathArr = new String[0];
+		String relativeThumbnailPath = "";
+		
+		if(boardDto.getImgPath() != null) {
+			logger.info("board deleteOne [파일 삭제 준비] : 본문에 삭제해야하는 이미지 명 : " + boardDto.getImgPath());
+			// 글에 속한 파일 > 상대경로
+			relativeImgPathArr = boardDto.getImgPath().split("\\?\\?");		
+		} 
+		if(boardDto.getFilePath() != null) {
+			logger.info("board deleteOne [파일 삭제 준비] : 본문에 삭제해야하는 첨부파일 명 : " + boardDto.getFilePath());
+			// 첨부파일 > 절대경로
+			filePathArr = boardDto.getFilePath().split("\\?\\?");
+		}
+		if(boardDto.getThumbnail() != null) {
+			logger.info("board deleteOne [파일 삭제 준비] : 본문에 삭제해야하는 썸네일 명 : " + boardDto.getThumbnail());
+			// 썸내일 > 상대경로
+			relativeThumbnailPath = boardDto.getThumbnail();
+		}
+		// **파일 삭제 코드 : while문을 사용하여 파일삭제가 실패한 경우에 재실행 코드 구현
+		// 1). 본문 이미지 삭제 
+		int i = 0;
+		while(i<relativeImgPathArr.length) {
+			if(i<relativeImgPathArr.length) {
+				// 상대경로  > 절대경로로 변환
+				String imgfileName = Util.toAbsolutePath(relativeImgPathArr[i], "C:\\git\\semi\\SEMI_spring\\src\\main\\webapp\\", 8);
+				logger.info("board deleteOne [이미지 파일 삭제 실행] : 글의 [본문 이미지] 모두 삭제 실행 파일명 : " + imgfileName);
+				if(Util.fileDelete(imgfileName)) {
+					i++;	// 파일 삭제 성공인 경우에만 i++ 실행
+				}
+			}
+		}
+		// 2) 첨부파일 삭제
+		int j = 0;
+		while(j<filePathArr.length) {
+			if(j < filePathArr.length) {
+				logger.info("board deleteOne [첨부파일 삭제 실행] : 글의 [첨부파일] 모두 삭제 실행 파일명: " + filePathArr[j]);
+				if(Util.fileDelete(filePathArr[j])) {		// out of Range 예외 때문에 해야함
+					j++;
+				}
+			}
+		}
+		// 3) 마지막 썸네일 있을 경우 삭제
+		if(!relativeThumbnailPath.equals("")) {
+			String thumbnailPath = Util.toAbsolutePath(relativeThumbnailPath, "C:\\git\\semi\\SEMI_spring\\src\\main\\webapp\\", 8);
+			logger.info("board deleteOne [썸네일 삭제 실행] : 글 삭제 후 [썸내일] 삭제 실행 파일명 : " + thumbnailPath);
+			if(Util.fileDelete(thumbnailPath)) {		// out of Range 예외 때문에 해야함
+			}
+		}
+		
+		logger.info("board deleteOne [파일 메서드 종료] ====================================> 해당 글의 파일 모두 삭제 [성공] \n\n");
 	}
 	
 }

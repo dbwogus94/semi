@@ -76,41 +76,93 @@
 		</div>
 	</div>
 	<div class="container" id="comment-container">
-		<table class="table table-bordered" class="shadow p-3 mb-5 bg-white rounded">
-			<tr>
-				<td colspan="4" class="reply-label">댓 글</td>
-			</tr>
-			<tr class="reply-area">
-				<td colspan="4">
-					<div class="reply-insert-area">
-						<input type="text" class="form-control" placeholder="바르고 고운말을 사용합시다." aria-label="Recipient's username" aria-describedby="button-addon2"
-								onkeydown="onKeyDown(${boardDetail.boardseq }, ${boardDetail.groupno });">
-						<div class="input-group-append">
-							<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="replyInsert(${boardDetail.boardseq });">입  력</button>
+		
+		<div class="row">
+			<div class="col-md-2">댓 글</div>
+			<div class="col-md-10">
+			</div>
+		</div>
+		
+		<!-- 댓글 입력 -->
+		<div class="row">
+			<form action="" method="post">
+				<div class="col-md-11">
+					<input type="text" class="form-control" placeholder="바르고 고운말을 사용합시다." aria-label="Recipient's username" aria-describedby="button-addon2"
+									onkeydown="onKeyDown(${boardDetail.boardseq }, ${boardDetail.groupno });">
+				</div>
+				<div class="col-md-1">
+					<button class="btn btn-outline-secondary" type="button" id="button-addon2" onkeypress = "if(event.keyCode == 13) {submit();}" >입  력</button>
+				</div>
+			</form>
+		</div>
+		
+	
+		<div id="comment_body">
+		
+			<div class="row">
+			
+				<div class="col-md-1">
+					<div class="profile_top">
+						<div class="profile_mid">
+							<img alt=""	src="">
 						</div>
 					</div>
-				</td>
-			</tr>
-
-		<c:forEach items="${replyList }" var="reply">
-			<tr class="reply">
-				<th class="reply-email">${reply.joinemail }</th>
-				<td class="reply-content">${reply.content }</td>
-				<td class="reply-update-delete">
-			<c:choose>		
-				<c:when test="${reply.joinemail eq login.joinemail }">
-					<span><a href="#" onclick="deleteAlert('댓글', ${reply.boardseq });">삭제</a></span>
-				</c:when>
-				<c:otherwise>
-					<span><a href="#" onclick="rereply('${reply.joinemail }', ${reply.boardseq }); " >답글</a></span>
-				</c:otherwise>
-			</c:choose>
-				</td>
-				${comment.List }
-				<td class="reply-date"><fmt:formatDate value="${reply.regdate}" pattern="yy-MM-dd HH:mm" /></td>
-			</tr>
-		</c:forEach>	
-		</table>
+				</div>
+				<div class="col-md-11">
+					<div class ="comment_top">
+						<span class="writer">작성자</span><span class="time">작성일</span>
+					</div>
+					<div class ="comment_content">
+						댓글 내용
+						<br>
+						<br>	
+						<a>자세히 보기</a>
+					</div>
+					<div class ="comment_mid">추천, 답글</div>
+					<div class ="comment_bottom"><a>대댓글 있을시 표시</a></div>
+				</div>
+			</div>
+			
+	<c:choose>
+		<c:when test="${empty comment}">
+			<div class="row">	
+				<div class="col-md-12">
+						==========================댓글이 없습니다.==========================
+				</div>
+			</div>
+		</c:when>
+			
+		<c:otherwise>
+			<c:forEach items="${comment }" var="commentDto">
+				<div class="row">
+					<div class="col-md-1">
+						<div class="profile_top">
+							<div class="profile_mid">
+								<img alt=""	src="${commentDto.profileImg }" onerror="this.src='/update/resources/img/user.png';">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-11">
+						<div class ="comment_top">
+							<span class="writer">${commentDto.commentName }</span><span class="date">${commentDto.commentGegdate }</span>
+						</div>
+						<div class ="comment_content">
+							${commentDto.commentContent }
+							<br>
+							<br>	
+							<a>자세히 보기</a>
+						</div>
+						<div class ="comment_mid">추천, 답글</div>
+						<div class ="comment_bottom"><a>대댓글 있을시 표시 : ${commentDto.reCommentCount } </a></div>
+					</div>
+				</div>	
+			</c:forEach>
+		</c:otherwise>
+	</c:choose>
+			
+		
+		</div>		
+	
 	</div>
 	
 	
