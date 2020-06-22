@@ -7,34 +7,53 @@
 		<result property = "boardNo" column = "BOARD_NO"/>
 		<result property = "commentGroupNo" column = "COMMENT_GROUPNO"/>
 		<result property = "commentGroupSeq" column = "COMMENT_GROUPSEQ"/>
+		<result property = "profileImg" column = "MEMBER_CONTENT"/>
 		<result property = "id" column = "ID"/>
 		<result property = "commentName" column = "COMMENT_NAME"/>
 		<result property = "commentContent" column = "COMMENT_CONTENT"/>
 		<result property = "commentGegdate" column = "COMMENT_REGDATE"/>
 		<result property = "commentUpdateRegDate" column = "COMMENT_UPDATE_REGDATE"/>
+		<!-- 대댓글의 합  -->
+		<result property = "reCommentCount" column = "COUNT_RE_COMMENT"/>
 	</resultMap>
 	
 	
-	<!-- 글하나의 댓글 총 개수 -->
+	<!-- 글하나의 댓글 총 개수  - 페이징에 사용-->
 	<select id="count_commentList" parameterType="commentDto" resultType="int">
 		SELECT COUNT(*) FROM COMMENT_BOARD WHERE COMMENT_GROUPSEQ = 0 AND BOARD_NO = #{boardNo}
 	</select>
 	
-	<!-- 글하나 댓글들 selectList + 페이징-->
+	<!-- 글하나 댓글들 selectList + 페이징
+		가상테이블 A : 댓글정보 + 프로필사진
+		가상테이블 B : 댓글그룹 번호별 대댓글 총합
+		가상테이블 X : A, B JOIN
+		가상테이블 Y : X + ROWNUM
+	-->
 	<select id="commentList" parameterType="commentDto" resultMap="ResultMap">
-		SELECT X.*
-		FROM (SELECT ROWNUM RN, A.*
-			FROM (SELECT cb.*, mp.MEMBER_CONTENT FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
-				WHERE cb.ID = mp.ID
-				AND cb.BOARD_NO = #{boardNo}			
-				AND cb.COMMENT_GROUPSEQ = 0	
-				ORDER BY cb.COMMENT_GROUPNO) A
-			WHERE ROWNUM <![CDATA[<=]]> #{endBoardNo}) X					
-		WHERE X.RN >= #{startBoardNo} 	
+		SELECT Y.* 
+		FROM (SELECT ROWNUM RN, X.*
+			FROM (SELECT B.COUNT_RE_COMMENT, A.* 
+				  FROM (SELECT cb.*, mp.MEMBER_CONTENT 
+					    FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+					    WHERE cb.ID = mp.ID
+					    AND cb.BOARD_NO = #{boardNo}				
+					    AND cb.COMMENT_GROUPSEQ = 0		
+					    ORDER BY cb.COMMENT_GROUPNO) A,
+					   (SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+					    FROM COMMENT_BOARD
+					    WHERE BOARD_NO = #{boardNo}
+					    GROUP BY COMMENT_GROUPNO) B				
+				  WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
+				  ORDER BY A.COMMENT_GROUPNO DESC) X		
+			WHERE ROWNUM <![CDATA[<=]]> #{endBoardNo}) Y
+		WHERE Y.RN >= #{startBoardNo}
 	</select>
 	
 	
-	<!-- 글하나의 댓글의 대댓글 총개수  -->
+	
+	
+	
+	<!-- 글하나의 댓글의 대댓글 총개수  - 페이징에 사용 -->
 	<select id="count_re_commentList" parameterType="commentDto">
 		SELECT COUNT(*)
 		FROM COMMENT_BOARD

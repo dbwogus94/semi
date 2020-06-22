@@ -16,6 +16,9 @@ public class CommentDto {
 	// 대글 그룹에서 대댓글 순서
 	private int commentGroupSeq;
 
+	// 유저 프로필 사진
+	private String profileImg;
+	
 	// 유져 id
 	private String id;
 
@@ -31,26 +34,35 @@ public class CommentDto {
 	// 수정일
 	private Date commentUpdateRegDate;
 
+	// 댓글이 가지고 있는 대댓글 갯수 따로 조회해서 추가
+	private int reCommentCount;
+	
+	
 	/* 페이징  시작번호 끝 번호 */
 	private int startBoardNo;
 	private int endBoardNo;
 
+	
+	
 	public CommentDto() {
 		
 	}
 
-	public CommentDto(int commentNo, int boardNo, int commentGroupNo, int commentGroupSeq, String id,
-			String commentName, String commentContent, Date commentGegdate, Date commentUpdateRegDate, int startBoardNo,
-			int endBoardNo) {
+	public CommentDto(int commentNo, int boardNo, int commentGroupNo, int commentGroupSeq, String profileImg, String id,
+			String commentName, String commentContent, Date commentGegdate, Date commentUpdateRegDate,
+			int reCommentCount, int startBoardNo, int endBoardNo) {
+		super();
 		this.commentNo = commentNo;
 		this.boardNo = boardNo;
 		this.commentGroupNo = commentGroupNo;
 		this.commentGroupSeq = commentGroupSeq;
+		this.profileImg = profileImg;
 		this.id = id;
 		this.commentName = commentName;
 		this.commentContent = commentContent;
 		this.commentGegdate = commentGegdate;
 		this.commentUpdateRegDate = commentUpdateRegDate;
+		this.reCommentCount = reCommentCount;
 		this.startBoardNo = startBoardNo;
 		this.endBoardNo = endBoardNo;
 	}
@@ -85,6 +97,14 @@ public class CommentDto {
 
 	public void setCommentGroupSeq(int commentGroupSeq) {
 		this.commentGroupSeq = commentGroupSeq;
+	}
+
+	public String getProfileImg() {
+		return profileImg;
+	}
+
+	public void setProfileImg(String profileImg) {
+		this.profileImg = profileImg;
 	}
 
 	public String getId() {
@@ -127,6 +147,14 @@ public class CommentDto {
 		this.commentUpdateRegDate = commentUpdateRegDate;
 	}
 
+	public int getReCommentCount() {
+		return reCommentCount;
+	}
+
+	public void setReCommentCount(int reCommentCount) {
+		this.reCommentCount = reCommentCount;
+	}
+
 	public int getStartBoardNo() {
 		return startBoardNo;
 	}
@@ -146,12 +174,11 @@ public class CommentDto {
 	@Override
 	public String toString() {
 		return "CommentDto [commentNo=" + commentNo + ", boardNo=" + boardNo + ", commentGroupNo=" + commentGroupNo
-				+ ", commentGroupSeq=" + commentGroupSeq + ", id=" + id + ", commentName=" + commentName
-				+ ", commentContent=" + commentContent + ", commentGegdate=" + commentGegdate
-				+ ", commentUpdateRegDate=" + commentUpdateRegDate + ", startBoardNo=" + startBoardNo + ", endBoardNo="
-				+ endBoardNo + "]";
+				+ ", commentGroupSeq=" + commentGroupSeq + ", profileImg=" + profileImg + ", id=" + id
+				+ ", commentName=" + commentName + ", commentContent=" + commentContent + ", commentGegdate="
+				+ commentGegdate + ", commentUpdateRegDate=" + commentUpdateRegDate + ", reCommentCount="
+				+ reCommentCount + ", startBoardNo=" + startBoardNo + ", endBoardNo=" + endBoardNo + "]";
 	}
-
 	
 
 }

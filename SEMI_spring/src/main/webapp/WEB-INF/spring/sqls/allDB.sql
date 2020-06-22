@@ -375,15 +375,31 @@ CREATE TABLE COMMENT_BOARD									-- 댓글용 테이블
 SELECT * FROM COMMENT_BOARD
 ORDER BY COMMENT_GROUPNO, COMMENT_GROUPSEQ;
 
-
 -- 글하나의 댓글 총 개수
 SELECT count(*) 
 FROM COMMENT_BOARD
 WHERE BOARD_NO = 301					-- 부모글
 AND COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
-		
 
--- 글하나의 댓글들 확인(페이징 추가해야함, 대댓글x)
+--==========================================================================================================================================================================
+
+/* VIEW에 사용될 댓글 출력  쿼리문 만들기 */
+
+--1단계 : 1개의 글에 댓글을 그룹번호 별로 대댓글의 총합을 출력하라 
+SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+FROM COMMENT_BOARD cb
+WHERE BOARD_NO = 301 
+GROUP BY COMMENT_GROUPNO;		-- 그룹번호 별
+	
+-- 번외 : 1개의 글의  댓글에서 대댓글이 있는 댓글의 PK와, 대댓글이 있는  댓글의 그룹 번호,  그룹번호 각각 대댓글 총합
+SELECT A.COMMENT_NO, B.*
+FROM COMMENT_BOARD A, (SELECT COMMENT_GROUPNO, COUNT(*) "COUNT_RE_COM" FROM COMMENT_BOARD WHERE BOARD_NO = 301 AND NOT COMMENT_GROUPSEQ = 0 GROUP BY COMMENT_GROUPNO) B
+WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
+AND A.COMMENT_GROUPSEQ = 0;
+
+
+
+-- 2단계 : 글하나의 댓글정보와 멤버테이블의 프로필 사진 가져오기(페이징 처리)  : 가상테이블 A
 SELECT X.*
 FROM (SELECT ROWNUM RN, A.*
 	FROM (SELECT cb.*, mp.MEMBER_CONTENT FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
@@ -395,12 +411,64 @@ FROM (SELECT ROWNUM RN, A.*
 WHERE X.RN >= 1; 								-- MIN
 
 
--- 글하나이 1개 댓글의 대댓글 총 개수
+--2단계 : 1개의 글에 댓글을  1 ~ 3번의 대댓글만 그룹번호 별로 대댓글의 총합을 출력하라	 : 가상테이블 B
+SELECT X.*
+FROM (SELECT ROWNUM RN, B.*
+	  FROM (SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+		    FROM COMMENT_BOARD cb
+		    WHERE BOARD_NO = 301 
+		    GROUP BY COMMENT_GROUPNO				-- 그룹번호 별
+		    ORDER BY COMMENT_GROUPNO DESC) B		-- 그룹번호로 내림 차순 정렬(최신 댓글순)
+	  WHERE ROWNUM <= 3) X
+WHERE X.RN >= 1
+
+
+
+--3단계 : 1개의 글의 댓글 정보와 해당하는 댓글별 대댓글 총합을 출력하라	: 가상테이블 A와 B JOIN
+SELECT B.COUNT_RE_COMMENT, A.* 
+FROM 
+	(SELECT cb.*, mp.MEMBER_CONTENT 
+	 FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+	 WHERE cb.ID = mp.ID
+	 AND cb.BOARD_NO = 301					-- 부모글
+	 AND cb.COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+	 ORDER BY cb.COMMENT_GROUPNO) A,
+	(SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+	 FROM COMMENT_BOARD
+	 WHERE BOARD_NO = 301 
+	 GROUP BY COMMENT_GROUPNO) B				-- 그룹번호 별
+WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO;
+
+
+--4단계 : 1개의 글의 최신 댓글 상위 3개의 댓글 정보와 해당하는 댓글별 대댓글 총합을 출력하라	: 가상테이블 A와 B JOIN 후 페이징 처리
+SELECT Y.* 
+FROM (SELECT ROWNUM RN, X.*
+	FROM (SELECT B.COUNT_RE_COMMENT, A.* FROM 
+			(SELECT cb.*, mp.MEMBER_CONTENT 
+			 FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+			 WHERE cb.ID = mp.ID
+			 AND cb.BOARD_NO = 301					-- 부모글
+			 AND cb.COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+			 ORDER BY cb.COMMENT_GROUPNO) A,
+			(SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+			 FROM COMMENT_BOARD
+			 WHERE BOARD_NO = 301 
+			 GROUP BY COMMENT_GROUPNO) B				-- 그룹번호 별
+		WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
+		ORDER BY A.COMMENT_GROUPNO DESC) X				-- 그룹번호로 내림 차순 정렬(최신 댓글순)
+	WHERE ROWNUM <= 3) Y
+WHERE Y.RN >= 1
+
+--==========================================================================================================================================================================
+
+
+
+-- 글하나이 1개 댓글1개의 대댓글 총 개수
 SELECT COUNT(*) 
 FROM COMMENT_BOARD
 WHERE BOARD_NO = 301						-- 부모글
-AND COMMENT_GROUPNO = 3				-- 대댓글은 가져올 댓글 그룹
-AND NOT COMMENT_GROUPSEQ = 0
+AND COMMENT_GROUPNO = 3				-- 대댓글을 가져올 댓글 그룹
+AND NOT COMMENT_GROUPSEQ = 0		-- 0번은 대댓글의 부모 댓글
 
 
 -- 글하나의 1개 댓글의 대댓글  확인(페이징 추가)
@@ -411,13 +479,16 @@ FROM (SELECT ROWNUM RN, A.*
 			  AND cb.BOARD_NO = 301						-- 부모글
 			  AND cb.COMMENT_GROUPNO = 1				-- 대댓글은 가져올 댓글 그룹
 			  AND NOT cb.COMMENT_GROUPSEQ = 0) A		-- 그룹의 0번은 댓글 댓글제외 
-	WHERE ROWNUM <= 3) X
+	WHERE ROWNUM <= 5) X
 WHERE X.RN >= 1;	
 
 
 -- 내가 작성한 전체 댓글확인
 SELECT * FROM COMMENT_BOARD
 WHERE ID = '1994dbwogus';
+
+
+
 
 -- 댓글 추가 
 INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
@@ -447,7 +518,6 @@ AND COMMENT_GROUPNO = 3) + 1 ,
 '유재현', 
 '02 최자바 대댓글입니다.', 
 SYSDATE, SYSDATE);
-
 
 
 
