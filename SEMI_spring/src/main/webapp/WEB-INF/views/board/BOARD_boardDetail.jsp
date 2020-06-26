@@ -22,7 +22,8 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/BOARD_boardDetail.css">
 <title>게시글확인</title>
 <%@ include file="../mentor/mentorHeader.jsp"%>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardDetail.js"></script>
+<script  type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardDetail.js"></script>
+<script defer type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardComment.js"></script>
 </head>
 
 <body>
@@ -34,7 +35,7 @@
 			<br>
 			<h2>${board.boardNo}번 글 상세</h2>
 			<c:if test="${board.id eq login.id}">
-				<input type="button" class="button" value="글 삭제" onclick="deleteOne('${board.boardNo}')"/>
+				<input type="button" class="button" value="글 삭제" onclick="deleteOne('${login.id }', '${board.id }','${board.boardNo}')"/>
 			</c:if>	
 			<input type="button" class="button" value="목록으로" onclick="location.href='main.do'"/>
 			<input type="button" class="button" value="수정하기" onclick="authorityChk('${login.id }', '${board.id }', ${board.boardNo })"/>
@@ -86,9 +87,10 @@
 		<!-- 댓글 입력 -->
 		<div class="row">
 			<form action="" method="post">
+				<input type="hidden" name="boardNo" value="${board.boardNo }"/>
+				<input type="hidden" name="id" value="${login.id }"/>
 				<div class="col-md-11">
-					<input type="text" class="form-control" placeholder="바르고 고운말을 사용합시다." aria-label="Recipient's username" aria-describedby="button-addon2"
-									onkeydown="onKeyDown(${boardDetail.boardseq }, ${boardDetail.groupno });">
+					<input type="text" class="form-control" name="commentContent" placeholder="바르고 고운말을 사용합시다." onkeydown="onKeyDown();">
 				</div>
 				<div class="col-md-1">
 					<button class="btn btn-outline-secondary" type="button" id="button-addon2" onkeypress = "if(event.keyCode == 13) {submit();}" >입  력</button>
@@ -123,42 +125,42 @@
 				</div>
 			</div>
 			
-	<c:choose>
-		<c:when test="${empty comment}">
-			<div class="row">	
-				<div class="col-md-12">
-						==========================댓글이 없습니다.==========================
-				</div>
-			</div>
-		</c:when>
+<%-- 	<c:choose> --%>
+<%-- 		<c:when test="${empty comment}"> --%>
+<!-- 			<div class="row">	 -->
+<!-- 				<div class="col-md-12"> -->
+<!-- 						==========================댓글이 없습니다.========================== -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<%-- 		</c:when> --%>
 			
-		<c:otherwise>
-			<c:forEach items="${comment }" var="commentDto">
-				<div class="row">
-					<div class="col-md-1">
-						<div class="profile_top">
-							<div class="profile_mid">
-								<img alt=""	src="${commentDto.profileImg }" onerror="this.src='/update/resources/img/user.png';">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-11">
-						<div class ="comment_top">
-							<span class="writer">${commentDto.commentName }</span><span class="date">${commentDto.commentGegdate }</span>
-						</div>
-						<div class ="comment_content">
-							${commentDto.commentContent }
-							<br>
-							<br>	
-							<a>자세히 보기</a>
-						</div>
-						<div class ="comment_mid">추천, 답글</div>
-						<div class ="comment_bottom"><a>대댓글 있을시 표시 : ${commentDto.reCommentCount } </a></div>
-					</div>
-				</div>	
-			</c:forEach>
-		</c:otherwise>
-	</c:choose>
+<%-- 		<c:otherwise> --%>
+<%-- 			<c:forEach items="${comment }" var="commentDto"> --%>
+<!-- 				<div class="row"> -->
+<!-- 					<div class="col-md-1"> -->
+<!-- 						<div class="profile_top"> -->
+<!-- 							<div class="profile_mid"> -->
+<%-- 								<img alt=""	src="${commentDto.profileImg }" onerror="this.src='/update/resources/img/user.png';"> --%>
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 					<div class="col-md-11"> -->
+<!-- 						<div class ="comment_top"> -->
+<%-- 							<span class="writer">${commentDto.commentName }</span><span class="date">${commentDto.commentGegdate }</span> --%>
+<!-- 						</div> -->
+<!-- 						<div class ="comment_content"> -->
+<%-- 							${commentDto.commentContent } --%>
+<!-- 							<br> -->
+<!-- 							<br>	 -->
+<!-- 							<a>자세히 보기</a> -->
+<!-- 						</div> -->
+<!-- 						<div class ="comment_mid">추천, 답글</div> -->
+<%-- 						<div class ="comment_bottom"><a>대댓글 있을시 표시 : ${commentDto.reCommentCount } </a></div> --%>
+<!-- 					</div> -->
+<!-- 				</div>	 -->
+<%-- 			</c:forEach> --%>
+<%-- 		</c:otherwise> --%>
+<%-- 	</c:choose> --%>
 			
 		
 		</div>		

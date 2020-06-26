@@ -273,6 +273,7 @@ public class BoardController {
 			}
 		}
 		
+		/*
 		// 답글 dto에 부모글 시퀀스 추가
 		commentDto.setBoardNo(boardNo);
 		// 부모글의 답글 총개수 
@@ -290,13 +291,15 @@ public class BoardController {
 		List<CommentDto> commentList = commentBiz.commentList(commentDto);
 		
 		model.addAttribute("comment", commentList);
+		*/
+		
 		model.addAttribute("board", boardDto);
 		
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> : " + boardDto);
 		return "board/BOARD_boardDetail";
 	}
 	
-	
+	// 첨부파일 확인
 	@RequestMapping(value="/fileDetail.do", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> fileDown(@RequestParam("boardNo") int boardNo, BoardDto boardDto) {

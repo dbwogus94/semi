@@ -81,6 +81,7 @@ function setImgFunc(imgTag, base64String){
 // 자바스크립트 비동기 : 이미지 url을 blob
 function toDataURL(target, targetUrl, callback) {
 	const xhr = new XMLHttpRequest();	
+	// onload는 주로 이진 데이터를 응답으로 받아올때 사용한다.
 	xhr.onload = function() {
 		if (xhr.status === 200 || xhr.status === 201) {
 			const reader = new FileReader();		// 파일을 읽어오는 reader객체 생성, *프로필 사진 미리보기 참고
