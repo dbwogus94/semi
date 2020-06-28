@@ -46,8 +46,8 @@ public class CommentController {
 	 *		   	즉, @RequestBody만 사용이 가능
 	 *	
 	 *		3. 문제는 @RequestBody는 jackson을 사용하여 매핑을 받는다. 
-	 *			더 정확히 말하면 jackson은 직열화를 사용하여 json형태의 스트링을 메핑한다.
-	 *			즉, 직열화가 되지 못하는 단일 값에는 @RequestBody를 사용하지 못한다. 
+	 *			더 정확히 말하면 jackson은 직렬화를 사용하여 json형태의 스트링을 dto 매핑한다.
+	 *			즉, 직열화가 되지 못하는 단일 값(원시타입)에는 @RequestBody를 사용하지 못한다. 
 	 *			(@RequestBody String boardNo >> 이런 경우 안됨.)
 	 *			단일의 값을 받고 싶다면 dto Class를 만들어서 받던가 또는 
 	 *			map 컬렉션 클래스를 사용하여 받으면 된다.
@@ -64,6 +64,12 @@ public class CommentController {
 	 *		4. {}(jsonObject)로 전송된 값에 대응하는 dto가 있다면 @RequestBody를 사용하여 받으면 된다.
 	 * 		>>> 이는  jackson에 의해 jsonObject에 대응하는 dto를 찾아서 메핑해주기 때문에 가능하다 
 	 * 		>>> 더 정확하게 말하면 dto Class를 직렬화 하여 json에 대응하는 dto를 찾아서 메핑이 되는것이다. 
+	 * 
+	 * 	#view에서 post방식으로 jsonObject = {key : value, key2: value2} 보낼때 
+	 * 	 	json을 JSON.stringify()사용해서 스트링으로 변환하지 않고 보낸다면
+	 * 		Request payload를 사용하는 것이 아닌 query String parameters를 사용하는 것이다.
+	 * 		즉 이렇식으로 json스트링이 아닌 오브젝트를 보낸다면 @RequestParam, @ModelAttribute사용하여 받을 수 있다.
+	 * 	 
 	 * 
 	 */
 	
@@ -95,6 +101,8 @@ public class CommentController {
 		logger.info("[ajax] load Comment List output : " + output);
 		return output;
 	}
+	// (JAVA) Map === (JS) json === (파이썬)딕셔너리
+	
 	
 	// 댓글 리스트 보기  >>> 뷰변경
 	@RequestMapping(value = "loadCommentList_GET.do", method = RequestMethod.GET) // produces = "application/json; charset=utf8", headers = "content-type=application/json"

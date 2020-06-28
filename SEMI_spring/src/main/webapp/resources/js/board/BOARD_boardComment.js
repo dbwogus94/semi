@@ -32,6 +32,8 @@ window.onscroll = function(e){
 		// 비동기
 		//async_xhr(xhr_param, loadCommentList)
 		
+		
+		
 		//post
 		const xhr = new Xhr("comment/loadCommentList.do", "POST", "json", "application/json; charset=utf-8", jsonObject)
 		xhr.async_POST(loadCommentList)
@@ -100,7 +102,7 @@ function async_xhr(Xhr_param, callBack){
 			if(Xhr_param.getJsonObject() !== {}){
 
 				let query = "";
-				let params = Xhr_param.getJsonObject();
+				let params = Xhr_param.getJsonObject();	//{key: value, key2: value2}
 				for (let key in params){
 					query += key + "=" + params[key] + "&";
 				}
@@ -136,7 +138,7 @@ function async_xhr(Xhr_param, callBack){
 /*
  	request후에 웹에서 response가 트리거되는 순서
  
-     onreadystatechange
+ onreadystatechange
       readyState === 4, xhr.DONE
                                    ⇓
  onload / onerror / onabort
@@ -330,7 +332,7 @@ class Xhr_param {
 }
 
 /* 자바스크립트로 클래스 사용법 2 	>>> 2번 방법에는 문제가 있다. 해당 클래스를 생성하는것 만으로 포함된 함수(메서드)들이 모두 함깨 생성이 된다.*/
-function Xhr_param2(url, method, responseType){ 
+function Xhr_param2(url, method, responseType){
 	this.url = url,
 	this.method = method || "GET",
 	this.responseType = responseType || "json",
@@ -371,10 +373,10 @@ function Xhr_param2(url, method, responseType){
 // 메소드 : 기본적인 get방식, post방식 구현, url >> base64 코드로 받는 메서드도 구현 예정  
 class Xhr {
 	// 생성자
-    constructor(url, method, responseType, contentType, jsonObject) {
+    constructor(url, method, responseType, contentType, jsonObject) {	// == (JAVA) public Xhr(url, method, responseType, contentType, jsonObject){}
     	// #1
     	this.xhr = new XMLHttpRequest();			// 자바스크립트의 비동기를 지원하는 객체
-    	this.url = url;
+    	this.url = url;								// this.url == (JAVA) private String url = url 
 		this.method = method || "GET";
 		this.responseType = responseType || "json";
 		this.contentType = contentType || "application/x-www-form-urlencoded; charset=utf-8";	// get 방식 디폴트 == 쿼리스트링
@@ -453,7 +455,7 @@ class Xhr {
 	 */
 	}
 	
-	// 비동기 GET방식
+	// 비동기 GET방식 >> XMLHTTpRequest()	: url오픈 > 헤더설정 >> 전송 >> 값을 받아온다(응답)
 	async_GET(callBack){
 		
 		callBack = callBack || false;
@@ -465,7 +467,7 @@ class Xhr {
 			if(this.getContentType() === "application/x-www-form-urlencoded; charset=utf-8"
 				|| this.getContentType() === "application/x-www-form-urlencoded"){
 				
-				if(this.getJsonObject() === {}){
+				if(this.getJsonObject() === {}){ 
 					// #2. 열기 : 쿼리스트링 없음
 					this.xhr.open(this.getMethod(), this.getUrl());				
 					console.log("GET 방식 전송 : 쿼리스트링 없음")
@@ -524,6 +526,7 @@ class Xhr {
 		} else {
 			console.log(JSON.stringify(this.getJsonObject()));
 			// #3. 전송 : body있음 >>> post 방식일때는 보낼 데이터를 send(body)에 인자로 전달한다 >> Request payload. 
+			//  이때 만약 JSON.stringify()를 생략한다면 Request payload를 사용하는 것이 아닌 query String parameters를 사용하는 것이다.
 			this.xhr.send(JSON.stringify(this.getJsonObject()));
 		}
 		

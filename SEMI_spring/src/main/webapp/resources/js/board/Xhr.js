@@ -148,10 +148,15 @@ class Xhr {
 	}
 	
 	
+	// 정적자원 uri요청 >> base64 받아서 file 객체로 변환  
 	async_toDataURL(callBack){
 		
 	}
 	
+	//이미지 변환 : base64 >> new File(데이터, 이름 , 타입)
+	base64toFile(){
+		
+	}
 	
 	static func01(){
 		return "자바스크립트 클래스의 static이 붙은 함수는 자바의 static함수와 동일하게 사용됩니다. " +
