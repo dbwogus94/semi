@@ -60,8 +60,9 @@ public class CommentController {
 	 *  # 서버에서 비동기전송된 데이터 받는법
 	 *		1. 일반적으로 get방식으로 받을때는 @RequestParam을 사용해서 받으면 된.
 	 *		2. form태그에서 post로 전송이 될경우 @ModelAttribute를 통하여 받으면 된다. 
-	 *		3. {}(jsonObject)가 아닌 단일 값을 post방식으로 보낸다면 @ModelAttribute를 사용하면 된다.    	
-	 *		4. {}(jsonObject)로 전송된 값에 대응하는 dto가 있다면 @RequestBody를 사용하여 받으면 된다.
+	 *		3. 단일 값을  json String아닌 {}(jsonObject)형식의 post방식으로 보낸다면 @ModelAttribute를 사용하면 된다.
+	 *			(이경우   "Content-type = application/json"로 바꾸면 안된다.)  	
+	 *		4. {}(jsonObject)을 String로 바꾸고 전송된 값에 대응하는 dto가 있다면 @RequestBody를 사용하여 받으면 된다.
 	 * 		>>> 이는  jackson에 의해 jsonObject에 대응하는 dto를 찾아서 메핑해주기 때문에 가능하다 
 	 * 		>>> 더 정확하게 말하면 dto Class를 직렬화 하여 json에 대응하는 dto를 찾아서 메핑이 되는것이다. 
 	 * 

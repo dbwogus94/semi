@@ -12,7 +12,7 @@ class Xhr {
 		this.contentType = contentType;			 
 		this.jsonObject = jsonObject 
 		
- }
+	 }
 	 /*
 	  	# get, set
   			1. set를 정의하면 해당 클래스를 생성할때 작동한다.	
@@ -65,7 +65,7 @@ class Xhr {
 	
 	// 일반적인 비동기 GET. POST 요청후 응답 
 	async_DataLoad(callBack){
-		const xhr = this.xhr
+		const xhr = this.xhr		// #4 응답  ,   #1 url오픈 >> #2 헤더설정 >> #3 요청 
 		
 		// #4 onreadystatechange : 준비상태(200, 404, 500...)가 바뀌었을떄 트리거 되는 이벤트
 		xhr.onreadystatechange = function() { 

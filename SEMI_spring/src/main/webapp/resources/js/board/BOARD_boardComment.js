@@ -26,13 +26,14 @@ window.onscroll = function(e){
 		const xhr = new Xhr("comment/loadCommentList.do", "POST", "json", "application/json; charset=utf-8", jsonObject)
 		xhr.async_POST(loadCommentList)
 		
-		
 		//get
 		//const xhr = new Xhr("comment/loadCommentList_GET.do", undefined, "json", undefined, jsonObject)
 		//xhr.async_GET(loadCommentList)
 		
 		//xhr.url = "새로운 url"		// setter
 		//console.log(xhr.method);	// getter
+		
+
 	}
 	 
 }
@@ -284,8 +285,6 @@ class Xhr {
 
 
 
-
-
 /* 자바스크립트로 클래스 사용법 1 */
 class Xhr_param {
     constructor(url, method, responseType, contentType, jsonObject) {
@@ -299,11 +298,15 @@ class Xhr_param {
     
     // get set은 만들지 않아도 사용이 가능하다.
     get url(){
+    	console.log("getter 사용됨")
     	return this._url;
     }
     set url(url){
-    	this._url = url;
+    	console.log("세터 사용됨")
+    	this._url = (url === undefined)? "기본 url" : url ;
     }
+    
+    
 
 	static func01(){
 		return "자바스크립트 클래스의 static이 붙은 함수는 자바의 static함수와 동일하게 사용됩니다. " +
@@ -329,12 +332,11 @@ function Xhr_param2(url, method, responseType){
 	},
 	this.setMethod = function(method){
 		this.method = method;
-	}
+	},
 	this.getResponseType = function(){
 		return this.responseType;
 	},
 	this.setResponseType = function(responseType){
 		this.responseType = responseType
 	}
-	
 };
