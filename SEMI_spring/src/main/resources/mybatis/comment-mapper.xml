@@ -54,7 +54,7 @@
 	
 	
 	<!-- 글하나의 댓글의 대댓글 총개수  - 페이징에 사용 -->
-	<select id="count_re_commentList" parameterType="commentDto">
+	<select id="count_re_commentList" parameterType="commentDto" resultType="int"> 
 		SELECT COUNT(*)
 		FROM COMMENT_BOARD
 		WHERE BOARD_NO = #{boardNo}

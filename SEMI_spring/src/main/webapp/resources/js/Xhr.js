@@ -1,3 +1,4 @@
+"use strict"
 //비동기 전송용 자바스크립트 클래스
 //생성자 인자전달에 http 설정값 전달.
 //메소드 : 기본적인 get방식, post방식 구현, url >> base64 코드로 받는 메서드도 구현 예정  
@@ -133,7 +134,7 @@ class Xhr {
 			} else {
 				console.log("Content-Type이 맞지 않습니다. >>> get방식이면 'application/x-www-form-urlencoded; charset=utf-8' 으로 입력하세요. ")
 			} 
-			console.log("GET 방식으로 요청하세요")
+				console.log("GET 방식으로 요청하세요")
 		}
 		// #3. 전송 : get방식 전송	
 		xhr.send();
@@ -196,3 +197,81 @@ class Xhr {
 		
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 자바스크립트로 클래스 사용법 1 */
+class Xhr_param {
+    constructor(url, method, responseType, contentType, jsonObject) {
+    	this.url = url;
+		this.method = method || "GET";
+		this.responseType = responseType || "json";
+		this.contentType = contentType || "application/x-www-form-urlencoded; charset=utf-8";	// get 방식 디폴트 == 쿼리스트링
+		this.jsonObject = jsonObject || {}
+    }
+    
+    
+    // get set은 만들지 않아도 사용이 가능하다.
+    get url(){
+    	console.log("getter 사용됨")
+    	return this._url;
+    }
+    set url(url){
+    	console.log("세터 사용됨")
+    	this._url = (url === undefined)? "기본 url" : url ;
+    }
+    
+    
+
+	static func01(){
+		return "자바스크립트 클래스의 static이 붙은 함수는 자바의 static함수와 동일하게 사용됩니다. " +
+				"즉 클래스를 new로 생성하지 않고 사용이 가능합니다. " +
+				" ex) Xhr_param1.func01() ";
+		
+	}
+}
+
+/* 자바스크립트로 클래스 사용법 2 	>>> 2번 방법에는 문제가 있다. 해당 클래스를 생성하는것 만으로 포함된 함수(메서드)들이 모두 함깨 생성이 된다.*/
+function Xhr_param2(url, method, responseType){
+	this.url = url,
+	this.method = method || "GET",
+	this.responseType = responseType || "json",
+	this.getUrl = function() {
+	    return this.url;
+	},
+	this.setUrl = function(url){
+		this.url = url;
+	},
+	this.getMethod = function(){
+		return this.method;
+	},
+	this.setMethod = function(method){
+		this.method = method;
+	},
+	this.getResponseType = function(){
+		return this.responseType;
+	},
+	this.setResponseType = function(responseType){
+		this.responseType = responseType
+	}
+};
+
+
+
+
+
+

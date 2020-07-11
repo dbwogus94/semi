@@ -33,6 +33,7 @@ public class CommentDaoImpl implements CommentDao {
 	/* 글하나의 댓글의 대댓글 총개수  */
 	@Override
 	public int count_re_commentList(CommentDto dto) {
+		logger.info("[CommentDaoImpl] count_re_commentList argument : " + dto);
 		return session.selectOne(NANESPACE + "count_re_commentList", dto);
 	}
 	/* 글 하나의 댓글에 달린 대댓글 리스트 가져오기(+ 페이징) */

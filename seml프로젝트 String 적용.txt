@@ -125,14 +125,10 @@ SEMI >> spring 프레임 워크 적용하기
 	20/03/04 
 	: 메인에 필요한 veiw(css+js+img)와 join 패키지 controller 진행중
 	
-	20/03/05
 	: 1) 정적자원 처리완료
 	  2) 로그인, 회원가입 연결 및 수정중 
 	  3) 예외처리 클래스 생성중(dao 예외 발생시 하나의 페이지로 연결 등등 에러 페이지 전환) 	
 
-
-
-// 2020-04-23 진행
 15. filter
 	1) common.LogFilter.java 클래스 생성
 		>>> url, queryString, contextType 
@@ -149,7 +145,6 @@ SEMI >> spring 프레임 워크 적용하기
 	2)  AspectJ에서 지원하는 @Around적용
 	3) servlet-context.xml에 AspectJ가 자동으로 Porxy객체를 생성하게 해주는 <aop:aspectj-autoproxy /> 태그 추가 
 
-// 2020-04-26 진행 
 18. insert, update, delete 트렌젝션 
 설정이 적용이 안되는 중임
 미완)
@@ -166,7 +161,6 @@ SEMI >> spring 프레임 워크 적용하기
 	1) 일반 로그인, 일반 회원가입
 	2) 구글 카카오 sns로그인, sns회원가입
 
-//2020-04-27
 22) SMTP메일 클래스 구현(기존의 코드를 리팩토링)
 	1) new javax.mail.Authenticator()를 사용하여 javax.mail.Session 구현
 	2) 구현된 javax.mail.Session을 사용하여 메세지를 만드는 객체인 new MimeMessage(javax.mail.Session)생성
@@ -176,7 +170,6 @@ SEMI >> spring 프레임 워크 적용하기
 23) MentorController , MenteeController, AdminController 생성
 (기존의 profileController를 위의 3개의 컨트롤러로 구성 변경) 
 
-//2020-04-28 ~ 30
 24) mentor_profile 페이지 재구성
 	-부트스트렙 
 	-데이트 피커
@@ -184,7 +177,6 @@ SEMI >> spring 프레임 워크 적용하기
 	-구성 변경
 	-자바스크립트 재적용
 
-//2020-05-02
 25) 하이버네이트에서 주는 유효성검사를 사용을 위해 mentor_profile 페이지 form:from 적용	(완)
 	오류) f:lable를 사용하면 적용되지 않는 문제 해결해야함
 	미완) 프로필 사진 올리기
@@ -192,22 +184,15 @@ SEMI >> spring 프레임 워크 적용하기
 	미완) 비밀번호 변경
 	미완) 핸드폰번호 중복확인
 
-//2020-05-04
 26) 기존 ProFileDto에서 역할별로 쪼갠 MentorDto를 생성 그에 맞추어 맞추어 model 재구성, mapper재구성	(완)
 27) 프로필 작성, 수정 : 멘토 로그인 >> (프로필이 작성되어 있다면)? 멘토메인으로 이동 : 프로필작성 페이지로 이동   (완)
 	 1) 멘토메인 >>  프로필 수정페이지 		// 프로필 수정기능 완료
 	 2) 프로필페이지 >>> 프로필 작성하기 		// 프로필 작성기능 완료
 
-// 향후 관리자 기능 구현시 >> 멘토 최초 로그인이후 프로필 작성했으면 관리자가 검토후 멘토를 허가하는 기능을 구현해야함
 
-
-
-
-//2020-05-05
 28) 자바스크립트 업로드한 이미지 미리보기 분석 및 구현
 	바닐라 스크립트로 구현 완료
 
-//2020-05-07
 # 파일 업로드 섭네일 기능 구현
 29) pom.xml에 디펜던시 설정
 	1) 파일 업로드
@@ -219,7 +204,6 @@ SEMI >> spring 프레임 워크 적용하기
 	1) 업로드 패스 설정
 	2) 파일업로드빈 CommonsMultipartResolver Di/Ioc 설정 
 
-//2020-05-09 ~ 10
 31) UploadFileUtils 클래스 - 구현기능 :  
 	1) 파일업로드 + 썸내일 생성 : 스프링에서 제공하는 파일 FileCopyUtils.copy(fileData, target); 기능과 썸내일 생성 라이브러리를 사용
 	2) 파일명 생성 : 요일에 맞춘 파일명 생성
@@ -227,7 +211,6 @@ SEMI >> spring 프레임 워크 적용하기
 	3) 프로필 업로드 :  스프링의 MultipartFile을 사용하여 프로필 사진 업로드 구현	
 			>>> 향후 개선할 것. 	1) 서버측에서 보안을 위해 이미지 필터링 만들것 
 					2) 대형파일이 올라올시 작은 크기로 압축하여 저장할 수 있는 기능 구현할 것
-
 32) Util 클래스 생성
 	1) 경로의 파일 총개를 구하는 메서드
 	2) 경로의 파일의 이름 배열로 가져오는 메서드
@@ -237,11 +220,6 @@ SEMI >> spring 프레임 워크 적용하기
 	2) 정보 수정시 파일을 추가하지 않았을 경우 파일업로드 실행하지 않게 처리함
 	3) 파일 저장시 원본 파일과, 크기를 줄인 파일 저장 >> view에는 크기를 줄인 파일 적용
 
-# 추가 웹 파일업로드에 관한 이론공부 
-	1) HTTP Multipart
- 	2) MIME
-	3) form태그와 file태그
-	4) java의 io 
 
 
 

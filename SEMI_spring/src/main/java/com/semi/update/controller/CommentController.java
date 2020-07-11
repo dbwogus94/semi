@@ -8,18 +8,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.semi.update.All.pagination.OraclePagination;
 import com.semi.update.member.board.comment.biz.CommentBiz;
 import com.semi.update.member.board.comment.dto.CommentDto;
 
-@Controller
+@RestController
 @RequestMapping("/board/comment/")
 public class CommentController {
 	
@@ -75,8 +78,7 @@ public class CommentController {
 	 */
 	
 	// 댓글 리스트 보기  >>> 뷰변경
-	@RequestMapping(value = "loadCommentList.do", method = RequestMethod.POST) // produces = "application/json; charset=utf8", headers = "content-type=application/json"
-	@ResponseBody
+	@PostMapping(value = "loadCommentList.do") // produces = "application/json; charset=utf8", headers = "content-type=application/json"
 	public Map<String, List<CommentDto>> loadCommentList(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
 		//@ModelAttribute("jsonObject") HashMap<String, Integer> jsonObject
 		logger.info("[ajax] load Comment List input : " + input);
@@ -105,9 +107,46 @@ public class CommentController {
 	// (JAVA) Map === (JS) json === (파이썬)딕셔너리
 	
 	
-	// 댓글 리스트 보기  >>> 뷰변경
-	@RequestMapping(value = "loadCommentList_GET.do", method = RequestMethod.GET) // produces = "application/json; charset=utf8", headers = "content-type=application/json"
-	@ResponseBody
+	// 대댓글 리스트 보기
+	@PostMapping(value = "loadReCommentList.do")
+	public Map<String, List<CommentDto>> loadReCommentList(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
+		Map<String, List<CommentDto>> output = new HashMap<String, List<CommentDto>>();
+	
+		// set commentDto : 부모글, 대댓글 그룹번호
+		commentDto.setBoardNo(input.get("boardNo"));
+		commentDto.setCommentGroupNo(input.get("commentGroupNo"));
+		
+		// 현재 댓글의 대댓글 총개 
+		int totalReComment = commentBiz.count_re_commentList(commentDto);
+		
+		// 페이징 객체 생성(화면에 출력할 답글수(10, 출력될 페이지(여기서 필요없음), 총개수, 현재 페이지(1)
+		OraclePagination pagination = new OraclePagination(6, 10, totalReComment, input.get("currentPage"));
+		
+		// set commentDto :  시작 페이지, 끝 페이지 추가
+		commentDto.setStartBoardNo(pagination.getStartBoardNo());
+		commentDto.setEndBoardNo(pagination.getEndBoardNo());
+	
+		
+		List<CommentDto> reCommentList = commentBiz.re_commentList(commentDto);
+		
+		output.put("commentList", reCommentList);
+		logger.info("[ajax] load Re Comment List output : " + output);
+		
+		return output;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// 테스트용 : 댓글 리스트 보기  >>> 뷰변경
+	@GetMapping(value = "loadCommentList_GET.do") // produces = "application/json; charset=utf8", headers = "content-type=application/json"
 	public Map<String, List<CommentDto>> loadCommentList_GET(int boardNo, int currentPage, CommentDto commentDto){
 		//@ModelAttribute("jsonObject") HashMap<String, Integer> jsonObject
 		logger.info("[ajax] load Comment List input : " + boardNo);
@@ -134,7 +173,7 @@ public class CommentController {
 		return output;
 	}
 	
-	// 대댓글 리스트 보기
+	
 	
 	// 댓글 작성
 	

@@ -20,10 +20,13 @@
 
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/BOARD_boardDetail.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/BOARD_boardComment.css">
 <title>게시글확인</title>
 <%@ include file="../mentor/mentorHeader.jsp"%>
-<script  type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardDetail.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardDetail.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/Xhr.js"></script>
 <script defer type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardComment.js"></script>
+
 </head>
 
 <body>
@@ -76,6 +79,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<div class="container" id="comment-container">
 		
 		<div class="row">
@@ -101,30 +105,84 @@
 	
 		<div id="comment_body">
 		
-			<div class="row">
 			
-				<div class="col-md-1">
-					<div class="profile_top">
-						<div class="profile_mid">
-							<img alt=""	src="">
-						</div>
-					</div>
-				</div>
-				<div class="col-md-11">
-					<div class ="comment_top">
-						<span class="writer">작성자</span><span class="time">작성일</span>
-					</div>
-					<div class ="comment_content">
-						댓글 내용
-						<br>
-						<br>	
-						<a>자세히 보기</a>
-					</div>
-					<div class ="comment_mid">추천, 답글</div>
-					<div class ="comment_bottom"><a>대댓글 있을시 표시</a></div>
-				</div>
+<!-- 			<div class="row"> -->
+			 	
+<!-- 				 댓글 -->
+<!-- 				<div class="div_comment"> -->
+<!-- 					<input type="hidden" class="commentGroupNo" name="commentGroupNo"/> -->
+<!-- 				 	<div class="row"> -->
+<!-- 						<div class="col-md-1"> -->
+<!-- 							<div class="profile_top"> -->
+<!-- 								<div class="profile_mid"> -->
+<!-- 									<img alt=""	src=""> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="col-md-11"> -->
+<!-- 							<div class ="comment_top"> -->
+<!-- 								<span class="writer">작성자</span><span class="time">작성일</span> -->
+<!-- 							</div> -->
+<!-- 							<div class ="comment_content"> -->
+<!-- 								댓글 내용 -->
+<!-- 								<br> -->
+<!-- 								<br>	 -->
+<!-- 								<a>자세히 보기</a> -->
+<!-- 							</div> -->
+<!-- 							<div class ="comment_mid">추천, 답글</div> -->
+<!-- 							<div class ="comment_bottom"> -->
+<!-- 								<a class="comment_aTag" onclick="show_ReComment()">대댓글 있을시 표시1</a> -->
+<!-- 								<a class="comment_aTag_close" onclick="show_ReComment()">답글 숨기기</a> -->
+<!-- 							</div> -->
+							
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div>	 -->
+					
+<!-- 				대댓 -->
+<!-- 				<div class="div_reComment"> -->
+<!-- 					<div class="row"> -->
+<!-- 						<div class="col-md-1"> -->
+<!-- 							<div class="profile_top"> -->
+<!-- 								<div class="profile_mid"> -->
+<!-- 									<img alt=""	src=""> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+							
+<!-- 						<div class="col-md-11"> -->
+<!-- 							<div class="col-md-1"> -->
+<!-- 								<div class="profile_top"> -->
+<!-- 									<div class="profile_mid"> -->
+<!-- 										<img alt=""	src=""> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 							<div class="col-md-11"> -->
+<!-- 								<div class ="comment_top"> -->
+<!-- 									<span class="writer">작성자</span><span class="time">작성일</span> -->
+<!-- 								</div> -->
+<!-- 								<div class ="comment_content"> -->
+<!-- 									대댓글 내용 -->
+<!-- 									<br> -->
+<!-- 									<br>	 -->
+<!-- 									<a>자세히 보기</a> -->
+<!-- 								</div> -->
+<!-- 								<div class ="comment_mid">추천, 답글</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				 </div> -->
+				
 			</div>
 			
+		</div>	
+	</div>
+			
+		
+		
+		
+		
 <%-- 	<c:choose> --%>
 <%-- 		<c:when test="${empty comment}"> --%>
 <!-- 			<div class="row">	 -->
@@ -163,10 +221,8 @@
 <%-- 	</c:choose> --%>
 			
 		
-		</div>		
-	
-	</div>
-	
+		
+
 	
 	<!-- 모달 영역 -->
 	<div class="modal fade" id="boardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

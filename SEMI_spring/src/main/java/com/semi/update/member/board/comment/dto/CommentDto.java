@@ -180,5 +180,7 @@ public class CommentDto {
 				+ reCommentCount + ", startBoardNo=" + startBoardNo + ", endBoardNo=" + endBoardNo + "]";
 	}
 	
+	public static void main(String[] args) {
+	}
 
 }
