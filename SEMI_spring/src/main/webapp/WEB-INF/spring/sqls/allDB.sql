@@ -456,7 +456,7 @@ FROM (SELECT ROWNUM RN, X.*
 			 GROUP BY COMMENT_GROUPNO) B				-- 그룹번호 별
 		WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
 		ORDER BY A.COMMENT_GROUPNO DESC) X				-- 그룹번호로 내림 차순 정렬(최신 댓글순)
-	WHERE ROWNUM <= 3) Y
+	WHERE ROWNUM <= 10) Y
 WHERE Y.RN >= 1
 
 --==========================================================================================================================================================================
@@ -486,6 +486,36 @@ WHERE X.RN >= 1;
 -- 내가 작성한 전체 댓글확인
 SELECT * FROM COMMENT_BOARD
 WHERE ID = '1994dbwogus';
+
+
+-- 가장 최근 작성한 댓글 가져오기
+SELECT A.* FROM(
+	SELECT * FROM COMMENT_BOARD
+	WHERE ID = '1994dbwogus'
+	AND BOARD_NO = 301
+	ORDER BY COMMENT_REGDATE DESC) A
+WHERE ROWNUM = 1;
+
+
+
+
+SELECT Y.* 
+FROM (SELECT ROWNUM RN, X.*
+	FROM (SELECT B.COUNT_RE_COMMENT, A.* FROM 
+			(SELECT cb.*, mp.MEMBER_CONTENT 
+			 FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+			 WHERE cb.ID = mp.ID
+			 AND cb.BOARD_NO = 301					-- 부모글
+			 AND cb.COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+			 ORDER BY cb.COMMENT_GROUPNO) A,
+			(SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+			 FROM COMMENT_BOARD
+			 WHERE BOARD_NO = 301 
+			 GROUP BY COMMENT_GROUPNO) B				-- 그룹번호 별
+		WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
+		ORDER BY A.COMMENT_GROUPNO DESC) X				-- 그룹번호로 내림 차순 정렬(최신 댓글순)
+	WHERE ROWNUM <= 10) Y
+WHERE Y.RN >= 1
 
 
 

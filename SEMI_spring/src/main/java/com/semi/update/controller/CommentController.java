@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.semi.update.All.pagination.OraclePagination;
 import com.semi.update.member.board.comment.biz.CommentBiz;
 import com.semi.update.member.board.comment.dto.CommentDto;
+import com.semi.update.member.dto.MenteeDto;
+import com.semi.update.member.dto.MentorDto;
 
 @RestController
 @RequestMapping("/board/comment/")
@@ -81,7 +85,7 @@ public class CommentController {
 	@PostMapping(value = "loadCommentList.do") // produces = "application/json; charset=utf8", headers = "content-type=application/json"
 	public Map<String, List<CommentDto>> loadCommentList(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
 		//@ModelAttribute("jsonObject") HashMap<String, Integer> jsonObject
-		logger.info("[ajax] load Comment List input : " + input);
+		logger.info("[ajax] load Comment List >>>>> input date : " + input);
 		Map<String, List<CommentDto>> output = new HashMap<String, List<CommentDto>>();
 		
 		// 답글 dto에 부모글 시퀀스 추가
@@ -110,8 +114,8 @@ public class CommentController {
 	// 대댓글 리스트 보기
 	@PostMapping(value = "loadReCommentList.do")
 	public Map<String, List<CommentDto>> loadReCommentList(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
+		logger.info("[ajax] load Re Comment List >>>>> input date : " + input);
 		Map<String, List<CommentDto>> output = new HashMap<String, List<CommentDto>>();
-	
 		// set commentDto : 부모글, 대댓글 그룹번호
 		commentDto.setBoardNo(input.get("boardNo"));
 		commentDto.setCommentGroupNo(input.get("commentGroupNo"));
@@ -120,7 +124,7 @@ public class CommentController {
 		int totalReComment = commentBiz.count_re_commentList(commentDto);
 		
 		// 페이징 객체 생성(화면에 출력할 답글수(10, 출력될 페이지(여기서 필요없음), 총개수, 현재 페이지(1)
-		OraclePagination pagination = new OraclePagination(6, 10, totalReComment, input.get("currentPage"));
+		OraclePagination pagination = new OraclePagination(6, 10, totalReComment, input.get("reCommentCurrentPage"));
 		
 		// set commentDto :  시작 페이지, 끝 페이지 추가
 		commentDto.setStartBoardNo(pagination.getStartBoardNo());
@@ -135,8 +139,56 @@ public class CommentController {
 		return output;
 	}
 	
+	// 댓글 작성
+	@PostMapping(value="inputComment.do")
+	public Map<String, Object> inputComment(HttpSession session, @RequestBody HashMap<String, String> input, CommentDto commentDto){
+		logger.info("[ajax] inputComment >>>>> input date : " + input);
+		Map<String, Object> output = new HashMap<String, Object>();
+		
+		MentorDto mentorDto = (MentorDto) session.getAttribute("login");
+		String id = "";
+		String name = "";
+		if(mentorDto != null) {
+			id = mentorDto.getId();
+			name = mentorDto.getMemberName();
+		} else {
+			MenteeDto menteeDto = (MenteeDto) session.getAttribute("login");
+			id = menteeDto.getId();
+			name = menteeDto.getMemberName();
+		}
+		
+		//필요한 값 : 댓글 작성 부모글, id(서버에서 세션), 작성자(서버에서 세션), 내용
+		commentDto.setBoardNo(Integer.parseInt(input.get("boardNo")));
+		commentDto.setId(id);
+		commentDto.setCommentName(name);
+		commentDto.setCommentContent(input.get("commentContent"));
+		
+		// 추가
+		int res = commentBiz.commentInsert(commentDto);
+		
+		// 성공시
+		if(res > 0) {
+			logger.info("[ajax] inputComment >>>>>>>>>>>>> 댓글 작성 성공");
+			commentDto = commentBiz.selectLatestInsertOne(commentDto);
+			output.put("res", "success");
+			output.put("commentDto", commentDto);
+		} else {
+			logger.info("[ajax] inputComment >>>>>>>>>>>>> 댓글 작성 실패");
+			output.put("res", "fail");
+		}
+
+		logger.info("[ajax] inputComment >>>> output : " + output);
+		return output;
+	}
 	
 	
+	
+	// 댓글 수정
+		
+	// 대댓글 작성
+	
+	// 대댓글 수정
+
 	
 	
 	
@@ -175,13 +227,7 @@ public class CommentController {
 	
 	
 	
-	// 댓글 작성
 	
-	// 댓글 수정
-	
-	// 대댓글 작성
-	
-	// 대댓글 수정
 	
 	
 }

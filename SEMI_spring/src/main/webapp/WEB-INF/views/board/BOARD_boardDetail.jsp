@@ -24,14 +24,18 @@
 <title>게시글확인</title>
 <%@ include file="../mentor/mentorHeader.jsp"%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardDetail.js"></script>
+
+<!-- comment -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/Xhr.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/myUtil.js"></script>
 <script defer type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardComment.js"></script>
 
 </head>
 
 <body>
 	<input type="hidden" name="boardNo" value="${board.boardNo }" id="boardNo">
-	<input type="hidden" name="id" value="${board.id }"/>
+	<input type="hidden" id="id" name="id" value="${board.id }"/>
+	<input type="hidden" id="myId" name="myId" value="${login.id }"/>
 	<div class="row" >
 		<div class="col-md-12" id="headTitle">
 			<hr>
@@ -81,63 +85,66 @@
 	</div>
 	
 	<div class="container" id="comment-container">
-		
+		<input type="hidden" id="currentPage" name="currentPage" value="0"/>
 		<div class="row">
 			<div class="col-md-2">댓 글</div>
-			<div class="col-md-10">
-			</div>
+			<div class="col-md-10"></div>
 		</div>
 		
 		<!-- 댓글 입력 -->
 		<div class="row">
-			<form action="" method="post">
-				<input type="hidden" name="boardNo" value="${board.boardNo }"/>
-				<input type="hidden" name="id" value="${login.id }"/>
-				<div class="col-md-11">
-					<input type="text" class="form-control" name="commentContent" placeholder="바르고 고운말을 사용합시다." onkeydown="onKeyDown();">
-				</div>
-				<div class="col-md-1">
-					<button class="btn btn-outline-secondary" type="button" id="button-addon2" onkeypress = "if(event.keyCode == 13) {submit();}" >입  력</button>
-				</div>
-			</form>
+			<div class="col-md-11">
+				<div id="commentContent" contenteditable="true" placeholder="바르고 고운말을 사용합시다." onkeydown="countWord();" onkeyup="countWord();"></div>
+<!-- 				<input type="text" class="form-control" name="commentContent" placeholder="바르고 고운말을 사용합시다."  onkeypress="if(event.keyCode == 13) {inputComment();}" onkeydown="countWord();" onkeyup="countWord();"> -->
+				<span id="countWord">0/500</span>
+			</div>
+			<div class="col-md-1">
+				<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="inputComment()">입  력</button>
+			</div>
 		</div>
 		
 	
-		<div id="comment_body">
+		<!-- 댓글 view -->
+		<div id="comment_body"></div>
+ 			<br><br>
+	</div>
+			
+		
 		
 			
 <!-- 			<div class="row"> -->
 			 	
 <!-- 				 댓글 -->
 <!-- 				<div class="div_comment"> -->
-<!-- 					<input type="hidden" class="commentGroupNo" name="commentGroupNo"/> -->
+<%-- 					<input type="hidden" class="commentGroupNo" name="commentGroupNo" value="${commentDto.commentGroupNo}"/> --%>
 <!-- 				 	<div class="row"> -->
 <!-- 						<div class="col-md-1"> -->
 <!-- 							<div class="profile_top"> -->
 <!-- 								<div class="profile_mid"> -->
-<!-- 									<img alt=""	src=""> -->
+<%-- 									<img alt=""	src="${commentDto.profileImg}" onerror="this.src='/update/resources/img/user.png';"> --%>
 <!-- 								</div> -->
 <!-- 							</div> -->
 <!-- 						</div> -->
 <!-- 						<div class="col-md-11"> -->
 <!-- 							<div class ="comment_top"> -->
-<!-- 								<span class="writer">작성자</span><span class="time">작성일</span> -->
+<%-- 								<span class="writer">${commentDto.commentName}&nbsp;&nbsp;&nbsp;</span><span class="time"></span> --%>
+<%-- 								<span class="insert_time hidden">${commentDto.commentGegdate}</span><span class="update_time hidden">${commentDto.commentUpdateRegDate}</span> --%>
 <!-- 							</div> -->
 <!-- 							<div class ="comment_content"> -->
-<!-- 								댓글 내용 -->
-<!-- 								<br> -->
-<!-- 								<br>	 -->
-<!-- 								<a>자세히 보기</a> -->
+<%-- 								${commentDto.commentContent}<br> --%>
+<!-- 								<a class="comment_content_aTag">자세히 보기</a> -->
 <!-- 							</div> -->
-<!-- 							<div class ="comment_mid">추천, 답글</div> -->
+<!-- 							<div class ="comment_mid">추천, <a>답글</a></div> -->
 <!-- 							<div class ="comment_bottom"> -->
-<!-- 								<a class="comment_aTag" onclick="show_ReComment()">대댓글 있을시 표시1</a> -->
-<!-- 								<a class="comment_aTag_close" onclick="show_ReComment()">답글 숨기기</a> -->
+<%-- 								<a class="comment_aTag" onclick="show_ReComment()">답글 ${commentDto.reCommentCount}개 보기</a> --%>
+<%-- 								<input type="hidden" class="reCommentCount" value="${commentDto.reCommentCount}"/> --%>
+<!-- 								<a class="comment_aTag_close hidden" onclick="show_ReComment()">답글 숨기기</a> -->
 <!-- 							</div> -->
 							
 <!-- 						</div> -->
 <!-- 					</div> -->
 <!-- 				</div>	 -->
+				
 					
 <!-- 				대댓 -->
 <!-- 				<div class="div_reComment"> -->
@@ -174,12 +181,8 @@
 <!-- 					</div> -->
 <!-- 				 </div> -->
 				
-			</div>
-			
-		</div>	
-	</div>
-			
-		
+<!-- 			</div> -->
+
 		
 		
 		

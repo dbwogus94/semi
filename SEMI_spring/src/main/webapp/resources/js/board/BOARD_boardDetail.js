@@ -1,3 +1,4 @@
+// 글 수정
 function authorityChk(id, boardId, boardNo){
 	if(id === boardId){
 		location.href='update.do?boardNo=' + boardNo
@@ -8,14 +9,11 @@ function authorityChk(id, boardId, boardNo){
 
 // 글 삭제
 function deleteOne(loginId, boardId ,boardNo){
-	
 	if(loginId === boardId){
 		warningMsg("","","location.href='deleteOne.do?boardNo="+boardNo + "'")
 	} else {
 		alert("자신이 쓴 글만 삭제할 수 있습니다.")
 	}
-	
-	
 }
 
 // #경고 모달 모듈 >>> 파라미터 (타이틀, 내용, 확인에 사용할 함수명()(문자열))

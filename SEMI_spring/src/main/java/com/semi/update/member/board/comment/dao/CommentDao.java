@@ -31,5 +31,6 @@ public interface CommentDao {
 	// 대댓글 수정
 	public int re_commentUpdate(CommentDto dto);
 		
-	
+	// 자신이 가장 최근에 작성한 댓글 하나 
+	public CommentDto selectLatestInsertOne(CommentDto dto);
 }

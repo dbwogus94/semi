@@ -66,6 +66,11 @@ public class CommentDaoImpl implements CommentDao {
 		logger.info("[CommentDaoImpl] re_commentUpdate argument : " + dto);
 		return session.update(NANESPACE + "re_commentUpdate", dto);
 	}
+	@Override
+	public CommentDto selectLatestInsertOne(CommentDto dto) {
+		logger.info("[CommentDaoImpl] selectLatestInsertOne argument : " + dto);
+		return session.selectOne(NANESPACE + "selectLatestInsertOne", dto);
+	}
 	
 	
 

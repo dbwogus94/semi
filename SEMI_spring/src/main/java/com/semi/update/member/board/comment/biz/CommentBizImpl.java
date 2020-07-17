@@ -66,6 +66,12 @@ public class CommentBizImpl implements CommentBiz {
 		return dao.re_commentUpdate(dto);
 	}
 
+	@Override
+	public CommentDto selectLatestInsertOne(CommentDto dto) {
+		logger.info("[CommentBizImpl] selectLatestInsertOne arg : " + dto );
+		return dao.selectLatestInsertOne(dto);
+	}
+
 	
 
 }

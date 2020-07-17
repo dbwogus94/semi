@@ -2,6 +2,7 @@ package com.semi.update.member.board.biz;
 
 import java.util.List;
 
+import com.semi.update.member.board.comment.dto.CommentDto;
 import com.semi.update.member.board.dto.BoardDto;
 
 public interface BoardBiz {

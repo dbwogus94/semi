@@ -103,5 +103,5 @@ public class BoardBizImpl implements BoardBiz {
 		logger.info("[BoardBizImpl] >>>>>>>>>>>>> multiBoardDelete : " + Arrays.toString(boardNoArr));
 		return dao.multiBoardDelete(boardNoArr);
 	}
-		
+
 }

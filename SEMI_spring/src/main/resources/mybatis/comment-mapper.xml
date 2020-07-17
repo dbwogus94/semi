@@ -76,6 +76,16 @@
 		WHERE X.RN >= #{startBoardNo} 	
 	</select>
 	
+	
+	<select id="selectLatestInsertOne" parameterType="commentDto" resultMap="ResultMap">
+		SELECT A.* FROM(
+			SELECT * FROM COMMENT_BOARD
+			WHERE ID = #{id}
+			AND BOARD_NO = #{boardNo}
+			ORDER BY COMMENT_REGDATE DESC) A
+		WHERE ROWNUM = 1
+	</select>
+	
 	<!-- 댓글 작성 -->
 	<insert id="commentInsert" parameterType="commentDto">
 		INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)

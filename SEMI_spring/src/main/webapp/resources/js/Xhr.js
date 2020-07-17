@@ -33,7 +33,7 @@ class Xhr {
 		return this._method;
 	}
 	set method(method){
-		console.log("set method(value) 실행")
+		//console.log("set method(value) 실행")
 		this._method = (method === undefined)? "GET" : method;
 	}
 	
@@ -43,7 +43,11 @@ class Xhr {
 	}
 	set responseType(responseType){
 		//console.log(`set responseType(${this.responseType}) 실행`)
-		this._responseType = (responseType === undefined)? "json" : responseType;
+		if(responseType === undefined || responseType === null || responseType === ""){
+			this._responseType = "json";
+		} else {
+			this._responseType = responseType;
+		} 
 	}
 	
 	get contentType(){
@@ -52,7 +56,16 @@ class Xhr {
 	}
 	set contentType(contentType){
 		//console.log(`set contentType(${this.contentType}) 실행`)
-		this._contentType = (contentType === undefined)? "application/x-www-form-urlencoded; charset=utf-8" : contentType;
+		if(contentType === undefined || contentType === null || contentType === ""){
+			if(this.method === "get" ||  this.method === "GET"){
+				this._contentType = "application/x-www-form-urlencoded; charset=utf-8";
+			}
+			if(this.method === "post" ||  this.method === "POST"){
+				this._contentType = "application/json; charset=utf-8";
+			}
+		} else {
+			this._contentType = contentType;
+		}
 	}
 	
 	get jsonObject(){
@@ -74,17 +87,19 @@ class Xhr {
 				if (xhr.status === 200 || xhr.status === 201) {
 					// 응답시 받은 데이터 확인
 					console.log("성공 데이터 확인 : " + JSON.stringify(xhr.response));
-					
 					// 데이터 콜백에 전달
 					if(callBack){
+						//setTimeout(function(){
 						callBack(xhr.response)
+						//}, 1000);
 					}
-				
 				} else {
 					console.error("서버 에러 : " + xhr.response);
+					return false;
 				}
 			} else if(xhr.readyState === 4){		// 네트워크 문제 같은것으로 서버에 가지 못했을때 404 
 				console.error("네트워크 에러 : " + xhr.responseText);
+				return false;
 			}
 		}
 		/*
