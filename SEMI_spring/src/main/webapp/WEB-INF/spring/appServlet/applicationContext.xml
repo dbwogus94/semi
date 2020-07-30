@@ -27,9 +27,9 @@
 <!-- 		<property name="username" value="kh"/> -->
 <!-- 		<property name="password" value="kh"/> -->	
 		
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">	<!-- BasicDataSource dataSource = new BasicDataSource(); : IoC-->
-		<property name="driverClassName" value="${driver}"/>				<!-- dataSource.setDriverClassName(${driver}); : DI -->
-		<property name="url" value="${url}"/>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">	<!-- BasicDataSource dataSource = new BasicDataSource(); : IoC-->
+		<property name="driverClassName" value="${log4jdbc_driver}"/>				<!-- dataSource.setDriverClassName(${driver}); : DI -->
+		<property name="url" value="${log4jdbc_url}"/>
 		<property name="username" value="${username}"/>
 		<property name="password" value="${password}"/>
 	</bean>	

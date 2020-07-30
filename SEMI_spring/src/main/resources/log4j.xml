@@ -3,7 +3,13 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 <!-- #16  -->
-	<!-- Appenders -->
+	<!-- Appenders 
+		Logger -  출력할 메시지를 Appender에 전달한다.
+		Appender - 전달된 로그를 어디에 출력할 지 결정한다. (콘솔 출력, 파일 기록, DB 저장 등)
+		Layout - 로그를 어떤 형식으로 출력할 지 결정한다.
+	-->
+	
+	<!-- appender : 출력 페턴 설정   >> <appender-ref ref="console" /> ref에 name 값을 사용해서 설정 -->
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
@@ -11,9 +17,16 @@
 		</layout>
 	</appender>
 	
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+          <layout class="org.apache.log4j.PatternLayout">
+              <param name="ConversionPattern" value="%d{yyyyMMdd HH:mm:ss.SSS} [%thread] %-3level %logger{5} - %msg %n"/>
+          </layout>  
+    </appender>
+    
+	
 	<!-- Application Loggers -->
 	<logger name="com.semi.update">
-		<level value="DEBUG" />
+		<level value="info" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
@@ -33,19 +46,65 @@
 		<level value="info" />
 	</logger>
 	
-	<!-- 추가 -->
-	<logger name="org.ibatis">
-		<level value="info"/>
+	<!-- DB로그 추가
+		 - jdbc.sqlonly : SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문이 보여진다. 
+		 - jdbc.sqltiming : SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보(milliseconds)를 포함한다. 
+		 - jdbc.audit : ResultSet을 제외한 모든 JDBC 호출 정보를 로그로 남긴다. 많은 양의 로그가 생성되므로 특별히 JDBC 문제를 추적해야 할 필요가 있는 경우를 제외하고는 사용을 권장하지 않는다. 
+		 - jdbc.resultset : ResultSet을 포함한 모든 JDBC 호출 정보를 로그로 남기므로 매우 방대한 양의 로그가 생성된다. 
+		 - jdbc.resultsettable : SQL 결과 조회된 데이터의 table을 로그로 남긴다.
+	-->
+	
+	<logger name="log4jdbc.log4j2" additivity="false"> 
+		<level value="error" />
+		<appender-ref ref="console" /> 
+	</logger> 
+	
+	<logger name="jdbc.sqlonly">
+		<level value="OFF" />
+	</logger> 
+	
+	<logger name="jdbc.sqltiming">
+		<level value="info" />
+	</logger>
+	 
+	<logger name="jdbc.audit">
+		<level value="OFF" />
+	</logger> 
+	 
+	<logger name="jdbc.resultset">
+		<level value="OFF" />
+	</logger> 
+	 
+	<logger name="jdbc.resultsettable">
+		<level value="OFF" />
+	</logger>
+	 
+	<logger name="jdbc.connection">
+		<level value="OFF" />
 	</logger>
 	
-	<logger name="java.sql">
-		<level value="info"/>
-	</logger>
+	
+<!-- 	<logger name="org.ibatis"> -->
+<!-- 		<level value="debug"/> -->
+<!-- 	</logger> -->
+	
+<!-- 	<logger name="java.sql"> -->
+<!-- 		<level value="debug"/> -->
+<!-- 	</logger> -->
 
-	<!-- Root Logger -->
+
+	<!--
+		FATAL - 아주 심각한 에러가 발생한 상태를 나타낸다. 
+		ERROR -  어떠한 요청을 처리하는 중 문제가 발생한 상태를 나타낸다.
+		WARN - 프로그램의 실행에는 문제가 없지만, 향후 시스템 에러의 원인이 될 수 있는 경고성 메시지를 나타낸다.
+		INFO -  어떠한 상태변경과 같은 정보성 메시지를 나타낸다.
+		DEBUG - 개발시 디버그 용도로 사용하는 메시지를 나타낸다. 
+		TRACE -	디버그 레벨이 너무 광범위한것을 해결하기 위해서 좀 더 상세한 이벤트를 나타낸다. 
+	 -->
+
+	<!-- Root Logger : 해당 태그 주석시 로그 나오지 않게된다.-->
 	<root>
-		<priority value="INFO" />
+		<priority value="info" />
 		<appender-ref ref="console" />
 	</root>
-	
 </log4j:configuration>
