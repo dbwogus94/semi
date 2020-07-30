@@ -65,13 +65,10 @@ function loadCommentList(response) {
 }
 
   
-
-
-// 댓글 0이면 답글 보기 숨기기
+// [UI] 댓글 0이면 답글 보기 숨기기
 function noneRecomment(div_comment) {
 	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
-	console.log("noneRecomment >>>>>>>>>>>>>> ");
 	
 	for(let i = 0; i<new_div_comment.length; i++){
 		if(commentGroupNo == new_div_comment[i].getElementsByClassName("commentGroupNo")[0].value){
@@ -88,13 +85,10 @@ function noneRecomment(div_comment) {
 	return div_comment;
 }
 
-// 자신글 이면 삭제, 수정 추가
+// [UI] 자신글 이면 삭제, 수정 추가
 function my_control(div_comment) {
 	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
-	
-	console.log("my_control >>>>>>>>>>> ");
-	
 	for(let i = 0; i<new_div_comment.length; i++){
 		if(commentGroupNo == new_div_comment[i].getElementsByClassName("commentGroupNo")[0].value){
 			let myId = document.getElementById("myId");
@@ -110,13 +104,10 @@ function my_control(div_comment) {
 	return div_comment;  	
 }
 
-// 작성일과 수정일 일치하지않으면 수정일 붙이고 수정일로 변경
+// [UI] 작성일과 수정일 일치하지않으면 수정일 붙이고 수정일로 변경
 function format_time(div_comment) {
 	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
-	
-	console.log("format_time >>>>>>>>>>> ");
-	
 	for(let i = 0; i<new_div_comment.length; i++){
 		if(commentGroupNo == new_div_comment[i].getElementsByClassName("commentGroupNo")[0].value){
 			const insert_time = new_div_comment[i].getElementsByClassName("insert_time")[0];
@@ -138,16 +129,17 @@ function format_time(div_comment) {
 }
 
 
-// 본문 글자 일정글자수 보다 크면 자세히보기 만들기
+// [UI] 본문 글자 일정글자수 보다 크면 자세히보기 만들기
 function commnet_contentCut() {
   // let comment_content =
 
   `<a class="comment_content_aTag">자세히 보기</a>`;
 }
 
-// 추가 클릭 페이징
+// [UI] 대댓글 더보기 클릭  
 
-/* 대댓글 보이기 이벤트 */
+
+/* [UI] 대댓글 보이기 이벤트 */
 function show_ReComment() {
   // 이벤트를 발생시킨 주체 => a태그
   let target = event.target;
@@ -163,7 +155,7 @@ function show_ReComment() {
   let commentGroupNo = comment_body.querySelectorAll(".commentGroupNo");
 
   for (i in comment_aTag) {
-    // 현재 이벤트 발생시킨 a태그의 번지 찾기ㅅ 
+    // 현재 이벤트 발생시킨 a태그의 번지 찾기
     if (target === comment_aTag[i] || target === comment_aTag_close[i]) {
       // comment_aTag(대댓글 개수) <-> comment_aTag_close(답글 숨기기) >> 클릭에 따른 view 변경
       comment_aTag[i].classList.toggle("hidden");
@@ -187,7 +179,7 @@ function show_ReComment() {
   }
 }
 
-// 댓글
+// [UI] 댓글 생성
 function makeComment(commentDto) {
 	// 생성 위치
 	const commentBody = document.getElementById("comment_body");
@@ -200,6 +192,7 @@ function makeComment(commentDto) {
 	div_comment.innerHTML += `
 	  			<input type="hidden" class="commentGroupNo" name="commentGroupNo" value="${commentDto.commentGroupNo}"/>
 					<input type="hidden" class="commentId" name="commentId" value="${commentDto.id}"/>
+					<input type="hidden" class="commentNo" name="commentNo" value="${commentDto.commentNo}"/>
 				 	<div class="row">
 						<div class="col-md-1">
 							<div class="profile_top">
@@ -217,7 +210,7 @@ function makeComment(commentDto) {
 								${commentDto.commentContent}<br>
 								<a class="comment_content_aTag">자세히 보기</a>
 							</div>
-							<div class ="comment_mid">추천, <a>답글</a> <span class="my_control"><a>수정</a>&nbsp / &nbsp;<a>삭제</a><span></div>
+							<div class ="comment_mid">추천, <a>답글</a> <span class="my_control"><a>수정</a>&nbsp / &nbsp;<a javascript:; onclick="deleteComment(${commentDto.commentNo}, '${commentDto.id}')">삭제</a><span></div>
 							<div class ="comment_bottom">
 								<a class="comment_aTag" onclick="show_ReComment()">답글 ${commentDto.reCommentCount}개 보기</a>
 								<input type="hidden" class="reCommentCount" value="${commentDto.reCommentCount}"/>
@@ -235,7 +228,7 @@ function makeComment(commentDto) {
 	return div_comment;  
 }
 
-// 대댓글 그리기
+// [UI] 대댓글 생성
 function makeReComment(commentDto) {
   // 자신이 그려져야 하는 위치? >> 그룹번호 >> commentDto안에 있음
   let comment_body = document.querySelector("#comment_body");
@@ -281,7 +274,7 @@ function makeReComment(commentDto) {
   }
 }
 
-// 작성 글자수 카운트
+// [UI] 작성 글자수 카운트
 function countWord() {
   let commentContent = document.querySelector("#commentContent").innerHTML;
   let countWord = document.querySelector("#countWord");
@@ -308,7 +301,7 @@ function countWord() {
   return false;
 }
 
-// 입력
+// 댓글 입력
 function inputComment() {
   let commentContent = document.querySelector("#commentContent");
   let boardNo = document.getElementById("boardNo").value;
@@ -336,16 +329,45 @@ function inputComment() {
   }
 }
 
-// 글작성 비동기 콜백
+
+// 뎃글 삭제 : 아이디(서버에서 작성자 일치 세션 확인), 댓글테이블pk > 하위 속한 대댓글 모두 삭제
+function deleteComment(commentNo, commentId){
+	let deleteConfirm = confirm("댓글을 댓글에 포함된 대댓글도 모두 삭제됩니다. 삭제하시겠습니까?");
+	
+	if(deleteConfirm == false ){
+		return false;
+	}
+	
+	const myId = document.getElementById("myId")
+	if(myId == undefined){return}
+	
+	const json = {commentId: commentId, commentNo: commentNo}
+	const xhr = new Xhr("comment/...." ,"post", "", "", json);
+	
+	// 댓삭제
+	xhr.async_POST(() => {
+		const getTagArr = document.getElementsByClassName("commentNo");
+		for(let tag of getTagArr){
+			if(tag.value == commentNo){
+				const target_row = tag.parentNode.parentNode;
+				// target_row의 부모Node로 갔다가 다시 그 부모의 자식인 target_row을 삭제
+				//target_row.parentNode.removeChild(target);   		
+				return;
+			}
+		}
+	})
+}
+
+
+//[사용안함]  글작성 비동기 콜백
 function loadCommentDto(response) {
   console.log(response);
-
   if (response.res === "success") {
     // (response.commentDto)
   }
 }
 
-// 상위에 작성한 글 생성
+//[사용안함] 상위에 작성한 글 생성
 function makeComment_insert(commentDto) {
   const commentBody = document.getElementById("comment_body");
   let main_row = document.createElement("div");
