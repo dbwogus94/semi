@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.semi.update.join.bao.JoinDaoImpl;
+import com.semi.update.join.dao.JoinDaoImpl;
 import com.semi.update.member.dto.MentorDto;
 import com.semi.update.member.profile.dto.ProfileDto;
 

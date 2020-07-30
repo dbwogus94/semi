@@ -19,101 +19,55 @@ window.onscroll = function () {
     currentPage++;
     document.getElementById("currentPage").value = currentPage;
 
-    // boardNo =	Number(boardNo) or board *= 1
+    // boardNo = Number(boardNo) or board *= 1
     // 비동기로 서버에 요청시 사용할 데이터
     let jsonObject = { boardNo: boardNo, currentPage: currentPage };
 
-    //post
     const xhr = new Xhr("comment/loadCommentList.do", "POST", "json", "application/json; charset=utf-8", jsonObject);
-    //xhr.async_POST(loadCommentList)
+    xhr.async_POST(loadCommentList)
     
-    xhr.async_POST((response) =>{
-    	let commentList = response.commentList;
-    	console.log(commentList)
-    	if (commentList.length === 0) {
-    		console.log("결과없음");
-	    } else {
-	    	for(let i = 0; i<commentList.length; i++){
-	    		load_makeComment(commentList[i])
-	    		.then(load_noneRecomment)
-	    		.catch(console.log)
-	    		.then(load_my_control)
-	    		.catch(console.log)
-	    		.then(load_format_time)
-	    		.catch(console.log);
-	    	}
-	    	
-	    }
-    });
+    // promise를 사용하여 댓글 생성
+    //xhr.async_POST((response) => loadCommentList_Promise(response));
     
   }
 };
 
+
+
 // Xhr클래스의 비동기 요청 콜백에 사용된 함수 : load commentList to json
+function loadCommentList(response) {
+	console.log(response.commentList);
+	let commentList = response.commentList;
+
+	if (response.commentList.length === 0) {
+		console.log("없음");
+	    return false;
+	} else {
+	    for (let i = 0; i < commentList.length; i++) {
+	    	// 그룹번호가 0이면 댓글 그 이상이면 대댓글
+	    	if (commentList[0].commentGroupSeq <= 0) {
+	    		// 함수 : 댓글 생성
+	    		let div_comment = makeComment(commentList[i]);
+	    		// 함수: 댓글 0이면 '답글 보기' 숨기기
+	    		div_comment = noneRecomment(div_comment);
+	    		// 자신글이 아니면 삭제 수정 버튼 숨기기
+	    		my_control(div_comment);
+	    		// 날짜 포멧 변환 및 작성일과 수정일이 다르면 수정일로 표시
+	    		format_time(div_comment);
+	    	} else {
+	    		// 함수 : 대댓글 생성
+	    		makeReComment(commentList[i]);
+	    		if (i == commentList.length - 1) {
+	    		}
+	    	}
+	    }
+	}
+}
 
   
-const load_makeComment = (commentDto) => {
-	// 댓글 그리기
-	let div_comment = makeComment(commentDto);
-	
-	// 리턴 Promise
-	return new Promise((resolve, reject) => {
-		// res true 결과로 리턴
-		if(div_comment){
-			resolve(div_comment);
-		} else {
-			reject("2. 결과 없음")
-		}
-	})
-}
 
-const load_noneRecomment = (div_comment) => {
-	let resDom = noneRecomment(div_comment);
-	
-	return new Promise((resolve, reject) => {
-		//console.log(div_comment)
-		//console.log(">>>>>>>>>>>> 3" + div_comment)
-		if(div_comment){
-			resolve(div_comment)
-		} else {
-			reject("3. 결과 없음")
-		}
-	});
-}
 
-const load_my_control = (div_comment) => {
-	console.log(div_comment)
-	
-	
-	let resDom = my_control(div_comment);
-	
-	return new Promise((resolve, reject) => {
-		console.log(">>>>>>>>>>>> 4")
-		if(div_comment){
-			resolve(div_comment)
-		} else {
-			reject("4. 결과 없음")
-		}
-	});
-}
-
-const load_format_time = (div_comment) =>{
-	console.log(div_comment)
-	
-	
-	let resDom = format_time(div_comment);
-	
-	return new Promise((resolve, reject) => {
-		console.log(">>>>>>>>>>>> 5")
-		if(div_comment){
-			resolve(div_comment)
-		} else {
-			reject("5. 결과 없음")
-		}
-	});
-}
-
-//댓글 0이면 답글 보기 숨기기
+// 댓글 0이면 답글 보기 숨기기
 function noneRecomment(div_comment) {
 	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
@@ -126,7 +80,7 @@ function noneRecomment(div_comment) {
 			
 			if (reCommentCount.value == "0") {
 				comment_bottom.classList.add("hidden");
-				//comment_bottom.style.display = "none";
+				// comment_bottom.style.display = "none";
 				break;
 			}
 		}
@@ -134,7 +88,7 @@ function noneRecomment(div_comment) {
 	return div_comment;
 }
 
-//자신글 이면 삭제, 수정 추가
+// 자신글 이면 삭제, 수정 추가
 function my_control(div_comment) {
 	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
@@ -142,7 +96,6 @@ function my_control(div_comment) {
 	console.log("my_control >>>>>>>>>>> ");
 	
 	for(let i = 0; i<new_div_comment.length; i++){
-		console.log(new_div_comment);
 		if(commentGroupNo == new_div_comment[i].getElementsByClassName("commentGroupNo")[0].value){
 			let myId = document.getElementById("myId");
 			let commentId = new_div_comment[i].getElementsByClassName("commentId")[0];
@@ -171,7 +124,9 @@ function format_time(div_comment) {
 			const time = new_div_comment[i].getElementsByClassName("time")[0];
 			
 			if (insert_time.innerHTML == update_time.innerHTML) {
-				let date = new Date(Number(insert_time.innerHTML)); // 타입스텝프를 이용해 js의 날짜 객체 변환
+				let date = new Date(Number(insert_time.innerHTML)); // 타입스텝프를
+																	// 이용해 js의
+																	// 날짜 객체 변환
 				time.innerHTML = "작성일 : " + getFormatDate(date);
 			} else {
 				let date = new Date(Number(update_time.innerHTML));
@@ -183,44 +138,14 @@ function format_time(div_comment) {
 }
 
 
-function loadCommentList(response) {
-  console.log(response.commentList);
-  let commentList = response.commentList;
-
-  if (response.commentList.length === 0) {
-    console.log("없음");
-    return false;
-  } else {
-    for (let i = 0; i < commentList.length; i++) {
-      // 그룹번호가 0이면 댓글 그 이상이면 대댓글
-      if (commentList[0].commentGroupSeq <= 0) {
-        // 함수 : 댓글 생성
-        let div_comment = makeComment(commentList[i]);
-        // 함수: 댓글 0이면 '답글 보기' 숨기기
-        div_comment = noneRecomment(div_comment);
-        // 자신글이 아니면 삭제 수정 버튼 숨기기 
-        my_control(div_comment);
-        // 날짜 포멧 변환 및 작성일과 수정일이 다르면 수정일로 표시
-        format_time(div_comment);
-      } else {
-        // 함수 : 대댓글 생성
-        makeReComment(commentList[i]);
-        if (i == commentList.length - 1) {
-        }
-      }
-    }
-  }
-}
-
-
-//본문 글자 일정글자수 보다 크면 자세히보기 만들기
+// 본문 글자 일정글자수 보다 크면 자세히보기 만들기
 function commnet_contentCut() {
-  //let comment_content =
+  // let comment_content =
 
   `<a class="comment_content_aTag">자세히 보기</a>`;
 }
 
-//추가 클릭 페이징
+// 추가 클릭 페이징
 
 /* 대댓글 보이기 이벤트 */
 function show_ReComment() {
@@ -238,34 +163,31 @@ function show_ReComment() {
   let commentGroupNo = comment_body.querySelectorAll(".commentGroupNo");
 
   for (i in comment_aTag) {
-    // 현재 이벤트 발생시킨 a태그의 번지 찾기
+    // 현재 이벤트 발생시킨 a태그의 번지 찾기ㅅ 
     if (target === comment_aTag[i] || target === comment_aTag_close[i]) {
-      // comment_aTag(대댓글 개수) <-> comment_aTag_close(답글 숨기기)
+      // comment_aTag(대댓글 개수) <-> comment_aTag_close(답글 숨기기) >> 클릭에 따른 view 변경
       comment_aTag[i].classList.toggle("hidden");
       comment_aTag_close[i].classList.toggle("hidden");
 
-      // 비동기로 서버에 요청시 사용할 데이터 : 현재 글 번호, 요청할 페이지, 현재 댓글그룹번호
-      let reCommentCurrentPage = 1;
-      let jsonObject = { boardNo: Number(boardNo), reCommentCurrentPage: reCommentCurrentPage, commentGroupNo: commentGroupNo[i].value };
-      console.log("대댓글 요청");
-      console.log(jsonObject);
-
-      // 비동기 대댓글 가져오기  : 조회 > 결과 받기 > 콜백함수 loadCommentList(response)를 이용해서 그린다
-      console.log(div_reComment[i].querySelectorAll(".row")[0]);
+      // 비동기로 서버에 요청시 사용할 데이터 : 현재 부모 글 번호, 요청할 페이지(1), 현재 댓글그룹번호
+      let jsonObject = { boardNo: boardNo, reCommentCurrentPage: 1, commentGroupNo: commentGroupNo[i].value };
+      console.log("대댓글 요청시 사용 데이터 : " + JSON.stringify(jsonObject));
 
       if (div_reComment[i].querySelectorAll(".row")[0] === undefined) {
-        const xhr = new Xhr("comment/loadReCommentList.do", "POST", "json", "application/json; charset=utf-8", jsonObject);
-        xhr.async_POST(loadCommentList);
+    	  // 비동기 요청에 필요 데이터 설정
+    	  const xhr = new Xhr("comment/loadReCommentList.do", "POST", "json", "application/json; charset=utf-8", jsonObject);
+    	  // 요청
+    	  xhr.async_POST((res) => loadCommentList(res));
       }
 
-      // 대댓글 보기기
+      // css를 이용하여 대댓글 보기기
       div_reComment[i].classList.toggle("show");
       break;
     }
   }
 }
 
-//댓글
+// 댓글
 function makeComment(commentDto) {
 	// 생성 위치
 	const commentBody = document.getElementById("comment_body");
@@ -313,7 +235,7 @@ function makeComment(commentDto) {
 	return div_comment;  
 }
 
-//대댓글
+// 대댓글 그리기
 function makeReComment(commentDto) {
   // 자신이 그려져야 하는 위치? >> 그룹번호 >> commentDto안에 있음
   let comment_body = document.querySelector("#comment_body");
@@ -419,7 +341,7 @@ function loadCommentDto(response) {
   console.log(response);
 
   if (response.res === "success") {
-    //(response.commentDto)
+    // (response.commentDto)
   }
 }
 
@@ -436,12 +358,87 @@ function makeComment_insert(commentDto) {
   commentGroupNo.value;
 }
 
-//let div = document.createElement("div")
-//div.setAttribute("class", "checkbox")
-//
-//let label = document.createElement("label")
-//
-//let input = document.createElement("input")
-//input.setAttribute("type","checkbox")
-//input.setAttribute("name","file")
-//input.setAttribute("value", text)
+
+
+
+
+/* =============================================== 댓글 그리기 : Promise를 사용한 예시 ======================================================*/ 
+
+
+function loadCommentList_Promise(response){
+	console.log("Promise를 사용한 댓글 대댓글 로드")
+	let commentList = response.commentList;
+	console.log(commentList)
+	if (commentList.length === 0) {
+		console.log("결과없음");
+		return;
+    } else {
+    	for(let i = 0; i<commentList.length; i++){
+    		// 댓글
+    		if (commentList[0].commentGroupSeq <= 0) {
+    			// 댓글 그리기
+	    		load_makeComment(commentList[i])
+	    		.then((div_comment) => load_noneRecomment(div_comment)) 	// == .then(load_noneRecomment);
+	    		.catch(console.log)											// == .catch((error) => console.log(error));
+	    		.then(load_my_control)
+	    		.catch(console.log)
+	    		.then(load_format_time)
+	    		.catch(console.log);
+    		// 대댓글
+    		} else {
+    			// 대댓글 그리기
+	    		makeReComment(commentList[i]);
+	    		if (i == commentList.length - 1) {
+	    		}
+    		}
+    	}
+    }
+}
+
+const load_makeComment = (commentDto) => {
+	// 댓글 그리기
+	let div_comment = makeComment(commentDto);
+	// 리턴 Promise
+	return new Promise((resolve, reject) => {
+		// res true 결과로 리턴
+		if(div_comment){
+			resolve(div_comment);
+		} else {
+			reject(new Error("2. 결과 없음"));
+		}
+	})
+}
+
+const load_noneRecomment = (div_comment) => {
+	let resDom = noneRecomment(div_comment);
+	return new Promise((resolve, reject) => {
+		if(div_comment){
+			resolve(div_comment);
+		} else {
+			reject(new Error("3. 결과 없음"));
+		}
+	});
+}
+
+const load_my_control = (div_comment) => {
+	let resDom = my_control(div_comment);
+	return new Promise((resolve, reject) => {
+		if(div_comment){
+			resolve(div_comment);
+		} else {
+			reject(new Error("4. 결과 없음"));
+		}
+	});
+}
+
+const load_format_time = (div_comment) =>{
+	let resDom = format_time(div_comment);
+	return new Promise((resolve, reject) => {
+		if(div_comment){
+			resolve(div_comment);
+		} else {
+			reject(new Error("5. 결과 없음"));
+		}
+	});
+}
+

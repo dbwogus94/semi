@@ -86,12 +86,12 @@ class Xhr {
 			if(xhr.readyState === xhr.DONE){		// xhr.DONE는 서버에서 정상 응답되었을때
 				if (xhr.status === 200 || xhr.status === 201) {
 					// 응답시 받은 데이터 확인
-					console.log("성공 데이터 확인 : " + JSON.stringify(xhr.response));
+					console.log("[Xhr] 응답 성공 데이터 확인 : " + JSON.stringify(xhr.response));
+					
+					let res = xhr.response;
 					// 데이터 콜백에 전달
 					if(callBack){
-						//setTimeout(function(){
-						callBack(xhr.response)
-						//}, 1000);
+						callBack(xhr.response)					
 					}
 				} else {
 					console.error("서버 에러 : " + xhr.response);

@@ -2,7 +2,6 @@ package com.semi.update.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.semi.update.All.mail.SMTPDto;
 import com.semi.update.join.biz.JoinBiz;
 import com.semi.update.join.dto.JoinDto;
-import com.semi.update.member.dto.MenteeDto;
 import com.semi.update.member.dto.MentorDto;
 import com.semi.update.member.profile.biz.ProfileBiz;
 
@@ -85,8 +82,6 @@ public class JoinController {
 	@RequestMapping(value = "/mailSend.do", method = RequestMethod.POST)
 	@ResponseBody
 	protected String sendmail(@ModelAttribute("joinemail") String joinemail, HttpServletRequest requset) throws Exception {
-
-		logger.info("메일 보내기 컨트롤러 : " + joinemail);
 
 		String code = smtpDto.createAuthNo().toString().trim();// 랜덤번호 생성 후 담아줌
 		logger.info("smtp 랜덤 번호 : " + code);
@@ -223,7 +218,7 @@ public class JoinController {
 		JoinDto joinDto = joinBiz.Login(id, joinPw);
 		// 로그인 성공시
 		if (joinDto != null) {
-			logger.info("login 성공 =====================================> " + joinDto);
+			logger.info("login 성공 => " + joinDto);
 			if (joinDto.getJoinRole().equals("관리")) {
 				session.setAttribute("login", joinDto); // 관리자는 joinDto를 session에 사용
 				logger.info("==========================[관리자 로그인]==========================");
@@ -237,14 +232,13 @@ public class JoinController {
 				// 최초 로그인 인경우 == 프로필을 작성하지 않은경우
 				if (joinDto.getJoinRegisterYn().equals("N")) { // 프로필이 작성되어 있지 않다면 >> 멘토 첫 프로필 작성으로
 					session.setAttribute("login", joinDto);		// 프로필을 작성하지 않았기 때문에 임시 세션 저장
-					logger.info("[멘토 최초 로그인 session 임시설정] >>>>>>>>>>>>>>>>>>>>>>>>> " + joinDto);
-					logger.info("[첫 프로필로 페이지 이동] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+					logger.info("[멘토 최초 로그인 session 임시설정] => " + joinDto);
 					return "redirect:/mentor/firstProfile.do";
 				// 최초 로그인이 아닌경우 == 프로필을 작성한경우
 				} else if(joinDto.getJoinRegisterYn().equals("Y")) {
 					MentorDto mentorDto = profileBiz.MentorSelectOne(id);
 					session.setAttribute("login", mentorDto);
-					logger.info("[멘토 로그인 session 설정 >>>>>>>>>>>>>>>>>>>>>>>>>>> " + mentorDto);
+					logger.info("[멘토 로그인 session 설정 => " + mentorDto);
 					return "redirect:/mentor/main.do";
 				}
 			} else if (joinDto.getJoinRole().equals("멘티")) {
