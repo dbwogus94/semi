@@ -47,6 +47,7 @@ public interface BoardDao {
 	public int multiBoardDelete(int[] boardNoArr);
 	
 	
+	
 }
 
 

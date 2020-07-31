@@ -78,7 +78,7 @@ public class CommentController {
 	
 	// 댓글 리스트 보기  >>> 뷰변경
 	@PostMapping(value = "loadCommentList.do") // produces = "application/json; charset=utf8", headers = "content-type=application/json"
-	public Map<String, List<CommentDto>> loadCommentList(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
+	public Map<String, List<CommentDto>> loadCommentList_ajax(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
 		//@ModelAttribute("jsonObject") HashMap<String, Integer> jsonObject
 		logger.info("[ajax] load Comment List >>>>> input date : " + input);
 		Map<String, List<CommentDto>> output = new HashMap<String, List<CommentDto>>();
@@ -108,7 +108,7 @@ public class CommentController {
 	
 	// 대댓글 리스트 보기
 	@PostMapping(value = "loadReCommentList.do")
-	public Map<String, List<CommentDto>> loadReCommentList(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
+	public Map<String, List<CommentDto>> loadReCommentList_ajax(@RequestBody HashMap<String, Integer> input, CommentDto commentDto){
 		logger.info("[ajax] load Re Comment List >>>>> input date : " + input);
 		Map<String, List<CommentDto>> output = new HashMap<String, List<CommentDto>>();
 		// set commentDto : 부모글, 대댓글 그룹번호
@@ -136,7 +136,7 @@ public class CommentController {
 	
 	// 댓글 작성
 	@PostMapping(value="inputComment.do")
-	public Map<String, Object> inputComment(HttpSession session, @RequestBody HashMap<String, String> input, CommentDto commentDto){
+	public Map<String, Object> inputComment_ajax(HttpSession session, @RequestBody HashMap<String, String> input, CommentDto commentDto){
 		logger.info("[ajax] inputComment >>>>> input date : " + input);
 		Map<String, Object> output = new HashMap<String, Object>();
 		
@@ -176,11 +176,31 @@ public class CommentController {
 		return output;
 	}
 	
-	
-	
 	// 댓글 수정
 		
-	// 댓글 삭제
+	// 댓글 삭제  {commentId: commentDto.id, boardNo: commentDto.boardNo, commentGroupNo: commentDto.commentGroupNo}
+	@PostMapping("commentDelete.do")
+	public Map<String, String> commentDelete_ajax(HttpSession session, @RequestBody CommentDto input){
+		Map<String, String> output = new HashMap<String, String>();
+		
+		MentorDto mentorDto = (MentorDto) session.getAttribute("login");
+
+		if(mentorDto.getId().equals(input.getId())) {
+			int res = commentBiz.commentDelete(input);
+			
+			if(res > 0) {
+				logger.info("[ajax] comment Delete 댓글 삭제 성공");
+				output.put("res", "success");
+				return output;
+			} else {
+				logger.info("[ajax] comment Delete 댓글 삭제 실패");
+				output.put("res", "fail");
+				return output;
+			}
+		}
+		output.put("res","Noid");
+		return output;
+	}
 	
 	
 	// 대댓글 작성

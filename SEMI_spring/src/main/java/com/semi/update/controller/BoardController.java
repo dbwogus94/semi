@@ -85,7 +85,6 @@ public class BoardController {
 	// 글작성
 	@RequestMapping(value = "/write.do")
 	public String boardWrite() {
-		logger.info("board write page");
 		return "board/BOARD_boardwrite";
 	}
 
@@ -244,7 +243,6 @@ public class BoardController {
 	// 디테일 + 뎃글
 	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
 	public String boardDetail(Model model, @RequestParam("boardNo") int boardNo, @RequestParam(defaultValue = "1") int currentPage, CommentDto commentDto) {
-		logger.info("board detail page");
 
 		BoardDto boardDto = boardBiz.selectOne(boardNo);
 		if(boardDto.getFilePath() != null) {
@@ -320,7 +318,6 @@ public class BoardController {
 	@RequestMapping(value="/fileDown.do", method = RequestMethod.POST)
 	@ResponseBody
 	public byte[] fileDown(HttpServletRequest request, HttpServletResponse response,@RequestParam("fileName") String fileName ,@RequestParam("boardNo") int boardNo, BoardDto boardDto) throws UnsupportedEncodingException {
-		logger.info("board file down");
 		byte[] down = null;
 		String outFilePath = "";
 		
@@ -361,7 +358,6 @@ public class BoardController {
 	// 수정하기 페이지
 	@RequestMapping(value="/update.do", method = RequestMethod.GET)
 	public String update(Model model, @RequestParam("boardNo") int boardNo) {
-		logger.info("board update page go boardNO : " + boardNo);
 		BoardDto boardDto = boardBiz.selectOne(boardNo);
 		model.addAttribute("board", boardDto);
 		
@@ -462,7 +458,6 @@ public class BoardController {
 	
 	@RequestMapping(value="/updateRes", method = RequestMethod.POST)
 	public String updateBoard(Model model, @ModelAttribute BoardDto boardDto, HttpSession session) throws IOException {
-		logger.info("board Update Res => " + boardDto);
 		
 		// #1 세션에서 id 찾기
 		MentorDto mentorDto = (MentorDto) session.getAttribute("login");

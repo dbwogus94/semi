@@ -57,8 +57,7 @@ function loadCommentList(response) {
 	    	} else {
 	    		// 함수 : 대댓글 생성
 	    		makeReComment(commentList[i]);
-	    		if (i == commentList.length - 1) {
-	    		}
+	    		
 	    	}
 	    }
 	}
@@ -67,11 +66,11 @@ function loadCommentList(response) {
   
 // [UI] 댓글 0이면 답글 보기 숨기기
 function noneRecomment(div_comment) {
-	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
+	let commentNo = div_comment.getElementsByClassName("commentNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
 	
 	for(let i = 0; i<new_div_comment.length; i++){
-		if(commentGroupNo == new_div_comment[i].getElementsByClassName("commentGroupNo")[0].value){
+		if(commentNo == new_div_comment[i].getElementsByClassName("commentNo")[0].value){
 			let reCommentCount = new_div_comment[i].getElementsByClassName("reCommentCount")[0];
 			let comment_bottom = new_div_comment[i].getElementsByClassName("comment_bottom")[0];
 			
@@ -87,10 +86,10 @@ function noneRecomment(div_comment) {
 
 // [UI] 자신글 이면 삭제, 수정 추가
 function my_control(div_comment) {
-	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
+	let commentNo = div_comment.getElementsByClassName("commentNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
 	for(let i = 0; i<new_div_comment.length; i++){
-		if(commentGroupNo == new_div_comment[i].getElementsByClassName("commentGroupNo")[0].value){
+		if(commentNo == new_div_comment[i].getElementsByClassName("commentNo")[0].value){
 			let myId = document.getElementById("myId");
 			let commentId = new_div_comment[i].getElementsByClassName("commentId")[0];
 			let comment_mid = new_div_comment[i].getElementsByClassName("comment_mid")[0];
@@ -106,10 +105,10 @@ function my_control(div_comment) {
 
 // [UI] 작성일과 수정일 일치하지않으면 수정일 붙이고 수정일로 변경
 function format_time(div_comment) {
-	let commentGroupNo = div_comment.getElementsByClassName("commentGroupNo")[0].value;
+	let commentNo = div_comment.getElementsByClassName("commentNo")[0].value;
 	let new_div_comment = document.getElementsByClassName("div_comment");
 	for(let i = 0; i<new_div_comment.length; i++){
-		if(commentGroupNo == new_div_comment[i].getElementsByClassName("commentGroupNo")[0].value){
+		if(commentNo == new_div_comment[i].getElementsByClassName("commentNo")[0].value){
 			const insert_time = new_div_comment[i].getElementsByClassName("insert_time")[0];
 			const update_time = new_div_comment[i].getElementsByClassName("update_time")[0];
 			const time = new_div_comment[i].getElementsByClassName("time")[0];
@@ -183,14 +182,23 @@ function show_ReComment() {
 function makeComment(commentDto) {
 	// 생성 위치
 	const commentBody = document.getElementById("comment_body");
-  
-	let row = document.createElement("div");
+	
+	const commentGroupDiv = document.createElement("div");
+	commentGroupDiv.setAttribute("class", "commentGroup"); // commentDto.commentGroupNo
+	
+	const commentGroupNo = document.createElement("input");
+	commentGroupNo.setAttribute("type", "hidden");
+	commentGroupNo.setAttribute("class", "commentGroupNo");
+	commentGroupNo.setAttribute("value", commentDto.commentGroupNo);
+	commentGroupDiv.appendChild(commentGroupNo);
+	
+	const row = document.createElement("div");
 	row.setAttribute("class","row");
-	let div_comment = document.createElement("div");
+	const div_comment = document.createElement("div");
 	div_comment.setAttribute("class", "div_comment");
-  
+	
+	//<input type="hidden" class="commentGroupNo" name="commentGroupNo" value="${commentDto.commentGroupNo}"/>
 	div_comment.innerHTML += `
-	  			<input type="hidden" class="commentGroupNo" name="commentGroupNo" value="${commentDto.commentGroupNo}"/>
 					<input type="hidden" class="commentId" name="commentId" value="${commentDto.id}"/>
 					<input type="hidden" class="commentNo" name="commentNo" value="${commentDto.commentNo}"/>
 				 	<div class="row">
@@ -210,7 +218,7 @@ function makeComment(commentDto) {
 								${commentDto.commentContent}<br>
 								<a class="comment_content_aTag">자세히 보기</a>
 							</div>
-							<div class ="comment_mid">추천, <a>답글</a> <span class="my_control"><a>수정</a>&nbsp / &nbsp;<a javascript:; onclick="deleteComment(${commentDto.commentNo}, '${commentDto.id}')">삭제</a><span></div>
+							<div class ="comment_mid">추천, <a>답글</a> <span class="my_control"><a>수정</a>&nbsp / &nbsp;<a javascript:; onclick="deleteComment('${commentDto.id}','${commentDto.boardNo}','${commentDto.commentGroupNo}', '${commentDto.commentNo}' );">삭제</a><span></div>
 							<div class ="comment_bottom">
 								<a class="comment_aTag" onclick="show_ReComment()">답글 ${commentDto.reCommentCount}개 보기</a>
 								<input type="hidden" class="reCommentCount" value="${commentDto.reCommentCount}"/>
@@ -219,12 +227,14 @@ function makeComment(commentDto) {
 							
 						</div>
 					</div>`;
-  
-	row.appendChild(div_comment);
-  	commentBody.appendChild(row);
-  
-  	commentBody.innerHTML += `<div class="div_reComment"></div> `
 	
+	row.appendChild(div_comment);
+	commentGroupDiv.appendChild(row)
+	
+	commentGroupDiv.innerHTML += `<div class="div_reComment"></div> `
+
+  	commentBody.appendChild(commentGroupDiv);
+  
 	return div_comment;  
 }
 
@@ -239,33 +249,34 @@ function makeReComment(commentDto) {
     if (commentDto.commentGroupNo == commentGroupNo_List[i].value) {
       div_reComment_List[i].innerHTML += `
 				<div class="row">
+					<input type="hidden" class="commentId" name="commentId" value="${commentDto.id}"/>
+					<input type="hidden" class="commentNo" name="commentNo" value="${commentDto.commentNo}"/>
+					<div class="col-md-1">
+						<div class="profile_top">
+							<div class="profile_mid">
+								<img alt=""	src="">
+							</div>
+						</div>
+					</div>
+							
+					<div class="col-md-11">
 						<div class="col-md-1">
 							<div class="profile_top">
 								<div class="profile_mid">
-									<img alt=""	src="">
+									<img alt=""	src="${commentDto.profileImg}" onerror="this.src='/update/resources/img/user.png';">
 								</div>
 							</div>
 						</div>
-							
 						<div class="col-md-11">
-							<div class="col-md-1">
-								<div class="profile_top">
-									<div class="profile_mid">
-										<img alt=""	src="${commentDto.profileImg}" onerror="this.src='/update/resources/img/user.png';">
-									</div>
-								</div>
+							<div class ="comment_top">
+								<span class="writer">${commentDto.commentName}&nbsp;&nbsp;&nbsp;</span><span class="time"></span>
+								<span class="insert_time hidden">${commentDto.commentGegdate}</span><span class="update_time hidden">${commentDto.commentUpdateRegDate}</span>
 							</div>
-							<div class="col-md-11">
-								<div class ="comment_top">
-									<span class="writer">${commentDto.commentName}&nbsp;&nbsp;&nbsp;</span><span class="time"></span>
-									<span class="insert_time hidden">${commentDto.commentGegdate}</span><span class="update_time hidden">${commentDto.commentUpdateRegDate}</span>
-								</div>
-								<div class ="reComment_content">
-									${commentDto.commentContent}<br>
-									<a class="comment_content_aTag">자세히 보기</a>
-								</div>
-								<div class ="comment_mid">추천, <a>답글</a></div>
+							<div class ="reComment_content">
+								${commentDto.commentContent}<br>
+								<a class="comment_content_aTag">자세히 보기</a>
 							</div>
+							<div class ="comment_mid">추천, <a>답글</a></div>
 						</div>
 					</div>
 				 </div> `;
@@ -331,31 +342,35 @@ function inputComment() {
 
 
 // 뎃글 삭제 : 아이디(서버에서 작성자 일치 세션 확인), 댓글테이블pk > 하위 속한 대댓글 모두 삭제
-function deleteComment(commentNo, commentId){
+function deleteComment(commentId, boardNo, commentGroupNo, commentNo){
 	let deleteConfirm = confirm("댓글을 댓글에 포함된 대댓글도 모두 삭제됩니다. 삭제하시겠습니까?");
-	
-	if(deleteConfirm == false ){
-		return false;
-	}
+	if(deleteConfirm == false ){return false;} 		// 취소 클릭시
 	
 	const myId = document.getElementById("myId")
-	if(myId == undefined){return}
+	if(myId == undefined){return false;} 			// 로그인 되있지 않으면
 	
-	const json = {commentId: commentId, commentNo: commentNo}
-	const xhr = new Xhr("comment/...." ,"post", "", "", json);
+	// 비동기 통신준비 : 작성자id, 부모글 번호, 그룹번호 => 댓글은 하위 대댓글 까지 모두 삭제 시킨다. 
+	const json = {id: commentId, boardNo: boardNo, commentGroupNo: commentGroupNo}
+	const xhr = new Xhr("comment/commentDelete.do" ,"post", "", "", json);
 	
-	// 댓삭제
-	xhr.async_POST(() => {
-		const getTagArr = document.getElementsByClassName("commentNo");
-		for(let tag of getTagArr){
-			if(tag.value == commentNo){
-				const target_row = tag.parentNode.parentNode;
-				// target_row의 부모Node로 갔다가 다시 그 부모의 자식인 target_row을 삭제
-				//target_row.parentNode.removeChild(target);   		
-				return;
+	// 비동기 실행(callback)
+	xhr.async_POST((response) => {
+		if (response.res === "success") {
+			const getTagArr = document.getElementsByClassName("commentNo");
+			for(let tag of getTagArr){
+				if(tag.value == commentNo){
+					let target_div = tag.parentNode.parentNode.parentNode;
+					// target_row의 부모Node로 갔다가 다시 그 부모의 자식인 target_row을 삭제
+					target_div.parentNode.removeChild(target_div); 
+					alert("댓글이 삭제되었습니다.");
+					return;
+				}
 			}
+		// 서버에서 유효성검사 실행
+		} else if(response.res === "Noid"){
+			alert("작성자만 삭제할 수 있습니다.")
 		}
-	})
+	});
 }
 
 

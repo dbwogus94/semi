@@ -33,4 +33,7 @@ public interface CommentDao {
 		
 	// 자신이 가장 최근에 작성한 댓글 하나 
 	public CommentDto selectLatestInsertOne(CommentDto dto);
+	
+	// 댓글 삭제
+	public int commentDelete(CommentDto dto);
 }

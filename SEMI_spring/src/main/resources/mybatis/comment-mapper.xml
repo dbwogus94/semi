@@ -129,6 +129,13 @@
 	</update>
 	
 	<!-- 댓글 삭제 -->
+	<delete id="commentDelete" parameterType="commentDto">
+		DELETE COMMENT_BOARD
+		WHERE ID = #{id}
+		AND BOARD_NO = #{boardNo}
+		AND COMMENT_GROUPNO = #{commentGroupNo}
+	</delete>
+	
 	
 	<!-- 대댓글 삭제 -->
 
