@@ -81,16 +81,23 @@ function setImgFunc(imgTag, base64String){
 // 자바스크립트 비동기 : 이미지 url을 blob
 function toDataURL(target, targetUrl, callback) {
 	const xhr = new XMLHttpRequest();	
-	xhr.onload = function() {
+	// onload는 주로 이진 데이터를 응답으로 받아올때 사용한다.
+	xhr.onload = function() {	// 스트림 열기 : 스타트 > 전송 > -1 :DONE > end
 		if (xhr.status === 200 || xhr.status === 201) {
 			const reader = new FileReader();		// 파일을 읽어오는 reader객체 생성, *프로필 사진 미리보기 참고
+			
+			// 'blob'타입의 결과 받아오기 : xhr.response		// >>> XHR2(XMLHttpRequest Level 2)부터 지원되며 url의 응답 내용을 Blob으로 다운로드 하는 방법을 지원한다(내부적으로 작동, 브라우저마다 지원여부가 다르다)
+			/* 1. 읽어달라고 요청 */
+			reader.readAsDataURL(xhr.response);		// #1 비동기 결과를 xhr.response통해 'blob'타입의 데이터를 받아온다
+		    										// .readAsDataURL(blob); >> blob : 읽고자 하는 Blob 또는 File.을 읽어서 
+													// 읽기가 완료 됬을때 base64코드를 .result 통해 가져올수 있다.
+			
+			/* 2. reader.onload(읽는동안 해줘)  >>  3. reader.onloadend(읽는게 끝나면 해줘)  */
 			reader.onloadend = function() {
 				let base64String = reader.result	// #2 reader.result는 #1에서 실행된 메서드가 데이터를 다 읽고 종료되면 base64 반환함.
 				callback(target, base64String);			
 		    }
-		    // 'blob'타입의 결과 받아오기 : xhr.response		// >>> XHR2(XMLHttpRequest Level 2)부터 지원되며 url의 응답 내용을 Blob으로 다운로드 하는 방법을 지원한다(내부적으로 작동, 브라우저마다 지원여부가 다르다)
-		    reader.readAsDataURL(xhr.response);		// #1 비동기 결과를 xhr.response통해 'blob'타입의 데이터를 받아온다
-		    										// .readAsDataURL(blob); >> blob : 읽고자 하는 Blob 또는 File.	
+			
 		} else {
 			 console.error(xhr.responseText);
 		}

@@ -44,7 +44,7 @@
 	
 	
 	<!-- 전체 게시물 구하기 + 검색후 전체 게시물 구하기-->
-	<select id="getTotalBoard" resultType="int">
+	<select id="getTotalBoard" parameterType="boardDto" resultType="int">
 		SELECT COUNT(*)
 		FROM FREE_BOARD
 		<trim prefix = "WHERE" prefixOverrides = "AND">
@@ -69,11 +69,11 @@
 		4.suffixOverrides 처리 후 엘리먼트 내용 중 가장 뒤에 해당 문자들이 있다면 자동으로 지워준다.
 	-->
 	<select id="boardList" parameterType="boardDto" resultMap="ResultMap">
-		SELECT X.RN, X.BOARD_NO, X.ID, X.BOARD_NAME, X.BOARD_TITLE, X.BOARD_REGDATE, X.BOARD_LIKE
+		SELECT X.RN, X.BOARD_NO, X.ID, X.BOARD_NAME, X.BOARD_TITLE, X.BOARD_CONTENT, X.BOARD_REGDATE, X.BOARD_LIKE, X.BOARD_THUMBNAIL
 		FROM(
-			SELECT ROWNUM as RN, A.BOARD_NO, A.ID, A.BOARD_NAME, A.BOARD_TITLE, A.BOARD_REGDATE, A.BOARD_LIKE 
+			SELECT ROWNUM as RN, A.BOARD_NO, A.ID, A.BOARD_NAME, A.BOARD_TITLE, A.BOARD_CONTENT, A.BOARD_REGDATE, A.BOARD_LIKE, A.BOARD_THUMBNAIL 
 			FROM (
-				SELECT BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE 
+				SELECT BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE, BOARD_LIKE, BOARD_THUMBNAIL 
 				FROM FREE_BOARD
 					<trim prefix = "WHERE" prefixOverrides = "AND">
 						<if test="category == 'title' and keyword != null and keyword != ''">
@@ -95,7 +95,7 @@
 		유저의 프로필 사진을 가져와야해서 3중 조인을 하였음
 		질의문을 통한 join(ANSI 아님) >> FREE_BOARD, MEMBER_JOIN, MEMBER_PROFILE -->
 	<select id="selectOne" resultMap="ResultMap">
-		SELECT f.BOARD_NO, f.ID, f.BOARD_NAME, f.BOARD_TITLE, f.BOARD_CONTENT, f.BOARD_LIKE, f.BOARD_FILEPATH, f.BOARD_IMGPATH, m.MEMBER_CONTENT 
+		SELECT f.BOARD_NO, f.ID, f.BOARD_NAME, f.BOARD_TITLE, f.BOARD_CONTENT, f.BOARD_LIKE, f.BOARD_FILEPATH, f.BOARD_IMGPATH, f.BOARD_THUMBNAIL, m.MEMBER_CONTENT 
 		FROM FREE_BOARD f, MEMBER_JOIN J, MEMBER_PROFILE m
 		WHERE f.ID = j.ID
 		AND j.ID = m.ID
@@ -156,11 +156,11 @@
 		4.suffixOverrides 처리 후 엘리먼트 내용 중 가장 뒤에 해당 문자들이 있다면 자동으로 지워준다.
 	-->
 	<select id="myBoardList" parameterType="boardDto" resultMap="ResultMap">
-		SELECT X.RN, X.BOARD_NO, X.ID, X.BOARD_NAME, X.BOARD_TITLE, X.BOARD_REGDATE, X.BOARD_LIKE
+		SELECT X.RN, X.BOARD_NO, X.ID, X.BOARD_NAME, X.BOARD_TITLE, X.BOARD_REGDATE, X.BOARD_LIKE, X.BOARD_THUMBNAIL 
 		FROM(
-			SELECT ROWNUM as RN, A.BOARD_NO, A.ID, A.BOARD_NAME, A.BOARD_TITLE, A.BOARD_REGDATE, A.BOARD_LIKE 
+			SELECT ROWNUM as RN, A.BOARD_NO, A.ID, A.BOARD_NAME, A.BOARD_TITLE, A.BOARD_REGDATE, A.BOARD_LIKE, A.BOARD_THUMBNAIL 
 			FROM (
-				SELECT BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE 
+				SELECT BOARD_NO, ID, BOARD_NAME, BOARD_TITLE, BOARD_REGDATE, BOARD_LIKE, BOARD_THUMBNAIL 
 				FROM FREE_BOARD
 				WHERE ID = #{id} 
 				<if test="category == 'title' and keyword != null and keyword != ''">

@@ -20,21 +20,29 @@
 
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/BOARD_boardDetail.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board/BOARD_boardComment.css">
 <title>게시글확인</title>
 <%@ include file="../mentor/mentorHeader.jsp"%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardDetail.js"></script>
+
+<!-- comment -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/Xhr.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/myUtil.js"></script>
+<script defer type="text/javascript" src="${pageContext.request.contextPath}/resources/js/board/BOARD_boardComment.js"></script>
+
 </head>
 
 <body>
 	<input type="hidden" name="boardNo" value="${board.boardNo }" id="boardNo">
-	<input type="hidden" name="id" value="${board.id }"/>
+	<input type="hidden" id="id" name="id" value="${board.id }"/>
+	<input type="hidden" id="myId" name="myId" value="${login.id }"/>
 	<div class="row" >
 		<div class="col-md-12" id="headTitle">
 			<hr>
 			<br>
 			<h2>${board.boardNo}번 글 상세</h2>
 			<c:if test="${board.id eq login.id}">
-				<input type="button" class="button" value="글 삭제" onclick="deleteOne('${board.boardNo}')"/>
+				<input type="button" class="button" value="글 삭제" onclick="deleteOne('${login.id }', '${board.id }','${board.boardNo}')"/>
 			</c:if>	
 			<input type="button" class="button" value="목록으로" onclick="location.href='main.do'"/>
 			<input type="button" class="button" value="수정하기" onclick="authorityChk('${login.id }', '${board.id }', ${board.boardNo })"/>
@@ -75,43 +83,149 @@
 			</div>
 		</div>
 	</div>
-	<div class="container" id="comment-container">
-		<table class="table table-bordered" class="shadow p-3 mb-5 bg-white rounded">
-			<tr>
-				<td colspan="4" class="reply-label">댓 글</td>
-			</tr>
-			<tr class="reply-area">
-				<td colspan="4">
-					<div class="reply-insert-area">
-						<input type="text" class="form-control" placeholder="바르고 고운말을 사용합시다." aria-label="Recipient's username" aria-describedby="button-addon2"
-								onkeydown="onKeyDown(${boardDetail.boardseq }, ${boardDetail.groupno });">
-						<div class="input-group-append">
-							<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="replyInsert(${boardDetail.boardseq });">입  력</button>
-						</div>
-					</div>
-				</td>
-			</tr>
-
-		<c:forEach items="${replyList }" var="reply">
-			<tr class="reply">
-				<th class="reply-email">${reply.joinemail }</th>
-				<td class="reply-content">${reply.content }</td>
-				<td class="reply-update-delete">
-			<c:choose>		
-				<c:when test="${reply.joinemail eq login.joinemail }">
-					<span><a href="#" onclick="deleteAlert('댓글', ${reply.boardseq });">삭제</a></span>
-				</c:when>
-				<c:otherwise>
-					<span><a href="#" onclick="rereply('${reply.joinemail }', ${reply.boardseq }); " >답글</a></span>
-				</c:otherwise>
-			</c:choose>
-				</td>
-				<td class="reply-date"><fmt:formatDate value="${reply.regdate}" pattern="yy-MM-dd HH:mm" /></td>
-			</tr>
-		</c:forEach>	
-		</table>
-	</div>
 	
+	<div class="container" id="comment-container">
+		<input type="hidden" id="currentPage" name="currentPage" value="0"/>
+		<div class="row">
+			<div class="col-md-2">댓 글</div>
+			<div class="col-md-10"></div>
+		</div>
+		
+		<!-- 댓글 입력 -->
+		<div class="row">
+			<div class="col-md-11">
+				<div id="commentContent" contenteditable="true" placeholder="바르고 고운말을 사용합시다." onkeydown="countWord();" onkeyup="countWord();"></div>
+<!-- 				<input type="text" class="form-control" name="commentContent" placeholder="바르고 고운말을 사용합시다."  onkeypress="if(event.keyCode == 13) {inputComment();}" onkeydown="countWord();" onkeyup="countWord();"> -->
+				<span id="countWord">0/500</span>
+			</div>
+			<div class="col-md-1">
+				<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="inputComment()">입  력</button>
+			</div>
+		</div>
+		
+	
+		<!-- 댓글 view -->
+		<div id="comment_body"></div>
+ 			<br><br>
+	</div>
+			
+		
+		
+			
+<!-- 			<div class="row"> -->
+			 	
+<!-- 				 댓글 -->
+<!-- 				<div class="div_comment"> -->
+<%-- 					<input type="hidden" class="commentGroupNo" name="commentGroupNo" value="${commentDto.commentGroupNo}"/> --%>
+<!-- 				 	<div class="row"> -->
+<!-- 						<div class="col-md-1"> -->
+<!-- 							<div class="profile_top"> -->
+<!-- 								<div class="profile_mid"> -->
+<%-- 									<img alt=""	src="${commentDto.profileImg}" onerror="this.src='/update/resources/img/user.png';"> --%>
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="col-md-11"> -->
+<!-- 							<div class ="comment_top"> -->
+<%-- 								<span class="writer">${commentDto.commentName}&nbsp;&nbsp;&nbsp;</span><span class="time"></span> --%>
+<%-- 								<span class="insert_time hidden">${commentDto.commentGegdate}</span><span class="update_time hidden">${commentDto.commentUpdateRegDate}</span> --%>
+<!-- 							</div> -->
+<!-- 							<div class ="comment_content"> -->
+<%-- 								${commentDto.commentContent}<br> --%>
+<!-- 								<a class="comment_content_aTag">자세히 보기</a> -->
+<!-- 							</div> -->
+<!-- 							<div class ="comment_mid">추천, <a>답글</a></div> -->
+<!-- 							<div class ="comment_bottom"> -->
+<%-- 								<a class="comment_aTag" onclick="show_ReComment()">답글 ${commentDto.reCommentCount}개 보기</a> --%>
+<%-- 								<input type="hidden" class="reCommentCount" value="${commentDto.reCommentCount}"/> --%>
+<!-- 								<a class="comment_aTag_close hidden" onclick="show_ReComment()">답글 숨기기</a> -->
+<!-- 							</div> -->
+							
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div>	 -->
+				
+					
+<!-- 				대댓 -->
+<!-- 				<div class="div_reComment"> -->
+<!-- 					<div class="row"> -->
+<!-- 						<div class="col-md-1"> -->
+<!-- 							<div class="profile_top"> -->
+<!-- 								<div class="profile_mid"> -->
+<!-- 									<img alt=""	src=""> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+							
+<!-- 						<div class="col-md-11"> -->
+<!-- 							<div class="col-md-1"> -->
+<!-- 								<div class="profile_top"> -->
+<!-- 									<div class="profile_mid"> -->
+<!-- 										<img alt=""	src=""> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 							<div class="col-md-11"> -->
+<!-- 								<div class ="comment_top"> -->
+<!-- 									<span class="writer">작성자</span><span class="time">작성일</span> -->
+<!-- 								</div> -->
+<!-- 								<div class ="comment_content"> -->
+<!-- 									대댓글 내용 -->
+<!-- 									<br> -->
+<!-- 									<br>	 -->
+<!-- 									<a>자세히 보기</a> -->
+<!-- 								</div> -->
+<!-- 								<div class ="comment_mid">추천, 답글</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				 </div> -->
+				
+<!-- 			</div> -->
+
+		
+		
+		
+<%-- 	<c:choose> --%>
+<%-- 		<c:when test="${empty comment}"> --%>
+<!-- 			<div class="row">	 -->
+<!-- 				<div class="col-md-12"> -->
+<!-- 						==========================댓글이 없습니다.========================== -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<%-- 		</c:when> --%>
+			
+<%-- 		<c:otherwise> --%>
+<%-- 			<c:forEach items="${comment }" var="commentDto"> --%>
+<!-- 				<div class="row"> -->
+<!-- 					<div class="col-md-1"> -->
+<!-- 						<div class="profile_top"> -->
+<!-- 							<div class="profile_mid"> -->
+<%-- 								<img alt=""	src="${commentDto.profileImg }" onerror="this.src='/update/resources/img/user.png';"> --%>
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 					<div class="col-md-11"> -->
+<!-- 						<div class ="comment_top"> -->
+<%-- 							<span class="writer">${commentDto.commentName }</span><span class="date">${commentDto.commentGegdate }</span> --%>
+<!-- 						</div> -->
+<!-- 						<div class ="comment_content"> -->
+<%-- 							${commentDto.commentContent } --%>
+<!-- 							<br> -->
+<!-- 							<br>	 -->
+<!-- 							<a>자세히 보기</a> -->
+<!-- 						</div> -->
+<!-- 						<div class ="comment_mid">추천, 답글</div> -->
+<%-- 						<div class ="comment_bottom"><a>대댓글 있을시 표시 : ${commentDto.reCommentCount } </a></div> --%>
+<!-- 					</div> -->
+<!-- 				</div>	 -->
+<%-- 			</c:forEach> --%>
+<%-- 		</c:otherwise> --%>
+<%-- 	</c:choose> --%>
+			
+		
+		
+
 	
 	<!-- 모달 영역 -->
 	<div class="modal fade" id="boardModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

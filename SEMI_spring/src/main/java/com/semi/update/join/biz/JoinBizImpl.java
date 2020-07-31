@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.semi.update.All.join.LoginProfile.dto.LoginProfileDto;
-import com.semi.update.join.bao.JoinDao;
+import com.semi.update.join.dao.JoinDao;
 import com.semi.update.join.dto.JoinDto;
 
 

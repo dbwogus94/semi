@@ -9,11 +9,11 @@
    </settings>
 
 	<typeAliases>
-		<!-- 테이블당 1개 dto 9개 + 2개(게시판용 dto + 2) 총 10개 -->
 		<typeAlias type="com.semi.update.join.dto.JoinDto" alias="joinDto" />
-		<!-- 게시판용 dto개 >> 테이블은 1개를 사용하고 기능별로 dto를 나누어 사용함 -->
+		<!-- 게시판용 dto개 >>-->
 		<typeAlias type="com.semi.update.member.board.dto.BoardDto" alias="boardDto" />
-		
+		<!-- 댓글/대댓글용 dto -->
+		<typeAlias type="com.semi.update.member.board.comment.dto.CommentDto" alias="commentDto" />
 		<typeAlias type="com.semi.update.member.match.dto.MatchDto" alias="matchDto" />
 		<typeAlias type="com.semi.update.member.mentee.dayMenu.dto.DayMenuDto" alias="dayMenuDto" />
 		<typeAlias type="com.semi.update.member.mentee.exercise.plan.dto.PlanDto" alias="planDto" />
@@ -48,7 +48,6 @@
 
 
 	<mappers>
-		<!-- 총 9개 매퍼.xml 추가 applicationContext.xml에서 "resources/" 까지 경로 잡고 나머지 추가  -->
 		<mapper resource="mybatis/board-mapper.xml" />
 		<mapper resource="mybatis/dayMenu-mapper.xml" />
 		<mapper resource="mybatis/food-mapper.xml" />
@@ -58,6 +57,8 @@
 		<mapper resource="mybatis/profile-mapper.xml" />
 		<mapper resource="mybatis/total-mapper.xml" />
 		<mapper resource="mybatis/trade-mapper.xml" />
+		<!-- 추가 -->
+		<mapper resource="mybatis/comment-mapper.xml"/>
 	</mappers>
 
 </configuration>

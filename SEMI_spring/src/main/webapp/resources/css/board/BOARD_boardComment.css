@@ -1,0 +1,73 @@
+@media screen and (min-width:1050px){
+		/* 댓글 영역 */
+	#comment-container{
+		width: 80%;
+/* 		background-color: lime; */
+	}
+	
+	#comment_body .row{
+		margin-top: 1%;
+		margin-bottom: 1%;
+/* 		border-bottom: 0.5px solid gray; */
+	}
+		
+		
+	[contenteditable=true]:empty:before{
+		content: attr(placeholder); 
+		display: block; /* For Firefox */
+	}
+	div[contenteditable=true] {
+		border: 1px solid #ddd;
+		color : #333;
+		font-size: 12px;
+		width: 100%;
+		padding: 5px;
+	}
+		
+	#countWord{
+		padding-left: 0.2%;
+		font-size: 10px;
+	}
+		
+		
+	.div_comment{
+/* 		background-color: lime; */
+	
+	}
+	
+	.comment_content{
+		margin-top: 0.5%;
+		margin-bottom: 0.5%;
+	}
+	
+	
+	.my_control{
+		float: right;
+	}
+	
+	.reComment_content{
+		margin-top: 0.5%;
+		margin-bottom: 0.5%;
+	}
+	
+	.comment_bottom{
+		margin-top: 0.3%;
+		margin-bottom: 0.3%;
+	}
+	
+	.div_reComment{
+		display: none;
+/* 		background-color: yellow; */
+	}
+	
+	.show{
+		display:block;
+	}
+	
+	.hidden{
+		display:none;
+	}
+	
+	
+	
+}	

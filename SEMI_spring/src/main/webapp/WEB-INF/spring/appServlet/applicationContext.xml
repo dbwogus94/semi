@@ -2,8 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 
@@ -27,13 +31,13 @@
 <!-- 		<property name="username" value="kh"/> -->
 <!-- 		<property name="password" value="kh"/> -->	
 		
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="driverClassName" value="${driver}"/>
-		<property name="url" value="${url}"/>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">	<!-- BasicDataSource dataSource = new BasicDataSource(); : IoC-->
+		<property name="driverClassName" value="${log4jdbc_driver}"/>				<!-- dataSource.setDriverClassName(${driver}); : DI -->
+		<property name="url" value="${log4jdbc_url}"/>
 		<property name="username" value="${username}"/>
 		<property name="password" value="${password}"/>
 	</bean>	
-		
+	
 	
 	<!-- 
 		# 마이바티스 객체 요약 설명
@@ -69,17 +73,11 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-	<!-- 트랜잭션 처리 방식 -->
-	<!-- 프로그래밍적 방식은 여러 메소드나 클래스에 대해서 다중으로 선언하며, 
-	데이터를 관리하는 측면에서 어떤 트랜잭션 속성이 적용되었는지 찾기 힘들기 때문에 일반적으로 선언적 방식을 선오한다.-->
-	
-	<!-- 선언적(XML) 방식 -->
-	
   
-  	<!-- 파일 업로드 -->		
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="maxUploadSize" value="1000000000"/>
-		<property name="defaultEncoding" value="UTF-8"/>
-	</bean>
+ 	<!-- 파일 업로드 -->		 
+<!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> -->
+<!-- 		<property name="maxUploadSize" value="1000000000"/> -->
+<!-- 		<property name="defaultEncoding" value="UTF-8"/> -->
+<!-- 	</bean> -->
 		
 </beans>

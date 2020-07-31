@@ -1,9 +1,6 @@
 package com.semi.update.All.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +9,6 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
-import javax.mail.Multipart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,5 @@
 package com.semi.update.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import com.semi.update.All.util.UploadFileUtils;
 import com.semi.update.All.util.Util;
 import com.semi.update.join.biz.JoinBiz;
 import com.semi.update.join.dto.JoinDto;
-import com.semi.update.member.dto.MenteeDto;
 import com.semi.update.member.dto.MentorDto;
 import com.semi.update.member.profile.biz.ProfileBiz;
 
@@ -45,7 +43,6 @@ public class MentorController {
 	// 멘토 메인
 	@RequestMapping(value = "/main.do", method = RequestMethod.GET)
 	public String mentroMain(Model model, HttpSession session) {
-		logger.info("mentor Main page");
 		
 		MentorDto login = (MentorDto) session.getAttribute("login");
 		if(login == null) {
@@ -59,7 +56,6 @@ public class MentorController {
 	// 멘토 최초 프로필작성 페이지
 	@RequestMapping(value = "/firstProfile.do", method = RequestMethod.GET)
 	public String mentorFirstProfile(Model model, HttpSession session, MentorDto mentorDto) {
-		logger.info("mentor first profile page");
 		JoinDto joinDto = (JoinDto) session.getAttribute("login");
 		mentorDto.setDto(joinDto); // joinDto를 이용하여 mentorDto를 생성 
 		// hibernate를 사용하여 객체 유효성검사를 하기위해 뷰에 빈 객체 전달
@@ -85,20 +81,18 @@ public class MentorController {
 	@RequestMapping(value = "/profileInsert.do", method = RequestMethod.POST)
 	public String mentorProfileInsert(Model model, HttpSession session, @ModelAttribute("mentorDto") @Valid MentorDto mentorDto,
 			BindingResult result) throws IOException {
-		logger.info("mentor profile insert");
-		logger.info("===============MentorDto " + mentorDto);
 
 		if (result.hasErrors()) {
-			logger.info("유효성검사 >>>>>>>>>>>>>>>>>>>>> 실행");
+			logger.info("객체바인딩 유효성검사 => 실행");
 			List<ObjectError> list = result.getAllErrors();
 			for (ObjectError error : list) {
 				System.out.println(error);
 			}
-			logger.info("유효성검사 >>>>>>>>>>>>>>>>>>>>> 실패");
+			logger.info("유효성검사 => 실패");
 			model.addAttribute("mentorDto", mentorDto);
 			return "mentor/MENTOR_mentorProfile";
 		} else {
-			logger.info("유효성검사  >>>>>>>>>>>>>>>>>>>>> 통과");
+			logger.info("유효성검사  => 통과");
 			// MEMBER_JOIN 테이블 MEMBER_PROFILE 테이블 join >>> MentorDto
 			// id을 사용하여 profile 테이블에 추가할 멘토 정보가 있는지 확인
 			MentorDto dto = profileBiz.MentorSelectOne(mentorDto.getId());
@@ -123,7 +117,6 @@ public class MentorController {
 					int updateJoinRegister = joinBiz.updateJoinRegister(mentorDto.getId(), "Y");
 					if(updateJoinRegister > 0) {
 						logger.info("멘토 profile 프로필 작성여부 Y로 변경 성공");
-						// joinDto + 추가 프로필 정보를 불러와서 세션 재할당
 						MentorDto newLogin = profileBiz.MentorSelectOne(mentorDto.getId());
 						session.setAttribute("login", newLogin);
 						return "redirect:/mentor/main.do";
@@ -147,14 +140,14 @@ public class MentorController {
 				boolean chk = true;
 				for(String name : fileNames) {
 					if(name.equals(oldFileName)) {
-						logger.info(">>>>>>>>>>>>>>>>>>> [파일 중복]");
+						logger.info("=> [파일 중복]");
 						chk = false;
 						break;
 					}
 				}
 				
 				if(chk) { // 같은 이름의 파일이 있다면 true + not = false
-					logger.info("프로필 이미지 업로드 실행 >>>>>>>>>>>>>>>>>>>> " +  mentorDto.getMemberFile().getOriginalFilename());
+					logger.info("프로필 이미지 업로드 실행 => " +  mentorDto.getMemberFile().getOriginalFilename());
 					
 					// 파일 데이터 받기
 					MultipartFile file = mentorDto.getMemberFile();

@@ -27,6 +27,11 @@ public class LogFilter implements Filter {
 		
 		// url 정보
 		String url = req.getRequestURL().toString();
+		if(!(url.substring(url.length()-3, url.length()).equals(".do"))) {
+			chain.doFilter(req, response);
+			return;
+		}
+		
 		// url에서 사용된 queryString 
 		String queryString = req.getQueryString();
 		String contentType = req.getContentType();
@@ -38,14 +43,15 @@ public class LogFilter implements Filter {
 		// 헤더 정보   ex) Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36
 		String agent = req.getHeader("User-Agent");
 		
+		String classFullName = "INFO : " + this.getClass().getName() + " - "; 
 		
 		StringBuffer logData = new StringBuffer();
-		logData.append("url : + " + url + "\n")
-			   .append("queryString : " + queryString + "\n")
-			   .append("content-type : " + contentType + "\n")
-			   .append("==================== [Log Filter] END ===================" + "\n");
+		logData.append(classFullName + "url : " + url + "\n")
+			   .append(classFullName + "queryString : " + queryString + "\n")
+			   .append(classFullName + "content=type : " + contentType + "\n")
+			   .append(classFullName + "========================= [HTTP Log Filter] END ================================================================================================" + "\n");
 		 
-		logger.info("\n=================== [Log Filter] START ==================\n" + logData);				   
+		logger.info("========================= [HTTP Log Filter] START ==============================================================================================\n" + logData);				   
 		chain.doFilter(req, response);
 	}
 	
@@ -72,7 +78,10 @@ public class LogFilter implements Filter {
 
 	}
 	
-	
+	public static void main(String[] args) {
+		String url = "http://localhost:8787/update/board/main.do";
+		System.out.println(url.substring(url.length()-3, url.length()));
+	}
 	
 	
 }

@@ -223,7 +223,7 @@ CREATE TABLE FREE_BOARD
 
 --전채 선택
 SELECT * FROM FREE_BOARD
-ORDER BY BOARD_NO DESC ;
+ORDER BY BOARD_NO DESC;
 
 --SELECT ONE
 -- 게시판 불러오기
@@ -314,49 +314,340 @@ WHERE ID = 'MENTEE01';
 
 
 --COMMENT BOARD ===================================================================================================================
-DROP SEQUENCE COMMENT_BOARD_SEQ;
+
+/*
+ 부모글 3
+
+댓글1				부모글 : 3,  대댓글 그룹 1번(시퀀스), 	대댓글 그룹의 순서 0번(댓글 부모 : 0)
+ ㄴ 대댓글1			부모글 : 3,  대댓글 그룹 1번, 			대댓글 그룹의 순서 1번
+ ㄴ 대댓글2			부모글 : 3,  대댓글 그룹 1번, 			대댓글 그룹의 순서 2번
+ ㄴ 대댓글3			부모글 : 3,  대댓글 그룹 1번, 			대댓글 그룹의 순서 3번
+
+댓글2				부모글 : 3,  대댓글 그룹 2번(시퀀스), 	대댓글 그룹의 순서 0번(댓글 부모 : 0)
+ㄴ 대댓글1			부모글 : 3,  대댓글 그룹 2번, 			대댓글 그룹의 순서 1번
+
+댓글3				부모글 : 3,  대댓글 그룹 3번(시퀀스), 	대댓글 그룹의 순서 0번(댓글 부모 : 0)
+
+댓글4				부모글 : 3,  대댓글 그룹 4번(시퀀스), 	대댓글 그룹의 순서 0번(댓글 부모 : 0)
+ㄴ 대댓글1			부모글 : 3,  대댓글 그룹 4번, 			대댓글 그룹의 순서 1번
+ㄴ 대댓글2			부모글 : 3,  대댓글 그룹 4번, 			대댓글 그룹의 순서 2번  
+
+
+ ##1 작성일 수정일 표시  
+ if(수정일자 == 작성일자){
+ 	(작성일)yyyy-MM-dd hh:mm:ss		// 작성날짜
+ } else {
+ 	(수정일)yyyy-MM-dd hh:mm:ss		// 수정날짜
+ }
+ 
+ ##2 대댓들은 클릭하여 대댓글 작성하게 만들것(좀더 고민하자)
+ ex) </a>@클릭한 닉네임<a> 대댓글 내용~ 
+ 
+ ##3 대댓글은 유튜브처럼 몇 개 있음써주고 클릭시 보여주기 
+ 
+*/
+
+
+DROP SEQUENCE COMMENT_BOARD_SEQ;		
+DROP SEQUENCE COMMENT_GROUP_NO;
 DROP TABLE COMMENT_BOARD;
 
-CREATE SEQUENCE COMMENT_BOARD_SEQ;
-CREATE TABLE COMMENT_BOARD
+CREATE SEQUENCE COMMENT_BOARD_SEQ;	-- 글의 시퀀스
+CREATE SEQUENCE COMMENT_GROUP_NO;	-- 댓글 그룹 넘버(시퀀스)
+	
+CREATE TABLE COMMENT_BOARD									-- 댓글용 테이블
 (
-    COMMENT_NO         NUMBER             NOT NULL, 
-    BOARD_NO           NUMBER             NOT NULL, 
-    COMMENT_GROUPNO    NUMBER             NOT NULL, 
-    ID                 VARCHAR2(200)      NOT NULL, 
-    COMMENT_NAME       VARCHAR2(200)      NOT NULL, 
-    COMMENT_CONTENT    VARCHAR2(2000)     NOT NULL, 
-    COMMENT_REGDATE    DATE               NOT NULL, 
+    COMMENT_NO         NUMBER             NOT NULL, 		-- 시퀀스
+    BOARD_NO           NUMBER             NOT NULL, 		-- 부모글, join할 외래키
+    COMMENT_GROUPNO    NUMBER             NOT NULL, 		-- 댓글 그룹 넘버(시퀀스), 대댓글시 같은 글인지 확인용
+    COMMENT_GROUPSEQ   NUMBER			  NOT NULL,			-- 댓글 그룹내의 순서, 	댓글 부모글이면 : 0
+    ID                 VARCHAR2(200)      NOT NULL, 		-- 아이디
+    COMMENT_NAME       VARCHAR2(200)      NOT NULL, 		-- 작성자 이름
+    COMMENT_CONTENT    VARCHAR2(2000)     NOT NULL, 		-- 내용
+    COMMENT_REGDATE    DATE               NOT NULL, 		-- 작성일
+    COMMENT_UPDATE_REGDATE    DATE               NOT NULL, 		-- 수정일
     CONSTRAINT COMMENT_BOARD_PK PRIMARY KEY (COMMENT_NO),
     CONSTRAINT COMMENT_BOARD_FK01 FOREIGN KEY(ID) REFERENCES MEMBER_JOIN(ID),
     CONSTRAINT COMMENT_BOARD_FK02 FOREIGN KEY(BOARD_NO) REFERENCES FREE_BOARD(BOARD_NO)
 );
 
 -- 전채 선택
-SELECT * FROM COMMENT_BOARD;
+SELECT * FROM COMMENT_BOARD
+ORDER BY COMMENT_GROUPNO, COMMENT_GROUPSEQ;
 
 
+SELECT * FROM COMMENT_BOARD 
+WHERE ID = '1994dbwogus'
+AND BOARD_NO = 301
+--AND COMMENT_GROUPNO = 42
+--AND COMMENT_GROUPSEQ = 0
+ORDER BY COMMENT_GROUPNO DESC, COMMENT_GROUPSEQ
 
--- SELECT ONE
 
--- 내가 작성한 전채 글확인
-
--- 추가
-INSERT INTO COMMENT_BOARD
-VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 1, 0, 'MENTEE01', '김멘티', '답글입니다.', SYSDATE);
-
--- 수정
-UPDATE COMMENT_BOARD
-SET COMMENT_CONTENT = '', COMMENT_REGDATE = SYSDATE
-WHERE BOARD_NO = 1
-AND COMMENT_GROUPNO = 1
-AND ID = 'MENTEE01';
-
--- 삭제 + 멀티 삭제
+-- 댓글 삭제 > 속한 대댓글도 모두삭제
 DELETE COMMENT_BOARD
-WHERE BOARD_NO = 1
+WHERE ID = '1994dbwogus'
+AND BOARD_NO = 301
+AND COMMENT_GROUPNO = 42;
+
+
+-- 대댓글 삭제
+DELETE COMMENT_BOARD
+WHERE ID = '1994dbwogus'
+AND COMMENT_NO = ;
+
+
+
+-- 글하나의 댓글 총 개수
+SELECT count(*) 
+FROM COMMENT_BOARD
+WHERE BOARD_NO = 301					-- 부모글
+AND COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+
+--==========================================================================================================================================================================
+
+/* VIEW에 사용될 댓글 출력  쿼리문 만들기 */
+
+--1단계 : 1개의 글에 댓글을 그룹번호 별로 대댓글의 총합을 출력하라 
+SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+FROM COMMENT_BOARD cb
+WHERE BOARD_NO = 301 
+GROUP BY COMMENT_GROUPNO;		-- 그룹번호 별
+	
+-- 번외 : 1개의 글의  댓글에서 대댓글이 있는 댓글의 PK와, 대댓글이 있는  댓글의 그룹 번호,  그룹번호 각각 대댓글 총합
+SELECT A.COMMENT_NO, B.*
+FROM COMMENT_BOARD A, (SELECT COMMENT_GROUPNO, COUNT(*) "COUNT_RE_COM" FROM COMMENT_BOARD WHERE BOARD_NO = 301 AND NOT COMMENT_GROUPSEQ = 0 GROUP BY COMMENT_GROUPNO) B
+WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
+AND A.COMMENT_GROUPSEQ = 0;
+
+
+
+-- 2단계 : 글하나의 댓글정보와 멤버테이블의 프로필 사진 가져오기(페이징 처리)  : 가상테이블 A
+SELECT X.*
+FROM (SELECT ROWNUM RN, A.*
+	FROM (SELECT cb.*, mp.MEMBER_CONTENT FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+		  	WHERE cb.ID = mp.ID
+			AND cb.BOARD_NO = 301					-- 부모글
+			AND cb.COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+			ORDER BY cb.COMMENT_GROUPNO) A
+	WHERE ROWNUM <= 3) X						-- MAX
+WHERE X.RN >= 1; 								-- MIN
+
+
+--2단계 : 1개의 글에 댓글을  1 ~ 3번의 대댓글만 그룹번호 별로 대댓글의 총합을 출력하라	 : 가상테이블 B
+SELECT X.*
+FROM (SELECT ROWNUM RN, B.*
+	  FROM (SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+		    FROM COMMENT_BOARD cb
+		    WHERE BOARD_NO = 301 
+		    GROUP BY COMMENT_GROUPNO				-- 그룹번호 별
+		    ORDER BY COMMENT_GROUPNO DESC) B		-- 그룹번호로 내림 차순 정렬(최신 댓글순)
+	  WHERE ROWNUM <= 3) X
+WHERE X.RN >= 1
+
+
+
+--3단계 : 1개의 글의 댓글 정보와 해당하는 댓글별 대댓글 총합을 출력하라	: 가상테이블 A와 B JOIN
+SELECT B.COUNT_RE_COMMENT, A.* 
+FROM 
+	(SELECT cb.*, mp.MEMBER_CONTENT 
+	 FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+	 WHERE cb.ID = mp.ID
+	 AND cb.BOARD_NO = 301					-- 부모글
+	 AND cb.COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+	 ORDER BY cb.COMMENT_GROUPNO) A,
+	(SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+	 FROM COMMENT_BOARD
+	 WHERE BOARD_NO = 301 
+	 GROUP BY COMMENT_GROUPNO) B				-- 그룹번호 별
+WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO;
+
+
+--4단계 : 1개의 글의 최신 댓글 상위 3개의 댓글 정보와 해당하는 댓글별 대댓글 총합을 출력하라	: 가상테이블 A와 B JOIN 후 페이징 처리
+SELECT Y.* 
+FROM (SELECT ROWNUM RN, X.*
+	FROM (SELECT B.COUNT_RE_COMMENT, A.* FROM 
+			(SELECT cb.*, mp.MEMBER_CONTENT 
+			 FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+			 WHERE cb.ID = mp.ID
+			 AND cb.BOARD_NO = 301					-- 부모글
+			 AND cb.COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+			 ORDER BY cb.COMMENT_GROUPNO) A,
+			(SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+			 FROM COMMENT_BOARD
+			 WHERE BOARD_NO = 301 
+			 GROUP BY COMMENT_GROUPNO) B				-- 그룹번호 별
+		WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
+		ORDER BY A.COMMENT_GROUPNO DESC) X				-- 그룹번호로 내림 차순 정렬(최신 댓글순)
+	WHERE ROWNUM <= 10) Y
+WHERE Y.RN >= 1
+
+--==========================================================================================================================================================================
+
+
+
+-- 글하나이 1개 댓글1개의 대댓글 총 개수
+SELECT COUNT(*) 
+FROM COMMENT_BOARD
+WHERE BOARD_NO = 301						-- 부모글
+AND COMMENT_GROUPNO = 3				-- 대댓글을 가져올 댓글 그룹
+AND NOT COMMENT_GROUPSEQ = 0		-- 0번은 대댓글의 부모 댓글
+
+
+-- 글하나의 1개 댓글의 대댓글  확인(페이징 추가)
+SELECT X.*
+FROM (SELECT ROWNUM RN, A.*
+		FROM (SELECT cb.*, mp.MEMBER_CONTENT FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+			  WHERE cb.ID = mp.ID
+			  AND cb.BOARD_NO = 301						-- 부모글
+			  AND cb.COMMENT_GROUPNO = 1				-- 대댓글은 가져올 댓글 그룹
+			  AND NOT cb.COMMENT_GROUPSEQ = 0) A		-- 그룹의 0번은 댓글 댓글제외 
+	WHERE ROWNUM <= 5) X
+WHERE X.RN >= 1;	
+
+
+-- 내가 작성한 전체 댓글확인
+SELECT * FROM COMMENT_BOARD
+WHERE ID = '1994dbwogus';
+
+
+-- 가장 최근 작성한 댓글 가져오기
+SELECT A.* FROM(
+	SELECT * FROM COMMENT_BOARD
+	WHERE ID = '1994dbwogus'
+	AND BOARD_NO = 301
+	ORDER BY COMMENT_REGDATE DESC) A
+WHERE ROWNUM = 1;
+
+
+
+
+SELECT Y.* 
+FROM (SELECT ROWNUM RN, X.*
+	FROM (SELECT B.COUNT_RE_COMMENT, A.* FROM 
+			(SELECT cb.*, mp.MEMBER_CONTENT 
+			 FROM COMMENT_BOARD cb, MEMBER_PROFILE mp
+			 WHERE cb.ID = mp.ID
+			 AND cb.BOARD_NO = 301					-- 부모글
+			 AND cb.COMMENT_GROUPSEQ = 0			-- 댓글은 0 번 고정
+			 ORDER BY cb.COMMENT_GROUPNO) A,
+			(SELECT COMMENT_GROUPNO, (COUNT(*)-1) "COUNT_RE_COMMENT" 
+			 FROM COMMENT_BOARD
+			 WHERE BOARD_NO = 301 
+			 GROUP BY COMMENT_GROUPNO) B				-- 그룹번호 별
+		WHERE A.COMMENT_GROUPNO = B.COMMENT_GROUPNO
+		ORDER BY A.COMMENT_GROUPNO DESC) X				-- 그룹번호로 내림 차순 정렬(최신 댓글순)
+	WHERE ROWNUM <= 10) Y
+WHERE Y.RN >= 1
+
+
+
+
+-- 댓글 추가 
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301,COMMENT_GROUP_NO.NEXTVAL, 0, 'MENTEE01', '김멘티', '01 댓글입니다.', SYSDATE, SYSDATE);
+
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301,COMMENT_GROUP_NO.NEXTVAL, 0, 'MENTEE02', '최자바', '02 댓글입니다.', SYSDATE, SYSDATE);
+
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301,COMMENT_GROUP_NO.NEXTVAL, 0, 'MENTOR01', '김코치', '03 댓글입니다.', SYSDATE, SYSDATE);
+
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301,COMMENT_GROUP_NO.NEXTVAL, 0, '1994dbwogus', '유재현', '03 댓글입니다.', SYSDATE, SYSDATE);
+
+
+-- 대댓글 추가
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(
+COMMENT_BOARD_SEQ.NEXTVAL, 
+301, 
+41, 
+(SELECT MAX(COMMENT_GROUPSEQ) 
+FROM COMMENT_BOARD
+WHERE BOARD_NO = 301
+AND COMMENT_GROUPNO = 41) + 1 , 
+'1994dbwogus', 
+'유재현', 
+'03 유재현 대댓글입니다.', 
+SYSDATE, SYSDATE);
+
+
+
+-- 더미 : 그룹 1 대댓글 추가
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301, 1, 1, '1994dbwogus', '유재현', '01 유재현 대댓글입니다.', SYSDATE, SYSDATE);
+
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301, 1, 2, 'MENTOR01', '김코치', '01 김코치 대댓글입니다.', SYSDATE, SYSDATE);
+
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301, 1, 3, 'MENTEE02', '최자바', '01 최자바 대댓글입니다.', SYSDATE, SYSDATE);
+
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301, 1, 4, 'MENTEE01', '김멘티', '01 김멘티 대댓글입니다.', SYSDATE, SYSDATE);
+
+-- 더미 : 그룹 2 대댓글 추가
+
+-- 더미 : 그룹 3 대댓글 추가
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301, 3, 1, 'MENTEE02', '최자바', '02 최자바 대댓글입니다.', SYSDATE, SYSDATE);
+
+INSERT INTO COMMENT_BOARD(COMMENT_NO, BOARD_NO, COMMENT_GROUPNO, COMMENT_GROUPSEQ, ID, COMMENT_NAME, COMMENT_CONTENT, COMMENT_REGDATE, COMMENT_UPDATE_REGDATE)
+VALUES(COMMENT_BOARD_SEQ.NEXTVAL, 301, 3, 2, '1994dbwogus', '유재현', '02 최자바 대댓글입니다.', SYSDATE, SYSDATE);
+
+
+
+-- 댓글 수정
+UPDATE COMMENT_BOARD
+SET COMMENT_CONTENT = '(수정)01 댓글을 수정했습니다.', COMMENT_UPDATE_REGDATE = SYSDATE
+WHERE BOARD_NO = 301	-- 부모글
+AND COMMENT_NO = 		-- 시퀀스
+AND ID = 'MENTEE01';	-- 작성자
+
+
+-- 대댓글 수정
+UPDATE COMMENT_BOARD
+SET COMMENT_CONTENT = '(수정)01 대댓글을 수정했습니다.', COMMENT_UPDATE_REGDATE = SYSDATE
+WHERE BOARD_NO = 301		-- 부모글
+AND COMMENT_NO = 5			-- 시퀀스
+AND ID = '1994dbwogus';
+--AND COMMENT_GROUPNO = 1		-- 변경할 대댓글 그룹의 번호
+--AND COMMENT_GROUPSEQ = 1	-- 변경할 대댓글의 그룹내 순서
+
+
+-- 댓들 삭제 (대댓글 달렸으면 삭제 못하게 하자)
+DELETE COMMENT_BOARD
+WHERE BOARD_NO = 301
 AND COMMENT_GROUPNO = 1
+AND COMMENT_GROUPSEQ = 0	-- 고정
 AND ID = 'MENTEE01';
+
+-- 대댓글 삭제 
+DELETE COMMENT_BOARD
+WHERE BOARD_NO = 301
+AND COMMENT_GROUPNO = 1
+AND COMMENT_GROUPSEQ = 1
+AND ID = '1994dbwogus';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -662,19 +953,3 @@ FROM
 WHERE ROWNUM <= 20
 
 -- 페이징 끝 =============================================================================================================================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

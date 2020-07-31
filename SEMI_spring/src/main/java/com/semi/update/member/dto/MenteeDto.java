@@ -23,69 +23,111 @@ public class MenteeDto {
 		private String joinRegisterYn;
 		
 		
+		// 이름
+		private String memberName;
+		
 		
 		public MenteeDto() {
 			
 		}
-		
+
+
 		public int getJoinNo() {
 			return joinNo;
 		}
+
+
 		public void setJoinNo(int joinNo) {
 			this.joinNo = joinNo;
 		}
+
+
 		public String getId() {
 			return id;
 		}
+
+
 		public void setId(String id) {
 			this.id = id;
 		}
+
+
 		public String getJoinPw() {
 			return joinPw;
 		}
+
+
 		public void setJoinPw(String joinPw) {
 			this.joinPw = joinPw;
 		}
+
+
 		public String getJoinEmail() {
 			return joinEmail;
 		}
+
+
 		public void setJoinEmail(String joinEmail) {
 			this.joinEmail = joinEmail;
 		}
+
+
 		public String getJoinRole() {
 			return joinRole;
 		}
+
+
 		public void setJoinRole(String joinRole) {
 			this.joinRole = joinRole;
 		}
+
+
 		public Date getJoinDate() {
 			return joinDate;
 		}
+
+
 		public void setJoinDate(Date joinDate) {
 			this.joinDate = joinDate;
 		}
+
+
 		public String getJoinJoined() {
 			return joinJoined;
 		}
+
+
 		public void setJoinJoined(String joinJoined) {
 			this.joinJoined = joinJoined;
 		}
+
+
 		public String getJoinRegisterYn() {
 			return joinRegisterYn;
 		}
+
+
 		public void setJoinRegisterYn(String joinRegisterYn) {
 			this.joinRegisterYn = joinRegisterYn;
 		}
+
+
+		public String getMemberName() {
+			return memberName;
+		}
+
+
+		public void setMemberName(String memberName) {
+			this.memberName = memberName;
+		}
+
 
 		@Override
 		public String toString() {
 			return "MenteeDto [joinNo=" + joinNo + ", id=" + id + ", joinPw=" + joinPw + ", joinEmail=" + joinEmail
 					+ ", joinRole=" + joinRole + ", joinDate=" + joinDate + ", joinJoined=" + joinJoined
-					+ ", joinRegisterYn=" + joinRegisterYn + "]";
+					+ ", joinRegisterYn=" + joinRegisterYn + ", memberName=" + memberName + "]";
 		}
-		
-		
-		
 		
 		
 }
